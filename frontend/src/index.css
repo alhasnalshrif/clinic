@@ -1,0 +1,50 @@
+body {
+   background-color: black;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.move-enter {
+   opacity: 0.01;
+   transform: translate(20px, 0)
+}
+
+.move-enter-active {
+   opacity: 1;
+   transform: translate(0, 0);
+   transition: all 500ms ease-in;
+}
+
+.move-exit {
+   opacity: 0;
+} 
+
+#header-img {
+   height: 535px;
+   /* background-image: linear-gradient(rgba(0,0,0,.65), rgba(0,0,0,.65)), url('./andres-dental-clinic.jpg'); */
+   background-attachment: fixed;
+   background-position: center;
+   background-repeat: no-repeat;
+   background-size: cover;
+   
+}
+
+
+#working-photo-strip {
+   height: 250px;
+   /* background-image: url('./andres-dental-clinic-working.jpg'); */
+   background-attachment: fixed;
+   background-repeat: no-repeat;
+   background-size: cover;
+   background-position: 0% 0%;
+}
