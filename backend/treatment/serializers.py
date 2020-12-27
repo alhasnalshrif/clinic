@@ -41,7 +41,7 @@ class AdultTeethChartSerializer(serializers.ModelSerializer):
 
 #         assignment = Assignment()
 #         teacher = User.objects.get(username=data['teacher'])
-#         # teacher = User.objects.all()
+#         teacher = User.objects.all()
 #         assignment.teacher = teacher
 #         assignment.title = data['title']
 #         assignment.save()

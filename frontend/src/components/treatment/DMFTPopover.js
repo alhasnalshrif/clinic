@@ -11,13 +11,11 @@ const DMFTPopover = (props) => {
 
 
    const getTreatments = (toothPosition) => {
-      // axios.get(`treatments/tooth/${toothPosition}/${this.props.patientId}`)
-      axios.get(`${process.env.REACT_APP_API_URL}/treatment/`)
+      axios.get(`treatments/t/${toothPosition}-${props.patientId}`)
          .then((response) => {
             if (response.status === 200) {
-               setTreatments(response.data);
+               setTreatments(response.data.treatments);
 
-               // this.setState({ setTreatments: response.data.treatments });
             }
          })
          .catch((err) => {

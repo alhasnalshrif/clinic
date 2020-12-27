@@ -16,9 +16,7 @@ class Treatment(models.Model):
     title = models.CharField(max_length=50)
     token = models.IntegerField()
     description = models.CharField(max_length=100, blank=True, null=True)
-
-    dental_position = models.CharField(max_length=50, blank=True, null=True)
-
+    toothPosition = models.CharField(max_length=50, blank=True, null=True)
     dental_test = models.CharField(max_length=100, blank=True, null=True)
     created_at = models.DateField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateField(auto_now=True, blank=True, null=True)
@@ -32,7 +30,7 @@ class AdultTeethChart(models.Model):
 
     UR_1 = models.CharField(max_length=50, blank=True,
                             null=True, choices=TEETH_TYPE, default='None')
-                            
+
     UR_2 = models.CharField(max_length=50, blank=True,
                             null=True, choices=TEETH_TYPE, default='None')
     UR_3 = models.CharField(max_length=50, blank=True,
