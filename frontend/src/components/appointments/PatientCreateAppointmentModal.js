@@ -8,6 +8,7 @@ import moment from 'moment';
 
 
 function PatientCreateAppointmentModal(props) {
+   const [form] = Form.useForm();
 
    const [state, setState] = useState({
       visible: false,
@@ -31,7 +32,7 @@ function PatientCreateAppointmentModal(props) {
 
    const hideModal = () => {
       setState({ visible: false });
-      props.form.resetFields();
+      form.resetFields();
    }
 
 
@@ -55,7 +56,8 @@ function PatientCreateAppointmentModal(props) {
             onCancel={hideModal}
             onOk={handleSubmit}
          >
-            <Form layout="vertical" onSubmit={handleSubmit}>
+            <Form layout="vertical" onSubmit={handleSubmit}
+               form={form}>
                <Row gutter={8}>
                   <Col span={24}>
                      <Form.Item label="Date and Time" name="date_time" rules={[{ required: true, message: 'Date and Time is required.' }]}>

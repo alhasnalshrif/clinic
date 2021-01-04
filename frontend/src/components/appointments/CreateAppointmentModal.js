@@ -9,6 +9,7 @@ const { Option } = Select;
 
 
 function CreateAppointmentModal(props) {
+   const [form] = Form.useForm();
 
    const [state, setState] = useState({
       visible: false,
@@ -53,7 +54,7 @@ function CreateAppointmentModal(props) {
 
    const hideModal = () => {
       setState({ visible: false });
-      props.form.resetFields();
+      form.resetFields();
    }
 
 
@@ -66,7 +67,8 @@ function CreateAppointmentModal(props) {
 
 
 
-   const options = state.searchPatientInputData.map(d => <Option key={d.id}>{d.name}</Option>)
+   // const options = state.searchPatientInputData.map(d => <Option key={d.id}>{d.name}</Option>)
+
    return (
       <React.Fragment>
          <Button onClick={showModal} type="primary"><PlusCircleFilled />Create New Appointment</Button>
@@ -77,7 +79,8 @@ function CreateAppointmentModal(props) {
             onCancel={hideModal}
             onOk={handleSubmit}
          >
-            <Form layout="vertical" onSubmit={handleSubmit}>
+            <Form layout="vertical" onSubmit={handleSubmit}
+               form={form}>
                <Row gutter={8}>
                   <Col span={24}>
                      <Form.Item label="Date and Time" name="date_time" rules={[{ required: true, message: 'Date and Time is required.' }]} >
@@ -111,7 +114,7 @@ function CreateAppointmentModal(props) {
                            // onChange={handleChange}
                            notFoundContent={null}
                         >
-                           {options}
+                           {/* {options} */}
                         </Select>
 
                      </Form.Item>

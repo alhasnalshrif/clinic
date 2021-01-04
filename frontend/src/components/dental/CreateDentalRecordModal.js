@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React, { useState } from 'react';
 import { Modal, Form, Input, Row, Col, DatePicker, Select, Button } from 'antd';
 import { UsergroupAddOutlined } from '@ant-design/icons';
 import moment from 'moment';
@@ -8,10 +8,12 @@ const { Option } = Select;
 
 
 function CreateDentalRecordModal(props) {
+   const [form] = Form.useForm();
 
-      const [state, setState] = useState({
-         confirmDirty: false,
-         visible: false      });
+   const [state, setState] = useState({
+      confirmDirty: false,
+      visible: false
+   });
 
    const handleSubmit = (e) => {
       e.preventDefault();
@@ -29,10 +31,10 @@ function CreateDentalRecordModal(props) {
 
    const hideModal = () => {
       setState({ visible: false });
-      props.form.resetFields();
+      form.resetFields();
    }
 
-   const  validateContactNumber = (rule, value, callback) => {
+   const validateContactNumber = (rule, value, callback) => {
 
       const myRegex = /^(09|\+639)\d{9}$/;
 
@@ -48,83 +50,84 @@ function CreateDentalRecordModal(props) {
    }
 
 
-      return (
-         <React.Fragment>
-            <Button type="primary" onClick={showModal}>
-               <UsergroupAddOutlined />
+   return (
+      <React.Fragment>
+         <Button type="primary" onClick={showModal}>
+            <UsergroupAddOutlined />
                   Create New Dental Record
                </Button>
-            <Modal
-               visible={state.visible}
-               title="Create a New Dental Record"
-               okText="Create"
-               onCancel={hideModal}
-               onOk={handleSubmit}
-            >
-               <Form layout="vertical" onSubmit={handleSubmit}>
-                  <Row>
-                     <Col span={24}>
-                        <Form.Item label="Name" name="name" rules={[{ required: true, message: 'Name is required' }]}>
+         <Modal
+            visible={state.visible}
+            title="Create a New Dental Record"
+            okText="Create"
+            onCancel={hideModal}
+            onOk={handleSubmit}
+         >
+            <Form layout="vertical" onSubmit={handleSubmit}
+               form={form}>
+               <Row>
+                  <Col span={24}>
+                     <Form.Item label="Name" name="name" rules={[{ required: true, message: 'Name is required' }]}>
 
-                           <Input />
+                        <Input />
 
-                        </Form.Item>
-                     </Col>
-                  </Row>
-                  <Row gutter={8}>
-                     <Col span={12}>
-                        <Form.Item label="Address" name="address" rules={[{ required: true, message: 'Address is required' }]}>
+                     </Form.Item>
+                  </Col>
+               </Row>
+               <Row gutter={8}>
+                  <Col span={12}>
+                     <Form.Item label="Address" name="address" rules={[{ required: true, message: 'Address is required' }]}>
 
-                           <Input />
+                        <Input />
 
-                        </Form.Item>
-                     </Col>
-                     <Col span={12}>
-                        <Form.Item label="Birthday" name="birthday" rules={[{ required: true, message: 'Birthday is required' }]}>
+                     </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                     <Form.Item label="Birthday" name="birthday" rules={[{ required: true, message: 'Birthday is required' }]}>
 
-                           <DatePicker disabledDate={(current) => current && current > moment()} format="MMMM DD, YYYY" style={{ width: '100%' }} />
+                        <DatePicker disabledDate={(current) => current && current > moment()} format="MMMM DD, YYYY" style={{ width: '100%' }} />
 
-                        </Form.Item>
-                     </Col>
-                  </Row>
+                     </Form.Item>
+                  </Col>
+               </Row>
 
-                  <Row gutter={8}>
-                     <Col span={12}>
-                        <Form.Item label="Occupation" name="occupation" >
+               <Row gutter={8}>
+                  <Col span={12}>
+                     <Form.Item label="Occupation" name="occupation" >
 
-                           <Input />
+                        <Input />
 
-                        </Form.Item>
-                     </Col>
+                     </Form.Item>
+                  </Col>
 
-                     <Col span={12}>
-                        <Form.Item label="Civil Status" name="civil_status">
+                  <Col span={12}>
+                     <Form.Item label="Civil Status" name="civil_status">
 
-                           <Select>
-                              <Option value="single">Single</Option>
-                              <Option value="married">Married</Option>
-                              <Option value="widowed">Widowed</Option>
-                              <Option value="separated">Separated</Option>
-                           </Select>
+                        <Select>
+                           <Option value="single">Single</Option>
+                           <Option value="married">Married</Option>
+                           <Option value="widowed">Widowed</Option>
+                           <Option value="separated">Separated</Option>
+                        </Select>
 
-                        </Form.Item>
-                     </Col>
-                  </Row>
-                  <Row>
-                     <Col span={24}>
-                        <Form.Item label="Contact Number" name="contact_number" rules={[{ validator: validateContactNumber }]}>
+                     </Form.Item>
+                  </Col>
+               </Row>
+               <Row>
+                  <Col span={24}>
+                     <Form.Item label="Contact Number" name="contact_number" rules={[{ validator: validateContactNumber }]}>
 
-                           <Input />
+                        <Input />
 
-                        </Form.Item>
-                     </Col>
-                  </Row>
-                  <Button hidden htmlType="submit"></Button>
-               </Form>
-            </Modal>
-         </React.Fragment>
-      );
-   
+                     </Form.Item>
+                  </Col>
+               </Row>
+               <Button hidden htmlType="submit"></Button>
+            </Form>
+         </Modal>
+      </React.Fragment>
+   );
+
 }
 
 export default CreateDentalRecordModal;

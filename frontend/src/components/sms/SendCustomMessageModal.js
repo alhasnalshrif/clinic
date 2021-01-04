@@ -1,13 +1,14 @@
-import React,{useState} from 'react';
+import React, { useState } from 'react';
 import { Modal, Form, Row, Col, Button, Input } from 'antd';
 
 
 
-   function SendCustomMessageModal(props) {
+function SendCustomMessageModal(props) {
+   const [form] = Form.useForm();
 
-      const [state, setState] = useState({
-         visible: false
-      });
+   const [state, setState] = useState({
+      visible: false
+   });
 
 
    const handleSubmit = (e) => {
@@ -26,36 +27,37 @@ import { Modal, Form, Row, Col, Button, Input } from 'antd';
 
    const hideModal = () => {
       setState({ visible: false });
-      props.form.resetFields();
+      form.resetFields();
    }
 
 
-      return (
-         <React.Fragment>
-            <Button disabled={props.disabled} onClick={showModal} style={{ marginRight: 8 }} type="primary">Send Custom Message</Button>
-            <Modal
-               visible={state.visible}
-               title="Send Custom Message"
-               okText="Send"
-               onCancel={hideModal}
-               onOk={handleSubmit}
-            >
-               <Form layout="vertical" onSubmit={handleSubmit}>
-                  <Row gutter={8}>
-                     <Col span={24}>
-                        <Form.Item label="Message" name="message" rules={[{ required: true, message: 'Message is required.' }]}>
+   return (
+      <React.Fragment>
+         <Button disabled={props.disabled} onClick={showModal} style={{ marginRight: 8 }} type="primary">Send Custom Message</Button>
+         <Modal
+            visible={state.visible}
+            title="Send Custom Message"
+            okText="Send"
+            onCancel={hideModal}
+            onOk={handleSubmit}
+         >
+            <Form layout="vertical" onSubmit={handleSubmit} form={form}>
 
-                           <Input.TextArea autosize={{ minRows: 8, maxRows: 8 }} />
+               <Row gutter={8}>
+                  <Col span={24}>
+                     <Form.Item label="Message" name="message" rules={[{ required: true, message: 'Message is required.' }]}>
 
-                        </Form.Item>
-                     </Col>
-                  </Row>
-                  <Button hidden htmlType="submit"></Button>
-               </Form>
-            </Modal>
-         </React.Fragment>
-      );
-   
+                        <Input.TextArea autosize={{ minRows: 8, maxRows: 8 }} />
+
+                     </Form.Item>
+                  </Col>
+               </Row>
+               <Button hidden htmlType="submit"></Button>
+            </Form>
+         </Modal>
+      </React.Fragment>
+   );
+
 }
 
 export default SendCustomMessageModal;

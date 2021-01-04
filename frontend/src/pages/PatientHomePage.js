@@ -1,6 +1,6 @@
 import React,{useState} from 'react';
 import {Alert, Button, Badge, Layout, Row,Tabs, Col, notification, Typography, Table, Tag, message, Popconfirm} from 'antd';
-import DescriptionItem from '../components/DescriptionItem';
+import DescriptionItem from '../components/DentalRecord/DescriptionItem';
 import axios from 'axios';
 import moment from 'moment';
 import PatientCreateAppointmentModal from '../components/appointments/PatientCreateAppointmentModal'
@@ -11,7 +11,7 @@ const {TabPane} = Tabs;
 const {Text, Title} = Typography;
 const {Content} = Layout;
 
-   function PatientHomePage(props) {
+function PatientHomePage(props) {
 
   
    const [state, setState] = useState({
@@ -240,8 +240,9 @@ const {Content} = Layout;
       const lastVisit = moment(state.dentalRecord.last_visit).format('MMMM DD, YYYY');
       const birthday = moment(state.dentalRecord.birthday).format('MMMM DD, YYYY');
       const age = moment().diff(state.dentalRecord.birthday, 'years');
+
       return (
-         <React.Fragment>
+         <>
          <Content style={{margin: '24px 24px 24px 36px', padding: 24, background: '#fff'}}>
             <Title level={4}>HOME</Title>
             <Tabs tabPosition="top">
@@ -299,7 +300,7 @@ const {Content} = Layout;
                      type="warning" /> 
                   <Row style={{marginBottom: 12}}>
                      <Col align="right">
-                        <PatientCreateAppointmentModal onCreate={handleCreateAppointment} patientId={props.user.patient_id} />
+                        {/* <PatientCreateAppointmentModal onCreate={handleCreateAppointment} patientId={props.user.patient_id} /> */}
                      </Col>
                   </Row>
                   <Table
@@ -324,14 +325,13 @@ const {Content} = Layout;
                   />
                </TabPane>
                <TabPane tab="Clinic's Appointments Calendar" key="4">
-                  <AppointmentsCalendar role={props.user.role} appointments={state.confirmedAppointments} /> 
+                  {/* <AppointmentsCalendar role={props.user.role} appointments={state.confirmedAppointments} />  */}
                </TabPane>
             </Tabs>
    
          </Content> 
-         </React.Fragment>
+         </>
       );
-   
 }
 
 export default PatientHomePage;

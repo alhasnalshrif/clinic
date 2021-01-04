@@ -9,6 +9,7 @@ const { Option } = Select;
 
 
 function CreateAccountModal(props) {
+   const [form] = Form.useForm();
 
    const [state, setState] = useState({
       confirmDirty: false,
@@ -33,7 +34,7 @@ function CreateAccountModal(props) {
 
    const hideModal = () => {
       setState({ visible: false });
-      props.form.resetFields();
+      form.resetFields();
    }
 
    const handleConfirmBlur = (e) => {
@@ -99,7 +100,8 @@ function CreateAccountModal(props) {
             onCancel={hideModal}
             onOk={handleSubmit}
          >
-            <Form layout="vertical" onSubmit={handleSubmit}>
+            <Form layout="vertical" onSubmit={handleSubmit} form={form}>
+
                <Row>
                   <Col span={24}>
                      <Form.Item label="Name" name="name" rules={[{ required: true, message: 'Name is required.' }]}>

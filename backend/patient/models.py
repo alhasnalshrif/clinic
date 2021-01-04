@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 USER_GENDER = (('MALE', 'MALE'), ('FEMALE', 'FEMALE'))
 
 
@@ -15,7 +16,7 @@ class Patient(models.Model):
     created_at = models.DateField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateField(auto_now=True, blank=True, null=True)
 
+    doctor = models.ForeignKey(User, on_delete=models.CASCADE)
+
     def __str__(self):
         return str(self.name)
-
-

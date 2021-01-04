@@ -1,16 +1,17 @@
-import React,{useState} from 'react';
+import React, { useState } from 'react';
 import { Modal, Form, InputNumber, Row, Col, Button } from 'antd';
 // import moment from 'moment';
 
 function PayInstallmentModal(props) {
+   const [form] = Form.useForm();
 
-      const [state, setState] = useState({
-         visible: false
-      });
+   const [state, setState] = useState({
+      visible: false
+   });
 
 
 
-      const handleSubmit = (e) => {
+   const handleSubmit = (e) => {
       e.preventDefault();
       props.form.validateFields((err, values) => {
          if (err)
@@ -28,7 +29,7 @@ function PayInstallmentModal(props) {
 
    const hideModal = () => {
       setState({ visible: false });
-      props.form.resetFields();
+      form.resetFields();
    }
 
    const checkBalance = (rule, value, callback) => {
@@ -39,27 +40,28 @@ function PayInstallmentModal(props) {
          callback();
    }
 
-     
-      return (
-         <React.Fragment>
-            <a disabled={props.disabled} onClick={showModal} target="_blank" rel="noopener noreferrer">Pay Installment</a>
-            <Modal
-               visible={state.visible}
-               title="Pay Installment"
-               okText="Pay"
-               onCancel={hideModal}
-               onOk={handleSubmit}
-            >
-               <Form layout="vertical" onSubmit={handleSubmit}>
-                  <Row gutter={8}>
-                     <Col span={24}>
-                        <Form.Item label="Amount Paid" name="amount_paid" rules={[{ required: true, message: 'Amount Paid is required' }]}>
-                          
-                              <InputNumber style={{ width: '100%' }} min={1} />
-                           
-                        </Form.Item>
-                     </Col>
-                     {/* <Col span={12}>
+
+   return (
+      <React.Fragment>
+         <a disabled={props.disabled} onClick={showModal} target="_blank" rel="noopener noreferrer">Pay Installment</a>
+         <Modal
+            visible={state.visible}
+            title="Pay Installment"
+            okText="Pay"
+            onCancel={hideModal}
+            onOk={handleSubmit}
+         >
+            <Form layout="vertical" onSubmit={handleSubmit} form={form}>
+
+               <Row gutter={8}>
+                  <Col span={24}>
+                     <Form.Item label="Amount Paid" name="amount_paid" rules={[{ required: true, message: 'Amount Paid is required' }]}>
+
+                        <InputNumber style={{ width: '100%' }} min={1} />
+
+                     </Form.Item>
+                  </Col>
+                  {/* <Col span={12}>
                         <Form.Item label="Date Paid">
                            {getFieldDecorator('date_paid', {
                               rules: [{ required: true, message: 'Date Paid is required.' }],
@@ -68,13 +70,13 @@ function PayInstallmentModal(props) {
                            )}
                         </Form.Item>
                      </Col> */}
-                  </Row>
-                  <Button hidden htmlType="submit"></Button>
-               </Form>
-            </Modal>
-         </React.Fragment>
-      );
-   
+               </Row>
+               <Button hidden htmlType="submit"></Button>
+            </Form>
+         </Modal>
+      </React.Fragment>
+   );
+
 }
 
 export default PayInstallmentModal;

@@ -4,6 +4,7 @@ import axios from 'axios';
 
 
 function ForgotPasswordModal(props) {
+   const [form] = Form.useForm();
 
    const [state, setState] = useState({
       visible: false,
@@ -13,14 +14,16 @@ function ForgotPasswordModal(props) {
 
    const handleSubmit = (e) => {
       e.preventDefault();
-      this.props.form.validateFields((err, values) => {
+      props.form.validateFields((err, values) => {
          if (err)
             return;
-         this.setState({ sending: true });
+         setState({ sending: true });
+
          axios.post(`users/forgotPassword`, values)
+
             .then((response) => {
                if (response.status === 200) {
-                  this.hideModal();
+                  hideModal();
                   notification['info']({
                      message: 'Reset Password Link Sent!',
                      description: 'A password link reset has been sent to your email. Kindly check your email inbox',
@@ -37,16 +40,16 @@ function ForgotPasswordModal(props) {
 
 
    const showModal = () => {
-      this.setState({ visible: true });
+      setState({ visible: true });
    }
 
    const hideModal = () => {
-      this.props.form.resetFields();
-      this.setState({ visible: false, sending: false });
+      form.resetFields();
+      setState({ visible: false, sending: false });
    }
 
    const compareToFirstPassword = (rule, value, callback) => {
-      const form = this.props.form;
+      const form = props.form;
       if (value && value !== form.getFieldValue('password')) {
          callback('Two passwords that you enter is inconsistent!');
       }
@@ -60,7 +63,7 @@ function ForgotPasswordModal(props) {
 
 
    const validateToNextPassword = (rule, value, callback) => {
-      // const form = this.props.form;
+      // const form = props.form;
       // if (value) {
       // //   form.validateFields(['confirm_password'], { force: true });
       // }
@@ -70,14 +73,14 @@ function ForgotPasswordModal(props) {
 
    return (
       <React.Fragment>
-         <a disabled={this.props.disabled} onClick={this.showModal} target="_blank" rel="noopener noreferrer">Forgot Password?</a>
+         <a disabled={props.disabled} onClick={showModal} target="_blank" rel="noopener noreferrer">Forgot Password?</a>
          <Modal
-            visible={this.state.visible}
+            visible={state.visible}
             title="Reset Your Password"
             okText="Send Reset Password Link"
-            onCancel={this.hideModal}
-            onOk={this.handleSubmit}
-            okButtonProps={{ loading: this.state.sending }}
+            onCancel={hideModal}
+            onOk={handleSubmit}
+            okButtonProps={{ loading: state.sending }}
             style={{ top: 40 }}
          >
             {
@@ -85,7 +88,8 @@ function ForgotPasswordModal(props) {
                <Alert stylx={{ marginBottom: 11 }} type="info" showIcon message="A reset password link will be sent to your email address to reset your password using the provided new password." />
 
             }
-            <Form style={{ marginTop: 11 }} layout="vertical">
+            <Form style={{ marginTop: 11 }} layout="vertical" form={form}>
+
                <Row>
 
                   <Col span={24}>

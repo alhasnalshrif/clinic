@@ -22,7 +22,7 @@ class Treatment(models.Model):
     updated_at = models.DateField(auto_now=True, blank=True, null=True)
 
     def __str__(self):
-        return str(self.patient)
+        return str(self.title)
 
 
 class AdultTeethChart(models.Model):

@@ -6,6 +6,7 @@ import { EditFilled } from '@ant-design/icons';
 const { Option } = Select;
 
 function UpdatePersonalInfoModal(props) {
+   const [form] = Form.useForm();
 
    const [state, setState] = useState({
       visible: false
@@ -31,7 +32,7 @@ function UpdatePersonalInfoModal(props) {
 
    const hideModal = () => {
       setState({ visible: false });
-      props.form.resetFields();
+      form.resetFields();
    }
 
 
@@ -61,7 +62,8 @@ function UpdatePersonalInfoModal(props) {
             onCancel={hideModal}
             onOk={handleSubmit}
          >
-            <Form layout="vertical" onSubmit={handleSubmit}>
+            <Form layout="vertical" onSubmit={handleSubmit}
+               form={form}>
                <Row gutter={8}>
                   <Col span={24}>
                      <Form.Item label="Name" initialValue={props.patient.name} name="name" rules={[{ required: true, message: 'Name is required.' }]}>

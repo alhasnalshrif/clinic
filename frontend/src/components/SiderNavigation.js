@@ -15,14 +15,14 @@ const SiderNavigation = withRouter((props) => {
 
    return (
       <Menu theme="dark" mode="inline" selectedKeys={[selectedItem]}>
-         
-         {props.role === 'dentalaide' ? null : (
-            <Menu.Item key="/dashboard">
-               <DashboardFilled />
-               <span>Dashboard</span>
-               <Link to="/dashboard"></Link>
-            </Menu.Item>
-         )}
+
+
+         <Menu.Item key="/dashboard">
+            <DashboardFilled />
+            <span>Dashboard</span>
+            <Link to="/dashboard"></Link>
+         </Menu.Item>
+
 
          <Menu.Item key="/dentalrecords">
             <IdcardFilled />
@@ -30,13 +30,13 @@ const SiderNavigation = withRouter((props) => {
             <Link to="/dentalrecords"></Link>
          </Menu.Item>
 
-         {props.role === 'dentalaide' ? null : (
-            <Menu.Item key="/transactionlog">
-               <DollarCircleFilled />
-               <span>Transaction Log</span>
-               <Link to="/transactionlog"></Link>
-            </Menu.Item>
-         )}
+
+         <Menu.Item key="/transactionlog">
+            <DollarCircleFilled />
+            <span>Transaction Log</span>
+            <Link to="/transactionlog"></Link>
+         </Menu.Item>
+
 
          <Menu.Item key="/appointments">
             <CalendarFilled />
@@ -50,27 +50,25 @@ const SiderNavigation = withRouter((props) => {
             <Link to="/sms"></Link>
          </Menu.Item>
 
-         {props.role === 'dentalaide' ? null : (
-            <Menu.Item key="/useraccounts">
-               <TeamOutlined />
-               <span>User Accounts</span>
-               <Link to="/useraccounts"></Link>
-            </Menu.Item>
-         )}
 
-         <Menu theme="dark" mode="inline" selectedKeys={[selectedItem]}>
-            <Menu.Item key="/home">
-               <HomeOutlined />
+         <Menu.Item key="/useraccounts">
+            <TeamOutlined />
+            <span>User Accounts</span>
+            <Link to="/useraccounts"></Link>
+         </Menu.Item>
 
-               <span>Home</span>
-               <Link to="/home"></Link>
-            </Menu.Item>
-            <Menu.Item key="/settings">
-               {/* <Icon type="user" /> */}
-               <span>Account Settings</span>
-               <Link to="/settings"></Link>
-            </Menu.Item>
-         </Menu>
+         <Menu.Item key="/home">
+            <HomeOutlined />
+            <span>Home</span>
+            <Link to="/home"></Link>
+         </Menu.Item>
+
+         <Menu.Item key="/settings">
+            {/* <Icon type="user" /> */}
+            <span>Account Settings</span>
+            <Link to="/settings"></Link>
+         </Menu.Item>
+
 
          <Menu.Item>
             <MediaQuery minWidth={900}>

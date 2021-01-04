@@ -8,6 +8,7 @@ import axios from 'axios';
 
 
 function RegisterDrawer(props) {
+   const [form] = Form.useForm();
 
    const [state, setState] = useState({
       visible: false,
@@ -23,119 +24,23 @@ function RegisterDrawer(props) {
       });
    };
 
-   const compareToFirstPassword = (rule, value, callback) => {
-      const form = props.form;
-      if (value && value !== form.getFieldValue('password')) {
-         callback('Two passwords that you enter is inconsistent!');
-      } else {
-         callback();
-      }
-   }
-
-
-   const validateToNextPassword = (rule, value, callback) => {
-      const form = props.form;
-      if (value && state.confirmDirty) {
-         form.validateFields(['confirm_password'], { force: true });
-      }
-      callback();
-   }
-
-   const validatePatientCode = async (rule, value, callback) => {
-      const form = props.form;
-      if (value)
-         await axios.post(`patients/${value}/validate`)
-            .then((response) => {
-               if (response.status === 200) {
-                  console.log(response.data.isValid);
-                  if (!response.data.isValid)
-                     callback('Invalid patient code');
-                  else
-                     callback();
-               }
-            })
-            .catch((err) => {
-               console.log(err);
-               message.error('Internal server error!');
-            });
-      else
-         callback();
-
-   }
-
-   const validateUsername = async (rule, value, callback) => {
-      const form = props.form;
-      if (value)
-         await axios.post(`users/${value}/validate`)
-            .then((response) => {
-               if (response.status === 200) {
-                  if (!response.data.isValid)
-                     callback('Username already taken!');
-                  else
-                     callback();
-               }
-            })
-            .catch((err) => {
-               console.log(err);
-               message.error('Internal server error!');
-            });
-      else
-         callback();
-   }
-
-   const validateEmailFormat = (email) => {
-
-      var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      return re.test(String(email).toLowerCase());
-   }
-
-   const validateEmail = async (rule, value, callback) => {
-      const form = props.form;
-      if (validateEmailFormat(value)) {
-         if (value) {
-            await axios.post(`users/${value}/validateEmail`)
-               .then((response) => {
-                  if (response.status === 200) {
-                     if (!response.data.isValid)
-                        callback('Email Address already used!');
-                     else
-                        callback();
-                  }
-               })
-               .catch((err) => {
-                  console.log(err);
-                  message.error('Internal server error!');
-               });
-         }
-      }
-      else if (!validateEmailFormat(value) && value !== '') {
-         callback('Invalid Email Address format')
-      }
-      callback();
-
-   }
 
    const onClose = () => {
       setState({
          visible: false,
       });
-      props.form.resetFields();
+      form.resetFields()
    };
 
    const handleSubmit = (e) => {
       e.preventDefault();
-      props.form.validateFields((err, values) => {
-         if (err)
-            return;
-         handleRegister(values);
 
-      });
    }
 
    const handleRegister = (values) => {
       setState({ registerLoading: true });
       values.birthday = values.birthday.format('YYYY-MM-DD');
-      axios.post('users/register', values)
+      axios.post('auth/users/', values)
          .then((response) => {
             if (response.status === 200) {
                setTimeout(() => {
@@ -165,7 +70,7 @@ function RegisterDrawer(props) {
 
 
    return (
-      <React.Fragment>
+      <>
 
          <a onClick={showDrawer} target="_blank" rel="noopener noreferrer">Register</a>
          <Drawer
@@ -175,15 +80,10 @@ function RegisterDrawer(props) {
             onClose={onClose}
             visible={state.visible}
          >
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit}
+               form={form}>
                <Row gutter={16}>
-                  <Col span={24}>
-                     <Form.Item label="Patient Code" name="patient_code" rules={[{ required: true, message: 'Patient Code is required and must be valid' }, { validator: validatePatientCode }]}>
-                        <Tooltip title="Patient Code given by the clinic. This is used to link this account to your record in the clinic">
-                           <Input />
-                        </Tooltip>
-                     </Form.Item>
-                  </Col>
+                  
                   <Col span={8}>
                      <Form.Item label="Name" name="name" rules={[{ required: true, message: 'Name is required' }]}>
                         <Input />
@@ -200,23 +100,23 @@ function RegisterDrawer(props) {
                      </Form.Item>
                   </Col>
                   <Col span={12}>
-                     <Form.Item label="Username" name="username" rules={[{ required: true, message: 'Username is required' }, { validator: validateUsername }]}>
+                     <Form.Item label="Username" name="username" rules={[{ required: true, message: 'Username is required' }]}>
                         <Input />
                      </Form.Item>
                   </Col>
                   <Col span={12}>
 
-                     <Form.Item label="Email Address" name="emailaddress" rules={[{ required: true, message: 'Email Address  is required' }, { validator: validateEmail }]}>
+                     <Form.Item label="Email Address" name="emailaddress" rules={[{ required: true, message: 'Email Address  is required' }]}>
                         <Input />
                      </Form.Item>
                   </Col>
                   <Col span={12}>
-                     <Form.Item label="Password" name="password" rules={[{ required: true, message: 'Password is required' }, { validator: validateToNextPassword }]}>
+                     <Form.Item label="Password" name="password" rules={[{ required: true, message: 'Password is required' }]}>
                         <Input.Password />
                      </Form.Item>
                   </Col>
                   <Col span={12}>
-                     <Form.Item label="Confirm Password" name="confirm_password" rules={[{ required: true, message: 'Please confirm your password' }, { validator: compareToFirstPassword }]}>
+                     <Form.Item label="Confirm Password" name="confirm_password" rules={[{ required: true, message: 'Please confirm your password' }]}>
                         <Input.Password />
                      </Form.Item>
                   </Col>
@@ -243,7 +143,7 @@ function RegisterDrawer(props) {
                   </Button>
             </div>
          </Drawer>
-      </React.Fragment>
+      </>
    );
 
 }

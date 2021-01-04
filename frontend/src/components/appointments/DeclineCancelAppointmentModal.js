@@ -1,17 +1,18 @@
-import React,{useState} from 'react';
+import React, { useState } from 'react';
 import { Modal, Form, Row, Col, Button, Input } from 'antd';
 // import moment from 'moment';
 
 
 
 function DeclineCancelAppointmentModal(props) {
+   const [form] = Form.useForm();
 
-      const [state, setState] = useState({
-         visible: false
-      });
+   const [state, setState] = useState({
+      visible: false
+   });
 
 
-      const handleSubmit = (e) => {
+   const handleSubmit = (e) => {
       e.preventDefault();
       props.form.validateFields((err, values) => {
          if (err)
@@ -34,39 +35,40 @@ function DeclineCancelAppointmentModal(props) {
 
    const hideModal = () => {
       setState({ visible: false });
-      props.form.resetFields();
+      form.resetFields();
    }
 
 
-      const title = props.type === 'decline' ? 'Appointment Decline Reason SMS' : 'Appointment Cancellation Reason SMS';
-      const buttonText = props.type === 'decline' ? 'Decline Appointment' : 'Cancel Appointment';
-      return (
-         <React.Fragment>
-            <a disabled={props.disabled} onClick={showModal} target="_blank" rel="noopener noreferrer">{buttonText}</a>
+   const title = props.type === 'decline' ? 'Appointment Decline Reason SMS' : 'Appointment Cancellation Reason SMS';
+   const buttonText = props.type === 'decline' ? 'Decline Appointment' : 'Cancel Appointment';
+   return (
+      <React.Fragment>
+         <a disabled={props.disabled} onClick={showModal} target="_blank" rel="noopener noreferrer">{buttonText}</a>
 
-            <Modal
-               visible={state.visible}
-               title={title}
-               okText="Send"
-               onCancel={hideModal}
-               onOk={handleSubmit}
-            >
-               <Form layout="vertical" onSubmit={handleSubmit}>
-                  <Row gutter={8}>
-                     <Col span={24}>
-                        <Form.Item label="Message" name="message" rules={[{ required: true, message: 'Message is required' }]} >
+         <Modal
+            visible={state.visible}
+            title={title}
+            okText="Send"
+            onCancel={hideModal}
+            onOk={handleSubmit}
+         >
+            <Form layout="vertical" onSubmit={handleSubmit}
+               form={form}>
+               <Row gutter={8}>
+                  <Col span={24}>
+                     <Form.Item label="Message" name="message" rules={[{ required: true, message: 'Message is required' }]} >
 
-                           <Input.TextArea autosize={{ minRows: 8, maxRows: 8 }} />
+                        <Input.TextArea autosize={{ minRows: 8, maxRows: 8 }} />
 
-                        </Form.Item>
-                     </Col>
-                  </Row>
-                  <Button hidden htmlType="submit"></Button>
-               </Form>
-            </Modal>
-         </React.Fragment>
-      );
-   
+                     </Form.Item>
+                  </Col>
+               </Row>
+               <Button hidden htmlType="submit"></Button>
+            </Form>
+         </Modal>
+      </React.Fragment>
+   );
+
 }
 
 export default DeclineCancelAppointmentModal;
