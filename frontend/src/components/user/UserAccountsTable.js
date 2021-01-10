@@ -127,21 +127,21 @@ function UserAccountsTable(props) {
          title: <Text strong>Actions</Text>,
          dataIndex: 'actions',
          render: (text, record) => (
-            <React.Fragment>
+            <>
                <Link to={`/useraccounts/${record.id}`}>
                   <Button style={{ marginRight: 8 }} type="primary"><SolutionOutlined />View User Account</Button>
                </Link>
                <Popconfirm title="Are you sure?" onConfirm={() => handleDelete(record.id)} okText="Yes" cancelText="No">
                   <Button type="danger"><DeleteFilled />Delete User Account</Button>
                </Popconfirm>
-            </React.Fragment>
+            </>
          )
       }
    ];
 
 
    return (
-      <React.Fragment>
+      <>
          <Row type="flex" align="left">
             <Col span={24}>
                <Title level={4} style={{ margin: 0 }}>USER ACCOUNTS</Title>
@@ -182,7 +182,7 @@ function UserAccountsTable(props) {
                }
             }
          />
-      </React.Fragment>
+      </>
    );
 
 

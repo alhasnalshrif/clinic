@@ -1,12 +1,13 @@
 from rest_framework import serializers
 
-from django.contrib.auth.models import User
 
-# from .models import UserProfile, Patient, Treatment
 from .models import Bill
-
+from users.models import User
 
 class BillSerializer(serializers.ModelSerializer):
+    doctor = serializers.CharField()
+    treatment = serializers.CharField()
+
     class Meta:
         model = Bill
         fields = "__all__"

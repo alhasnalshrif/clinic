@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Tag, Typography, BackTop, Calendar, Row, Col, Alert } from 'antd'
 import AppointmentsPopoverDrawer from './AppointmentsPopoverDrawer';
 import moment from 'moment';
+import { connect } from "react-redux";
 
+import { getABNTs } from "../../redux";
 
 const { Text } = Typography;
 
@@ -10,32 +12,47 @@ function AppointmentsCalendar(props) {
 
    const [state, setState] = useState({
       value: moment(Date.now()),
-      visiblePopover: false
+      visiblePopover: false,
+      appoin: []
    });
 
 
+   // useEffect(() => {
+
+   //    props.getABNTs();
+
+   // }, []);
+
+   // useEffect(() => {
+   //    const fetchData = () => {
+
+   //       setState({ appoin: props.appointmentes });
+
+
+   //    };
+   //    fetchData();
+   // }, []);
+
+   // console.log(state.appoin)
 
    const getAppointmentCount = (value) => {
       const dateValue = moment(value.format('MMMM DD')).unix('X');
-      const data = [...props.appointments];
-      return data.filter((appointment) => {
-         return dateValue === moment(moment(appointment.date_time).format('MMMM DD')).unix('X') && appointment.status === 'confirmed';
+      return props.appointments.filter((appointment) => {
+         return dateValue === moment(moment(appointment.date).format('MMMM DD')).unix('X');
       }).length;
    }
 
    const getAppointmentMonthCount = (value) => {
       const dateValue = moment(value.format('MMMM YYYY')).unix('X');
-      const data = [...props.appointments];
-      return data.filter((appointment) => {
-         return dateValue === moment(moment(appointment.date_time).format('MMMM YYYY')).unix('X') && appointment.status === 'confirmed';
+      return props.appointments.filter((appointment) => {
+         return dateValue === moment(moment(appointment.date).format('MMMM YYYY')).unix('X');
       }).length;
    }
 
    const getAppointmentsDay = (value) => {
       const dateValue = moment(value.format('MMMM DD')).unix('X');
-      const data = [...props.appointments];
-      return data.filter((appointment) => {
-         return dateValue === moment(moment(appointment.date_time).format('MMMM DD')).unix('X') && appointment.status === 'confirmed';
+      return props.appointments.filter((appointment) => {
+         return dateValue === moment(moment(appointment.date).format('MMMM DD')).unix('X');
       });
    }
 
@@ -125,13 +142,13 @@ function AppointmentsCalendar(props) {
 
    }
 
-   const hidePopover = () => {
-      setState({ visiblePopover: false });
-   }
+   // const hidePopover = () => {
+   //    setState({ visiblePopover: false });
+   // }
 
-   const handleVisiblePopoverChange = (visible) => {
-      setState({ visiblePopover: visible });
-   }
+   // const handleVisiblePopoverChange = (visible) => {
+   //    setState({ visiblePopover: visible });
+   // }
 
 
    const monthCellRender = (date) => {
@@ -159,7 +176,7 @@ function AppointmentsCalendar(props) {
 
    const { value } = state;
    return (
-      <React.Fragment>
+      <>
          <Row>
             <BackTop />
             <Col align="left" span={24}>
@@ -168,16 +185,34 @@ function AppointmentsCalendar(props) {
                <Text strong style={{ fontSize: '21px', margin: '0px 12px 0px 0px' }}>{moment(Date.now()).format('MMMM DD, YYYY')}</Text>
             </Col>
          </Row>
-         <Alert message={`You selected date: ${value.format('MMMM DD, YYYY')}`} />
+         {/* <Alert message={`You selected date: ${value.format('MMMM DD, YYYY')}`} /> */}
+
          <Calendar
             dateFullCellRender={dateFullCellRender}
             monthCellRender={monthCellRender}
             value={value}
             onSelect={onSelect}
             onPanelChange={onPanelChange} />
-      </React.Fragment>
+
+      </>
    );
 
 }
 
-export default AppointmentsCalendar;   
+
+const mapStateToProps = state => {
+   return {
+
+      appointmentes: state.Abointments.assignmentes,
+
+   };
+};
+
+
+export default connect(
+   // mapStateToProps,
+   // { getABNTs }
+)(AppointmentsCalendar);
+
+
+

@@ -11,7 +11,7 @@ const ChildTeethChart = (props) => {
 
     const getChildTeethChart = async () => {
         const res = await axios.get(
-            `${process.env.REACT_APP_API_URL}/childteeth/1/`,
+            `${process.env.REACT_APP_API_URL}/treatment/c/1/`,
             {
                 headers: {
                     "Content-Type": "application/json",

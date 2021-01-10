@@ -14,19 +14,19 @@ function DeclineCancelAppointmentModal(props) {
 
    const handleSubmit = (e) => {
       e.preventDefault();
-      props.form.validateFields((err, values) => {
-         if (err)
-            return
-         props.onDeclineCancel({
-            id: props.appointment.id,
-            date_time: props.appointment.date_time,
-            name: props.appointment.name,
-            contact_number: props.appointment.contact_number,
-            type: props.type,
-            reasonMessage: values.message
-         });
-         hideModal();
-      });
+      // props.form.validateFields((err, values) => {
+      //    if (err)
+      //       return
+      //    props.onDeclineCancel({
+      //       id: props.appointment.id,
+      //       date: props.appointment.date,
+      //       name: props.appointment.name,
+      //       contact_number: props.appointment.contact_number,
+      //       type: props.type,
+      //       reasonMessage: values.message
+      //    });
+      //    hideModal();
+      // });
    }
 
    const showModal = () => {
@@ -42,8 +42,8 @@ function DeclineCancelAppointmentModal(props) {
    const title = props.type === 'decline' ? 'Appointment Decline Reason SMS' : 'Appointment Cancellation Reason SMS';
    const buttonText = props.type === 'decline' ? 'Decline Appointment' : 'Cancel Appointment';
    return (
-      <React.Fragment>
-         <a disabled={props.disabled} onClick={showModal} target="_blank" rel="noopener noreferrer">{buttonText}</a>
+      <>
+         <a disabled={props.disabled}  onClick={showModal} target="_blank" rel="noopener noreferrer">{buttonText}</a>
 
          <Modal
             visible={state.visible}
@@ -66,7 +66,7 @@ function DeclineCancelAppointmentModal(props) {
                <Button hidden htmlType="submit"></Button>
             </Form>
          </Modal>
-      </React.Fragment>
+      </>
    );
 
 }

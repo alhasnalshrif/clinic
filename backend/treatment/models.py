@@ -1,7 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from patient.models import Patient
 # Create your models here.
+from users.models import User
 
 TEETH_TYPE = (
     ('None', 'None'),

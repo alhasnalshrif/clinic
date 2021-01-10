@@ -23,7 +23,7 @@ function ViewAccountModal(props) {
 
    const { account } = props;
    return (
-      <React.Fragment>
+      <>
          <Tooltip title="View Account">
             <Button onClick={showModal} type="primary"><Icon type="profile" /></Button>
          </Tooltip>
@@ -31,7 +31,7 @@ function ViewAccountModal(props) {
             title={<h2>Account Info</h2>}
             visible={state.visible}
             okButtonProps={{ style: { display: 'none' } }}
-            cancelText={<React.Fragment><Icon type="close" />Close</React.Fragment>}
+            cancelText={<><Icon type="close" />Close</>}
             onCancel={hideModal}
             width="100%"
             style={{ maxWidth: '650px' }}
@@ -67,7 +67,7 @@ function ViewAccountModal(props) {
                </Col>
             </Row>
          </Modal>
-      </React.Fragment>
+      </>
    );
 
 }

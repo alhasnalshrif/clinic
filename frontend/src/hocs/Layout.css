@@ -32,3 +32,18 @@
   margin: 16px 24px 16px 0;
   float: left;
 }
+
+/* 
+.ant-menu-item-selected a, .ant-menu-item-selected a:hover{
+  color: #04a9f5!important;
+}
+
+
+.ant-menu-inline .ant-menu-selected::after, .ant-menu-inline .ant-menu-item-selected::after{
+  opacity:0;
+}
+
+
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected{
+  background-color:transparent;
+} */

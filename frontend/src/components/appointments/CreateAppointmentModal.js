@@ -1,52 +1,80 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { message, Modal, Form, Input, Row, Col, DatePicker, Select, Button } from 'antd';
 import axios from 'axios';
 import moment from 'moment';
 import { PlusCircleFilled } from '@ant-design/icons';
 
+import { connect } from "react-redux";
+import { createABNT } from "../../redux";
+
 const { Option } = Select;
 
 
 
-function CreateAppointmentModal(props) {
-   const [form] = Form.useForm();
+function CreateAppointmentModal(props, { createABNT }) {
 
    const [state, setState] = useState({
       visible: false,
-      searchPatientInputData: []
    });
 
+   const [formData, setFormData] = useState({
+      token: null,
+      reason: "",
+      patient: "",
+      doctor: "",
+   });
+
+   console.log(formData)
+
+   const { patient, reason, doctor, token } = formData;
+
+   console.log(formData)
+
+   const onChange = (e) =>
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+
+   console.log(formData)
 
 
-   const handleSearch = (value) => {
-      // ajax stuff
-      axios.get('patients', {
-         params: { search: value }
-      })
-         .then((response) => {
-            if (response.status === 200)
-               setState({ searchPatientInputData: response.data.patients });
-         })
-         .catch((err) => {
-            console.log(err);
-            message.error('Something went wrong! Please, try again.');
-         });
-   }
-
-   const handleSearchChange = (value) => {
-      props.form.setFieldsValue({ patient_id: value });
-   }
 
 
-   const handleSubmit = (e) => {
-      e.preventDefault();
-      props.form.validateFields((err, values) => {
-         if (err)
-            return
-         props.onCreate(values);
-         hideModal();
-      });
-   }
+   // useEffect(() => {
+   //    const fetchData = async () => {
+   //       try {
+   //          await props.getPATN();
+
+   //       } catch (err) { }
+   //    };
+
+   //    fetchData();
+   // }, []);
+
+   console.log(props.patient)
+
+
+   // const handleSubmit = (e) => {
+
+   //    e.preventDefault();
+
+   //    // props.form.validateFields((err, values) => {
+   //    //    if (err)
+   //    //       return
+
+   //    props.createABNT(patient, reason);
+
+   //    // hideModal();
+
+   //    // });
+   // }
+   const onFinish = () => {
+      console.log(formData)
+
+      props.createABNT(formData);
+
+   };
+
+   console.log(onFinish())
+
 
    const showModal = () => {
       setState({ visible: true });
@@ -64,75 +92,155 @@ function CreateAppointmentModal(props) {
       };
    }
 
+   const [form] = Form.useForm();
 
 
-
-   // const options = state.searchPatientInputData.map(d => <Option key={d.id}>{d.name}</Option>)
+   // const options = props.patient.map(d => <Option key={d.id}>{d.name}</Option>)
 
    return (
-      <React.Fragment>
+      <>
          <Button onClick={showModal} type="primary"><PlusCircleFilled />Create New Appointment</Button>
+
          <Modal
             visible={state.visible}
             title="Create a New Appointment"
             okText="Create"
             onCancel={hideModal}
-            onOk={handleSubmit}
+         // onOk={onFinish}
          >
-            <Form layout="vertical" onSubmit={handleSubmit}
-               form={form}>
+
+
+            <Form
+               layout="vertical"
+               //  onSubmit={handleSubmit}
+               onFinish={onFinish}
+
+               form={form}
+            >
+
                <Row gutter={8}>
-                  <Col span={24}>
-                     <Form.Item label="Date and Time" name="date_time" rules={[{ required: true, message: 'Date and Time is required.' }]} >
+                  {/* <Col span={24}>
+                     <Form.Item label="Date and Time" name="date" rules={[{ required: true, message: 'Date and Time is required.' }]} >
 
 
                         <DatePicker
+                           name="date"
+                           value={date}
+                           onChange={(e) => onChange(e)}
                            disabledTime={disabledDateTime}
                            disabledDate={(current) => current && current < moment() || moment(current).day() === 0}
                            placeholder="Select date and time" style={{ width: '100%' }}
+
                            showTime={
                               {
                                  use12Hours: true, format: 'h:mm',
                                  defaultValue: moment('8:00', 'h:mm')
                               }
                            }
-                           format="MMMM DD, YYYY h:mm A" />
+                           format="MMMM DD, YYYY h:mm A"
+                        />
 
                      </Form.Item>
-                  </Col>
+                  </Col> */}
                   <Col span={24}>
-                     <Form.Item label="Patient Name" name="patient_id" rules={[{ required: true, message: 'Patient name is required' }]}>
+                     <Form.Item label="Patient Name" rules={[{ required: true, message: 'Patient name is required' }]}>
 
-                        <Select
+                        {/* <Select
+                           name="patient"
                            allowClear
                            showSearch
                            placeholder=""
                            defaultActiveFirstOption={false}
                            showArrow={false}
                            filterOption={false}
-                           onSearch={handleSearch}
-                           // onChange={handleChange}
                            notFoundContent={null}
+                           value={patient}
+                           onChange={(e) => onChange(e)}
                         >
-                           {/* {options} */}
-                        </Select>
+                           {options}
+                        </Select> */}
+                        <Input
+                           name="patient"
+                           value={patient}
+                           onChange={(e) => onChange(e)}
+                        />
+                     </Form.Item>
+
+                  </Col>
+
+                  <Col span={24}>
+                     <Form.Item label="token" rules={[{ required: true, message: 'Reason is required.' }]}
+                     >
+
+                        <Input
+                           name="token"
+                           value={token}
+                           onChange={(e) => onChange(e)}
+                        />
 
                      </Form.Item>
                   </Col>
                   <Col span={24}>
-                     <Form.Item label="Reason" name="reason" rules={[{ required: true, message: 'Reason is required.' }]}>
+                     <Form.Item label="Reason" rules={[{ required: true, message: 'Reason is required.' }]}
+                     >
 
-                        <Input />
+                        <Input
+                           name="reason"
+                           value={reason}
+                           onChange={(e) => onChange(e)}
+                        />
 
                      </Form.Item>
                   </Col>
+                  <Col span={24}>
+                     <Form.Item label="doctor" rules={[{ required: true, message: 'Reason is required.' }]}
+                     >
+
+                        <Input
+                           name="doctor"
+                           value={doctor}
+                           onChange={(e) => onChange(e)}
+                        />
+
+                     </Form.Item>
+                  </Col>
+
                </Row>
-               <Button hidden htmlType="submit"></Button>
+
+               <Button type="primary" htmlType="submit">
+                  Submita
+               </Button>
+
             </Form>
          </Modal>
-      </React.Fragment>
+      </>
    );
 
 }
 
-export default CreateAppointmentModal;
+
+const mapStateToProps = state => {
+   return {
+
+      patient: state.patient.patients,
+
+      // loading: state.Abointment.loading
+   };
+};
+
+// const mapDispatchToProps = dispatch => {
+//    return {
+//       createASNT: (asnt) => dispatch(createASNT(asnt))
+//    };
+// };
+
+export default connect(
+   mapStateToProps,
+   { createABNT }
+
+)(CreateAppointmentModal);
+
+
+
+
+

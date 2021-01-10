@@ -1,8 +1,9 @@
 from rest_framework import serializers
 
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 
 from .models import Treatment, ChildTeethChart, AdultTeethChart
+from users.models import User
 
 
 class TreatmentSerializer(serializers.ModelSerializer):

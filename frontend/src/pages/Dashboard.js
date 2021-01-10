@@ -4,6 +4,7 @@ import axios from 'axios';
 import VisitChart from '../components/VisitChart';
 import { LineChartOutlined } from '@ant-design/icons';
 import './dashboard.css';
+import RegisterDrawer from '../components/register/RegisterDrawer';
 
 const { Title, Text } = Typography;
 const { Content } = Layout;
@@ -47,6 +48,7 @@ function Dashboard(props) {
 
    return (
       <Content style={{ margin: '24px 24px 24px 36px' }}>
+         
          <Row gutter={24} style={{ marginBottom: 24 }}>
             <Col span={6}>
                <Card bordered={false}>
@@ -77,18 +79,30 @@ function Dashboard(props) {
          </Row>
 
 
+         <Row className="card-container"  style={{ marginBottom: 24 }}>
+
+            <Col style={{ backgroundColor: "#fff" }} span={24}>
+
+               <RegisterDrawer />
+
+            </Col>
+
+         </Row>
+
          <Row className="card-container">
 
             <Col style={{ backgroundColor: "#fff" }} span={24}>
+
                <Tabs defaultActiveKey="1">
                   <TabPane style={{ marginLeft: 100 }} tab={<Text style={{ fontSize: 18 }}> Visits</Text>} key="1">
                      <VisitChart />
                   </TabPane>
-                  {/* <TabPane tab={<Text style={{fontSize: 18}}><LineChartOutlined />  Finances</Text>} key="2">Content of Tab Pane 2</TabPane> */}
+                  <TabPane tab={<Text style={{ fontSize: 18 }}><LineChartOutlined />  Finances</Text>} key="2">Content of Tab Pane 2</TabPane>
                </Tabs>
             </Col>
 
          </Row>
+
       </Content>
    );
 }

@@ -8,6 +8,7 @@ function AppointmentsPopoverDrawer(props) {
       visible: false, childrenDrawer: false, visiblePopover: false
    });
 
+   console.log(props.appointments)
 
    const showDrawer = () => {
       setState({
@@ -23,18 +24,18 @@ function AppointmentsPopoverDrawer(props) {
       });
    };
 
-   const showChildrenDrawer = () => {
+   // const showChildrenDrawer = () => {
 
-      setState({
-         childrenDrawer: true,
-      });
-   };
+   //    setState({
+   //       childrenDrawer: true,
+   //    });
+   // };
 
-   const onChildrenDrawerClose = () => {
-      setState({
-         childrenDrawer: false,
-      });
-   };
+   // const onChildrenDrawerClose = () => {
+   //    setState({
+   //       childrenDrawer: false,
+   //    });
+   // };
 
    const handleVisiblePopoverChange = (visible) => {
       setState({ visiblePopover: visible });
@@ -43,6 +44,7 @@ function AppointmentsPopoverDrawer(props) {
 
    return (
       <React.Fragment>
+
          <Popover
             title={props.title}
             trigger="click"
@@ -52,6 +54,7 @@ function AppointmentsPopoverDrawer(props) {
          >
             {props.children}
          </Popover>
+
          <Drawer
             title="Appointments for this date"
             width="450px"
@@ -63,20 +66,16 @@ function AppointmentsPopoverDrawer(props) {
                {
                   props.appointments.map((appointment) => {
 
-                     if (props.role === 'patient')
-                        return (
-                           <Timeline.Item>
-                              <Divider type="vertical" /> {appointment.reason} @ {moment(appointment.date_time).format('h:mm A')}
-                           </Timeline.Item>
-                        );
+
                      return (
-                        <Timeline.Item>
-                           {appointment.name} @ {moment(appointment.date_time).format('h:mm A')} <Divider type="vertical" /> {appointment.reason}
+                        <Timeline.Item key={appointment.id}>
+                           {appointment.patient.name} @ {moment(appointment.time).format('h:mm A')} <Divider type="vertical" /> {appointment.reason}
                         </Timeline.Item>
                      );
                   })
                }
             </Timeline>
+
             {/* SECOND LEVEL DAWER*/}
             {/* <Button type="primary" onClick={showChildrenDrawer}>
                   Two-level drawer

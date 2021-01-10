@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, message, Menu, Dropdown, Badge, Button, Table, Row, Col, Input, Typography, DatePicker, Radio, Divider } from 'antd';
 import moment from 'moment';
 import DeclineCancelAppointmentModal from './DeclineCancelAppointmentModal';
+import { connect } from "react-redux";
 
 import CreateAppointmentModal from './CreateAppointmentModal';
 import axios from 'axios';
 
+import { createABNT, getABNTs } from "../../redux";
 
 const { confirm } = Modal;
 const { RangePicker } = DatePicker;;
@@ -21,16 +23,46 @@ function AppointmentsTable(props) {
       rangeDate: [],
    });
 
+   // console.log(props.appointment)
+
+   // useEffect(() => {
+   //  props.getABNTs();
+
+
+   // }, []);
 
 
    const handleAppointmentCreate = (values) => {
-      values.date_time = values.date_time.format('YYYY-MM-DD HH:mm');
-      const hide = message.loading('Creating New Appointment...', 0);
-      axios.post('appointments/create/in-person', values)
+
+      values.date = values.date.format('YYYY-MM-DD HH:mm');
+      // const hide = message.loading('Creating New Appointment...', 0);
+
+      props.createASNT(values);
+
+      // axios.post('appointments/create/', values)
+      //    .then((response) => {
+      //       if (response.status === 200) {
+      //          hide();
+      //          message.success('New Appointment Successfully Created');
+      //          props.getAppointments(state.search, state.rangeDate);
+      //       }
+      //    })
+      //    .catch((err) => {
+      //       console.log(err);
+      //       hide();
+      //       message.error('Something went wrong! Please, try again.');
+      //    });
+
+   }
+
+   const handleDeclineCancelAppointment = (values, id) => {
+
+      const hide = message.loading(`${values.type === 'cancel' ? 'Cancelling' : 'Declining'} appointment...`, 0);
+      axios.delete(`appointments/${id}/delete`, values)
          .then((response) => {
             if (response.status === 200) {
                hide();
-               message.success('New Appointment Successfully Created');
+               message.success(`Appointment Successfully ${values.type === 'cancel' ? 'Cancelled' : 'Declined'} `);
                props.getAppointments(state.search, state.rangeDate);
             }
          })
@@ -41,6 +73,7 @@ function AppointmentsTable(props) {
          });
 
    }
+
 
    const handleSearchChange = (e) => {
       const { value } = e.target;
@@ -62,84 +95,48 @@ function AppointmentsTable(props) {
       });
    }
 
-   const handleDeclineCancelAppointment = (values) => {
-
-      const hide = message.loading(`${values.type === 'cancel' ? 'Cancelling' : 'Declining'} appointment...`, 0);
-      axios.patch('appointments/decline-cancel', values)
-         .then((response) => {
-            if (response.status === 200) {
-               hide();
-               message.success(`Appointment Successfully ${values.type === 'cancel' ? 'Cancelled' : 'Declined'} `);
-               props.getAppointments(state.search, state.rangeDate);
-            }
-         })
-         .catch((err) => {
-            console.log(err);
-            hide();
-            message.error('Something went wrong! Please, try again.');
-         });
-
-   }
-
-   const handleConfirmAppoinment = (values) => {
-      const hide = message.loading(`Confirming appointment...`, 0);
-      axios.post('appointments/confirm', values)
-         .then((response) => {
-            if (response.status === 200) {
-               hide();
-               message.success(`Appointment Successfully Confirmed`);
-               props.getAppointments(state.search, state.rangeDate);
-            }
-         })
-         .catch((err) => {
-            console.log(err);
-            hide();
-            message.error('Something went wrong! Please, try again.');
-         });
-   }
-
-   const onRadioChange = async (e) => {
+   const onRadioChange = (e) => {
       const { value: filterBy } = e.target;
-      await setState({ selectedFilterBy: filterBy });
+      setState({ selectedFilterBy: filterBy });
       if (filterBy === 'day')
-         await setState({ rangeDate: [moment(), moment()] });
+         setState({ rangeDate: [moment(), moment()] });
       else if (filterBy === 'week')
-         await setState({ rangeDate: [moment().startOf('week'), moment().endOf('week')] });
+         setState({ rangeDate: [moment().startOf('week'), moment().endOf('week')] });
       else if (filterBy === 'month')
-         await setState({ rangeDate: [moment().startOf('month'), moment().endOf('month')] });
+         setState({ rangeDate: [moment().startOf('month'), moment().endOf('month')] });
       else if (filterBy === 'year')
-         await setState({ rangeDate: [moment().startOf('year'), moment().endOf('year')] });
+         setState({ rangeDate: [moment().startOf('year'), moment().endOf('year')] });
       props.getAppointments(state.search, state.rangeDate);
    }
 
    const onRangePickerChange = async (dates, dateStrings) => {
-      await setState({ selectedFilterBy: '' });
-      await setState({ rangeDate: dates });
+      setState({ selectedFilterBy: '' });
+      setState({ rangeDate: dates });
       props.getAppointments(state.search, state.rangeDate);
    }
 
 
    const columns = [
       {
-         title: <Text strong>Date and Time</Text>,
-         dataIndex: 'date_time',
-         render: (text, record) => {
-            const date = moment(record.date_time).format('MMMM DD, YYYY');
-            const time = moment(record.date_time).format('h:mm A');
-            return (
-               <React.Fragment>
-                  <Text>{date}</Text>
-                  <Divider type="vertical" />
-                  <Text>{time}</Text>
-               </React.Fragment>
-            );
-         }
-      },
-      {
          title: <Text strong>Patient Name</Text>,
          dataIndex: 'name',
          render: (text, record) => {
-            return record.name;
+            return record.patient;
+         }
+      },
+      {
+         title: <Text strong>Date and Time</Text>,
+         dataIndex: 'date',
+         render: (text, record) => {
+            const date = moment(record.date).format('MMMM DD, YYYY');
+            const time = moment(record.date).format('h:mm A');
+            return (
+               <>
+                  <Text>{date}</Text>
+                  <Divider type="vertical" />
+                  <Text>{time}</Text>
+               </>
+            );
          }
       },
       {
@@ -158,26 +155,21 @@ function AppointmentsTable(props) {
          }, {
             text: 'Confirmed',
             value: 'confirmed',
-         }, {
-            text: 'Cancelled',
-            value: 'cancelled',
-         }, {
-            text: 'Declined',
-            value: 'declined'
          }],
+
          filterMultiple: false,
          onFilter: (value, record) => {
             return record.status.indexOf(value) === 0;
          },
+
          render: (text, record) => {
             return record.status === 'confirmed' ? (<Badge status="success" text={<Text style={{ color: '#73d13d' }}>Confirmed</Text>} />)
                : record.status === 'pending' ? (
                   <Badge status="processing" text={<Text style={{ color: '#108ee9' }}>Pending</Text>} />
                )
-                  : record.status === 'declined' ? (
-                     (<Badge status="error" text={<Text style={{ color: '#ff7875' }}>Declined</Text>} />)
-                  )
-                     : (<Badge status="error" text={<Text style={{ color: '#ff7875' }}>Cancelled</Text>} />)
+
+
+                  : (<Badge status="error" text={<Text style={{ color: '#ff7875' }}>Cancelled</Text>} />)
          }
       },
       {
@@ -185,31 +177,33 @@ function AppointmentsTable(props) {
          dataIndex: 'actions',
          render: (text, record) => {
 
-            const isAppointmentPast = moment(record.date_time).format('X') < moment(Date.now()).format('X');
+            const isAppointmentPast = moment(record.date).format('X') < moment(Date.now()).format('X');
             const menu = record.status === 'pending' ? (
                <Menu>
                   <Menu.Item>
                      <a
-                        onClick={() => {
-                           handleConfirmAppoinment({
-                              id: record.id,
-                              date_time: record.date_time,
-                              name: record.name, contact_number:
-                                 record.contact_number
-                           });
-                        }}
+                        // onClick={() => {
+                        //    handleConfirmAppoinment({
+                        //       id: record.id,
+                        //       date: record.date,
+                        //       name: record.name, contact_number:
+                        //          record.contact_number
+                        //    });
+                        // }}
                         target="_blank" rel="noopener noreferrer" >Confirm Appointment</a>
                   </Menu.Item>
+
                   <Menu.Item>
                      {record.contact_number ? <DeclineCancelAppointmentModal
                         onDeclineCancel={handleDeclineCancelAppointment}
-                        appointment={{ id: record.id, date_time: record.date_time, name: record.name, contact_number: record.contact_number }} type="decline" />
+                        appointment={{ id: record.id, date: record.date, name: record.name, contact_number: record.contact_number }} type="decline" />
                         : <a
-                           onClick={() => handleNoContactNumber({ id: record.id, date_time: record.date_time, name: record.name, contact_number: record.contact_number, type: 'decline' })}
+                           onClick={() => handleNoContactNumber({ id: record.id, date: record.date, name: record.name, contact_number: record.contact_number, type: 'decline' })}
                            target="_blank" rel="noopener noreferrer">
                            Decline Appointment
                                                 </a>}
                   </Menu.Item>
+
                </Menu>
             ) : (
                   <Menu>
@@ -226,9 +220,9 @@ function AppointmentsTable(props) {
                               <Menu.Item>
                                  {record.contact_number ? <DeclineCancelAppointmentModal
                                     onDeclineCancel={handleDeclineCancelAppointment}
-                                    appointment={{ id: record.id, date_time: record.date_time, name: record.name, contact_number: record.contact_number }} type="cancel" />
+                                    appointment={{ id: record.id, date: record.date, name: record.name, contact_number: record.contact_number }} type="cancel" />
                                     : <a
-                                       onClick={() => handleNoContactNumber({ id: record.id, date_time: record.date_time, name: record.name, contact_number: record.contact_number, type: 'cancel' })}
+                                       onClick={() => handleNoContactNumber({ id: record.id, date: record.date, name: record.name, contact_number: record.contact_number, type: 'cancel' })}
                                        target="_blank" rel="noopener noreferrer">
                                        Cancel Appointment
                                                             </a>}
@@ -256,12 +250,14 @@ function AppointmentsTable(props) {
    ];
 
    return (
-      <React.Fragment>
+      <>
 
          <Row align="middle" gutter={8}>
-            <Col style={{ marginBottom: 8 }} align="right">
-               <CreateAppointmentModal onCreate={handleAppointmentCreate} />
-            </Col>
+
+            {/* <Col style={{ marginBottom: 8 }} align="right">
+               <CreateAppointmentModal />
+            </Col> */}
+
             <Col style={{ marginBottom: 8 }} span={24}>
                <Search
                   style={{ width: '100%', zIndex: -999 }}
@@ -283,29 +279,52 @@ function AppointmentsTable(props) {
                <RangePicker allowClear={true} value={state.rangeDate} format="MMMM DD, YYYY" onChange={onRangePickerChange} style={{ width: '100%' }} />
             </Col>
          </Row>
+
          <Table
-            loading={props.tableLoading}
+            // loading={props.loading}
+
             dataSource={props.appointments}
+
             size="medium"
             columns={columns}
             scroll={{ x: 300 }}
             rowKey={(record) => record.id}
+
             pagination={
                {
                   position: 'both',
                   defaultCurrent: 1,
                   pageSize: 8,
-                  showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} appointments`,
-                  onChange: (page, pageSize) => {
-                     props.getAppointments(state.search, state.rangeDate);
-                  }
+                  // showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} appointments`,
+                  // onChange: (page, pageSize) => {
+                  //    props.getAppointments(state.search, state.rangeDate);
+                  // }
                }
             }
+
          />
-      </React.Fragment>
+
+
+      </>
    );
 
 }
 
+// const mapStateToProps = state => {
+//    return {
 
-export default AppointmentsTable;
+//       appointment: state.Abointments.assignmentes,
+//       // loading: state.Abointment.loading
+//    };
+// };
+
+
+export default connect(
+   // mapStateToProps,
+   // { getABNTs,createABNT }
+)(AppointmentsTable);
+
+
+
+
+

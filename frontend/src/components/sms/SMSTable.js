@@ -433,11 +433,11 @@ const onUnselectAll = async () => {
          title: <Text strong>Next Appointment</Text>,
          dataIndex: 'next_appointment',
          render: (text, record) => {
-            return !record.next_appointment ? <Tag>None</Tag> : (<React.Fragment>
+            return !record.next_appointment ? <Tag>None</Tag> : (<>
                <Text>{moment(record.next_appointment).format('MMMM DD, YYYY')}</Text>
                <Divider type="vertical" />
                <Text>{moment(record.next_appointment).format('h:mm A')}</Text>
-            </React.Fragment>);
+            </>);
          },
          ...nextAppointmentFilterProps('next_appointment')
       }
@@ -446,7 +446,7 @@ const onUnselectAll = async () => {
    const hasSelected = selectedRowKeys.length > 0;
 
    return (
-      <React.Fragment>
+      <>
          <Title level={4} style={{ margin: 0 }}>SMS</Title>
          <Row>
             <Col span={24}>
@@ -499,7 +499,7 @@ const onUnselectAll = async () => {
                }
             }
          />
-      </React.Fragment>
+      </>
    );
 
 

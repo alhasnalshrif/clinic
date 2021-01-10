@@ -1,13 +1,13 @@
-import React,{useState} from 'react';
-import {Redirect} from 'react-router-dom';
+import React, { useState } from 'react';
+import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import SpinningComponent from '../components/SpinningComponent';
 
-   function ResetPasswordLinkPage(props) {
+function ResetPasswordLinkPage(props) {
 
-      const [state, setState] = useState({
-         resetPasswordStatus: undefined,
-      });
+   const [state, setState] = useState({
+      resetPasswordStatus: undefined,
+   });
 
 
 
@@ -24,13 +24,13 @@ import SpinningComponent from '../components/SpinningComponent';
    // }
 
 
-      if(state.resetPasswordStatus === undefined)
-         return <SpinningComponent message="Resetting password..." />
-      return <Redirect  to={{
-         pathname: '/login',
-         state: { resetPasswordStatus: state.resetPasswordStatus}
-       }}/>
-   
+   if (state.resetPasswordStatus === undefined)
+      return <SpinningComponent message="Resetting password..." />
+   return <Redirect to={{
+      pathname: '/login',
+      state: { resetPasswordStatus: state.resetPasswordStatus }
+   }} />
+
 }
 
 export default ResetPasswordLinkPage;

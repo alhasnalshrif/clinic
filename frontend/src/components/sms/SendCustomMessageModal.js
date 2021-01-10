@@ -32,7 +32,7 @@ function SendCustomMessageModal(props) {
 
 
    return (
-      <React.Fragment>
+      <>
          <Button disabled={props.disabled} onClick={showModal} style={{ marginRight: 8 }} type="primary">Send Custom Message</Button>
          <Modal
             visible={state.visible}
@@ -55,7 +55,7 @@ function SendCustomMessageModal(props) {
                <Button hidden htmlType="submit"></Button>
             </Form>
          </Modal>
-      </React.Fragment>
+      </>
    );
 
 }

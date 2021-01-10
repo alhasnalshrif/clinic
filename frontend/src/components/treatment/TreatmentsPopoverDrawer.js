@@ -34,18 +34,18 @@ const TreatmentsPopoverDrawer = (props) => {
    }
    console.log(props.treatments)
    return (
-      <React.Fragment>
+      <>
          <Popover
             title={props.title}
             trigger="click"
             visible={visiblePopover}
             onVisibleChange={handleVisiblePopoverChange}
             content={(
-               <React.Fragment>
+               <>
                   {props.content}
                   <br />
                   <button style={{ textAlign: 'center', display: 'block', marginTop: 8 }} onClick={showDrawer}>View Treatments</button>
-               </React.Fragment>
+               </>
             )}
          >
             {props.children}
@@ -67,7 +67,7 @@ const TreatmentsPopoverDrawer = (props) => {
                }
             </Timeline>
          </Drawer>
-      </React.Fragment>
+      </>
    );
 }
 

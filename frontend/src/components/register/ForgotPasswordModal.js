@@ -72,8 +72,8 @@ function ForgotPasswordModal(props) {
 
 
    return (
-      <React.Fragment>
-         <a disabled={props.disabled} onClick={showModal} target="_blank" rel="noopener noreferrer">Forgot Password?</a>
+      <>
+         <a  disabled={props.disabled} onClick={showModal} target="_blank" rel="noopener noreferrer">Forgot Password?</a>
          <Modal
             visible={state.visible}
             title="Reset Your Password"
@@ -121,7 +121,7 @@ function ForgotPasswordModal(props) {
                </Row>
             </Form>
          </Modal>
-      </React.Fragment>
+      </>
    );
 
 }

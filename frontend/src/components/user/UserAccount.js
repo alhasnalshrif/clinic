@@ -56,7 +56,7 @@ function UserAccount(props) {
    }
 
    return (
-      <React.Fragment>
+      <>
          <Row style={{ marginBottom: 21 }}>
             <Col align="left">
                <Link to="/useraccounts"> <ArrowLeftOutlined /> Back to User Accounts</Link>
@@ -70,7 +70,7 @@ function UserAccount(props) {
                <UpdateAccountCredentialsForm onUpdate={this.handleUpdate} account={this.state.account} />
             </TabPane>
          </Tabs>
-      </React.Fragment>
+      </>
    );
 
 

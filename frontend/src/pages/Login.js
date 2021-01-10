@@ -11,22 +11,22 @@ const { Title } = Typography;
 
 const Login = (props, { isAuthenticated }) => {
 
-   useEffect(() => {
-      if (props.location.state) {
-         if (props.location.state.resetPasswordStatus)
-            notification['success']({
-               message: 'Password Reset Successful!',
-               description: 'Your password has been resetted sucessfully. You may now login with your new password.',
-               duration: 5
-            });
-         else if (props.location.state.resetPasswordStatus === false)
-            notification['error']({
-               message: 'Password Reset Error',
-               description: 'Expired or invalid reset password link.',
-               duration: 5
-            });
-      }
-   }, []);
+   // useEffect(() => {
+   //    if (props.location.state) {
+   //       if (props.location.state.resetPasswordStatus)
+   //          notification['success']({
+   //             message: 'Password Reset Successful!',
+   //             description: 'Your password has been resetted sucessfully. You may now login with your new password.',
+   //             duration: 5
+   //          });
+   //       else if (props.location.state.resetPasswordStatus === false)
+   //          notification['error']({
+   //             message: 'Password Reset Error',
+   //             description: 'Expired or invalid reset password link.',
+   //             duration: 5
+   //          });
+   //    }
+   // }, []);
 
 
 
@@ -43,6 +43,7 @@ const Login = (props, { isAuthenticated }) => {
 
    const onFinish = () => {
       props.login(username, password);
+      console.log(username, password);
    };
 
 

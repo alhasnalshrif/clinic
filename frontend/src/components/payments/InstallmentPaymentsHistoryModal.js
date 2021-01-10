@@ -155,13 +155,13 @@ function InstallmentPaymentsHistoryModal(props) {
 
 
       return (
-         <React.Fragment>
-            <a onClick={showModal} target="_blank" rel="noopener noreferrer">View Installment Payment Transactions</a>
+         <>
+            <a   onClick={showModal} target="_blank" rel="noopener noreferrer">View Installment Payment Transactions</a>
             <Modal
                title="Installment Payment Transactions"
                visible={state.visible}
                okButtonProps={{ style: { display: 'none' } }}
-               cancelText={<React.Fragment><CloseCircleFilled />Close</React.Fragment>}
+               cancelText={<><CloseCircleFilled />Close</>}
                onCancel={hideModal}
                width={650}
             >
@@ -186,7 +186,7 @@ function InstallmentPaymentsHistoryModal(props) {
                   }
                />
             </Modal>
-         </React.Fragment>
+         </>
       );
    
 }

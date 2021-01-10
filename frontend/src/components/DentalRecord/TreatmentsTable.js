@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React, { useState } from 'react';
 import { Row, Col, Table, Dropdown, Menu, Button, message, Tag, Typography, Modal } from 'antd';
 import axios from 'axios';
 import moment from 'moment';
@@ -28,11 +28,11 @@ const balanceStatus = (paymentType, balance) => {
 
 function TreatmentsTable(props) {
 
-      const [state, setState] = useState({
-         loading: true,
+   const [state, setState] = useState({
+      loading: true,
       filterByBalance: false,
       treatments: []
-      });
+   });
 
 
 
@@ -40,7 +40,7 @@ function TreatmentsTable(props) {
    //    getTreatments();
    // }
 
-   const getTreatments=()=> {
+   const getTreatments = () => {
       setState({ loading: true });
       axios.get(`treatments/${props.patientId}`)
          .then((response) => {
@@ -95,7 +95,7 @@ function TreatmentsTable(props) {
    }
 
    const handleDeleteTreatment = (id) => {
-       Modal.info({
+      Modal.info({
          title: 'Are you sure?',
          content: 'Are you sure to delete this treatment? This action cannot be undone.',
          onOk: () => {
@@ -161,7 +161,7 @@ function TreatmentsTable(props) {
    }
 
    const handleVoidLastPaymentTransaction = (id) => {
-       Modal.info({
+      Modal.info({
          title: 'Are you sure?',
          content: 'Are you sure to void the last payment transaction made on this treatment? This action cannot be undone.',
          onOk: () => {
@@ -185,182 +185,182 @@ function TreatmentsTable(props) {
       });
    }
 
-      const columns = [
-         {
-            title: <Text strong>Description</Text>,
-            width: 190,
-            fixed: 'left',
-            dataIndex: 'description',
-            render: (text, record) => {
-               return record.description;
+   const columns = [
+      {
+         title: <Text strong>Description</Text>,
+         width: 190,
+         fixed: 'left',
+         dataIndex: 'description',
+         render: (text, record) => {
+            return record.description;
+         }
+      },
+      {
+         title: <Text strong>Tooth No</Text>,
+         dataIndex: 'tooth_affected_no',
+         render: (text, record) => {
+            return !record.tooth_affected_no ? 'N/A' : record.tooth_affected_no;
+         }
+      },
+      {
+         title: <Text strong>Date Treated</Text>,
+         dataIndex: 'date_treated',
+         render: (text, record) => {
+            return moment(record.date_treated).format('MMMM DD, YYYY');
+         }
+      },
+      {
+         title: <Text strong>Treated By</Text>,
+         dataIndex: 'treated_by',
+         render: (text, record) => {
+            return record.treated_by;
+         }
+      },
+      {
+         title: <Text strong>Payment Type</Text>,
+         dataIndex: 'payment_type',
+         render: (text, record) => {
+            return record.payment_type.substring(0, 1).toUpperCase() + record.payment_type.substring(1, record.payment_type.length);
+         }
+      },
+      {
+         title: <Text strong>Total Amount To Pay</Text>,
+         dataIndex: 'total_amount_to_pay',
+         render: (text, record) => {
+            return !record.total_amount_to_pay ? '₱' + 0 : '₱' + record.total_amount_to_pay.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+         }
+      },
+      {
+         title: <Text strong>Balance</Text>,
+         dataIndex: 'balance',
+         filters: [{
+            text: 'Fully Paid',
+            value: 'fully-paid',
+         }, {
+            text: 'No Charge',
+            value: 'no-charge',
+         }, {
+            text: 'Has Balance',
+            value: 'balance',
+         }],
+         filterMultiple: false,
+         onFilter: (value, record) => {
+            if (value === 'balance')
+               return record.balance > 0
+            else if (value === 'fully-paid') {
+               return record.balance === 0;
             }
+            return !record.balance && record.payment_type === 'no-charge'
          },
-         {
-            title: <Text strong>Tooth No</Text>,
-            dataIndex: 'tooth_affected_no',
-            render: (text, record) => {
-               return !record.tooth_affected_no ? 'N/A' : record.tooth_affected_no;
-            }
-         },
-         {
-            title: <Text strong>Date Treated</Text>,
-            dataIndex: 'date_treated',
-            render: (text, record) => {
-               return moment(record.date_treated).format('MMMM DD, YYYY');
-            }
-         },
-         {
-            title: <Text strong>Treated By</Text>,
-            dataIndex: 'treated_by',
-            render: (text, record) => {
-               return record.treated_by;
-            }
-         },
-         {
-            title: <Text strong>Payment Type</Text>,
-            dataIndex: 'payment_type',
-            render: (text, record) => {
-               return record.payment_type.substring(0, 1).toUpperCase() + record.payment_type.substring(1, record.payment_type.length);
-            }
-         },
-         {
-            title: <Text strong>Total Amount To Pay</Text>,
-            dataIndex: 'total_amount_to_pay',
-            render: (text, record) => {
-               return !record.total_amount_to_pay ? '₱' + 0 : '₱' + record.total_amount_to_pay.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            }
-         },
-         {
-            title: <Text strong>Balance</Text>,
-            dataIndex: 'balance',
-            filters: [{
-               text: 'Fully Paid',
-               value: 'fully-paid',
-            }, {
-               text: 'No Charge',
-               value: 'no-charge',
-            }, {
-               text: 'Has Balance',
-               value: 'balance',
-            }],
-            filterMultiple: false,
-            onFilter: (value, record) => {
-               if (value === 'balance')
-                  return record.balance > 0
-               else if (value === 'fully-paid') {
-                  return record.balance === 0;
-               }
-               return !record.balance && record.payment_type === 'no-charge'
-            },
-            render: (text, record) => {
-               return balanceStatus(record.payment_type, record.balance);
-            }
-         },
-         {
-            title: <Text strong>Actions</Text>,
-            width: 80,
-            fixed: 'right',
-            dataIndex: 'actions',
-            render: (text, record) => {
-               console.log(record.transaction_count);
-               if (record.payment_type !== 'installment') {
-                  const fullyPaidMenu = (
-                     <Menu>
-                        <Menu.Item>
-                           <a onClick={() => handlePrintPaymentReceipt(record)} target="_blank" rel="noopener noreferrer"><PrinterFilled />Print Receipt</a>
-                        </Menu.Item>
-                        {
-                           props.role === 'dentist' ? (
-                              <Menu.Item>
-                                 <a onClick={() => handleDeleteTreatment(record.id)} target="_blank" rel="noopener noreferrer">Delete Treatment</a>
-                              </Menu.Item>
-                           ) : (null)
-                        }
-
-                     </Menu>
-                  );
-                  return (
-                     <Dropdown overlay={fullyPaidMenu}>
-                        <Button>
-                           Actions <DownCircleFilled />
-                        </Button>
-                     </Dropdown>
-                  );
-               }
-
-               const disabled = parseInt(record.balance) === 0 ? true : false;
-
-               // INSTALLMENT PAYMENT TYPE ACTIONS
-               const installmentMenu = (
+         render: (text, record) => {
+            return balanceStatus(record.payment_type, record.balance);
+         }
+      },
+      {
+         title: <Text strong>Actions</Text>,
+         width: 80,
+         fixed: 'right',
+         dataIndex: 'actions',
+         render: (text, record) => {
+            console.log(record.transaction_count);
+            if (record.payment_type !== 'installment') {
+               const fullyPaidMenu = (
                   <Menu>
-                     { disabled ? (
-                        <Menu.Item disabled>
-                           <PayInstallmentModal disabled={disabled} treatmentId={record.id} currentBalance={record.balance} onPay={handlePayInstallment} />
-                        </Menu.Item>
-                     ) : (
-                           <Menu.Item>
-                              <PayInstallmentModal disabled={disabled} treatmentId={record.id} currentBalance={record.balance} onPay={handlePayInstallment} />
-                           </Menu.Item>
-                        )}
-
                      <Menu.Item>
-                        <InstallmentPaymentsHistoryModal treatment={record} treatmentId={record.id} />
+                        <a  onClick={() => handlePrintPaymentReceipt(record)} target="_blank" rel="noopener noreferrer"><PrinterFilled />Print Receipt</a>
                      </Menu.Item>
+                     {
+                        props.role === 'dentist' ? (
+                           <Menu.Item>
+                              <a  onClick={() => handleDeleteTreatment(record.id)} target="_blank" rel="noopener noreferrer">Delete Treatment</a>
+                           </Menu.Item>
+                        ) : (null)
+                     }
 
-                     {props.role === 'dentist' && record.transaction_count === 1 ? (
-                        <Menu.Item>
-                           <a onClick={() => handleDeleteTreatment(record.id)} target="_blank" rel="noopener noreferrer">Delete Treatment</a>
-                        </Menu.Item>
-                     ) : props.role === 'dentist' && record.transaction_count > 1 ? (
-                        <Menu.Item>
-                           <a onClick={() => handleVoidLastPaymentTransaction(record.id)} target="_blank" rel="noopener noreferrer">Void Last Payment Transaction</a>
-                        </Menu.Item>
-                     ) : (null)}
                   </Menu>
                );
-
                return (
-                  <Dropdown overlay={installmentMenu} trigger={['click']}>
+                  <Dropdown overlay={fullyPaidMenu}>
                      <Button>
                         Actions <DownCircleFilled />
                      </Button>
                   </Dropdown>
                );
             }
+
+            const disabled = parseInt(record.balance) === 0 ? true : false;
+
+            // INSTALLMENT PAYMENT TYPE ACTIONS
+            const installmentMenu = (
+               <Menu>
+                  { disabled ? (
+                     <Menu.Item disabled>
+                        <PayInstallmentModal disabled={disabled} treatmentId={record.id} currentBalance={record.balance} onPay={handlePayInstallment} />
+                     </Menu.Item>
+                  ) : (
+                        <Menu.Item>
+                           <PayInstallmentModal disabled={disabled} treatmentId={record.id} currentBalance={record.balance} onPay={handlePayInstallment} />
+                        </Menu.Item>
+                     )}
+
+                  <Menu.Item>
+                     <InstallmentPaymentsHistoryModal treatment={record} treatmentId={record.id} />
+                  </Menu.Item>
+
+                  {props.role === 'dentist' && record.transaction_count === 1 ? (
+                     <Menu.Item>
+                        <a  onClick={() => handleDeleteTreatment(record.id)} target="_blank" rel="noopener noreferrer">Delete Treatment</a>
+                     </Menu.Item>
+                  ) : props.role === 'dentist' && record.transaction_count > 1 ? (
+                     <Menu.Item>
+                        <a   onClick={() => handleVoidLastPaymentTransaction(record.id)} target="_blank" rel="noopener noreferrer">Void Last Payment Transaction</a>
+                     </Menu.Item>
+                  ) : (null)}
+               </Menu>
+            );
+
+            return (
+               <Dropdown overlay={installmentMenu} trigger={['click']}>
+                  <Button>
+                     Actions <DownCircleFilled />
+                  </Button>
+               </Dropdown>
+            );
          }
-      ];
+      }
+   ];
 
-      return (
-         <React.Fragment>
-            <Row align="bottom" style={{ marginTop: 8, marginBottom: 8 }}>
-               <Col style={{ marginBottom: 8 }} span={24} align="right">
-                  <AddTreatmentModal onAdd={handleAddTreatment} />
-               </Col>
-            </Row>
+   return (
+      <>
+         <Row align="bottom" style={{ marginTop: 8, marginBottom: 8 }}>
+            <Col style={{ marginBottom: 8 }} span={24} align="right">
+               <AddTreatmentModal onAdd={handleAddTreatment} />
+            </Col>
+         </Row>
 
-            <Table
-               loading={state.loading}
-               dataSource={state.treatments}
-               size="medium"
-               columns={columns}
-               scroll={{ x: 1000 }}
-               rowKey={(record) => record.id}
-               pagination={
-                  {
-                     position: 'both',
-                     showSizeChanger: true,
-                     showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} treatments`,
-                     defaultCurrent: 1,
-                     pageSize: 8,
-                     onChange: (page, pageSize) => {
+         <Table
+            loading={state.loading}
+            dataSource={state.treatments}
+            size="medium"
+            columns={columns}
+            scroll={{ x: 1000 }}
+            rowKey={(record) => record.id}
+            pagination={
+               {
+                  position: 'both',
+                  showSizeChanger: true,
+                  showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} treatments`,
+                  defaultCurrent: 1,
+                  pageSize: 8,
+                  onChange: (page, pageSize) => {
 
-                     }
                   }
                }
-            />
-         </React.Fragment>
-      );
-   }
- 
+            }
+         />
+      </>
+   );
+}
+
 
 export default TreatmentsTable;

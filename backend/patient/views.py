@@ -9,9 +9,30 @@ from rest_framework.status import (
 
 from .models import Patient
 from .serializers import PatientSerializer
+# from django.contrib.auth.models import User
+from users.models import User
 
 
 class PatientViewSet(viewsets.ModelViewSet):
     serializer_class = PatientSerializer
-    queryset = Patient.objects.all()
+    queryset = Patient.objects.select_related(
+        'doctor',
+    )
     permission_classes = (permissions.AllowAny, )
+
+    def create(self, request, *args, **kwargs):
+        patient_data = request.data
+
+        new_car = Patient.objects.create(doctor=User.objects.get(username=patient_data["doctor"]),
+                                         name=patient_data["name"],
+                                         phone=patient_data["phone"],
+
+                                         bloodgroup=patient_data["bloodgroup"],
+                                         sex=patient_data["sex"],
+                                         age=patient_data["age"])
+
+        new_car.save()
+
+        serializer = PatientSerializer(new_car)
+
+        return Response(serializer.data)

@@ -60,7 +60,7 @@ function AddTreatmentModal(props) {
 
 
    return (
-      <React.Fragment>
+      <>
          <Button onClick={showModal} type="primary"><PlusCircleFilled />Add New Treatment</Button>
          <Modal
             visible={state.visible}
@@ -187,7 +187,7 @@ function AddTreatmentModal(props) {
                            </Form.Item>
                         </Col>)
                         : state.paymentType === 'installment' ? (
-                           <React.Fragment>
+                           <>
                               <Col span={12}>
                                  <Form.Item label="Total Amount To Pay" name="total_amount_to_pay" rules={[{ required: true, message: 'Total Amount To Pay is required.' }]}>
 
@@ -202,7 +202,7 @@ function AddTreatmentModal(props) {
 
                                  </Form.Item>
                               </Col>
-                           </React.Fragment>) : null
+                           </>) : null
                   }
 
 
@@ -210,7 +210,7 @@ function AddTreatmentModal(props) {
                <Button hidden htmlType="submit"></Button>
             </Form>
          </Modal>
-      </React.Fragment>
+      </>
    );
 
 }

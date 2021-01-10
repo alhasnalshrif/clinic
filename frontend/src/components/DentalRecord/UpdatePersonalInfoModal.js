@@ -53,7 +53,7 @@ function UpdatePersonalInfoModal(props) {
 
 
    return (
-      <React.Fragment>
+      <>
          <Button onClick={showModal} type="default"><EditFilled /> Update Info</Button>
          <Modal
             visible={state.visible}
@@ -115,7 +115,7 @@ function UpdatePersonalInfoModal(props) {
                <Button hidden htmlType="submit"></Button>
             </Form>
          </Modal>
-      </React.Fragment>
+      </>
    );
 
 }

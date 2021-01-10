@@ -69,7 +69,7 @@ const { Option } = Select;
             </Select>
          );
       return (
-         <React.Fragment>
+         <>
             <Form layout="vertical" onSubmit={handleSubmit}>
                <Row gutter={8}>
                   <Col span={12}>
@@ -129,7 +129,7 @@ const { Option } = Select;
                <Button htmlType="submit">Update</Button>
             </Form>
 
-         </React.Fragment>
+         </>
       );
    
 }

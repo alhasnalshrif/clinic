@@ -64,7 +64,7 @@ function UpdateAccountCredentialsForm(props) {
       const { account } = props;
 
       return (
-         <React.Fragment>
+         <>
             <Form layout="vertical" onSubmit={handleSubmit}>
                <Row gutter={8}>
                   <Col span={24}>
@@ -91,7 +91,7 @@ function UpdateAccountCredentialsForm(props) {
                </Row>
                <Button htmlType="submit">Update</Button>
             </Form>
-         </React.Fragment>
+         </>
       );
    
 }

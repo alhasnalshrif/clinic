@@ -88,7 +88,7 @@ function CreateAccountModal(props) {
 
 
    return (
-      <React.Fragment>
+      <>
          <Button type="primary" onClick={showModal}>
             <UsergroupAddOutlined />
                   Create New User Account
@@ -178,7 +178,7 @@ function CreateAccountModal(props) {
                <Button hidden htmlType="submit"></Button>
             </Form>
          </Modal>
-      </React.Fragment>
+      </>
    );
 
 }

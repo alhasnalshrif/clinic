@@ -42,8 +42,8 @@ function PayInstallmentModal(props) {
 
 
    return (
-      <React.Fragment>
-         <a disabled={props.disabled} onClick={showModal} target="_blank" rel="noopener noreferrer">Pay Installment</a>
+      <>
+         <a  disabled={props.disabled} onClick={showModal} target="_blank" rel="noopener noreferrer">Pay Installment</a>
          <Modal
             visible={state.visible}
             title="Pay Installment"
@@ -74,7 +74,7 @@ function PayInstallmentModal(props) {
                <Button hidden htmlType="submit"></Button>
             </Form>
          </Modal>
-      </React.Fragment>
+      </>
    );
 
 }

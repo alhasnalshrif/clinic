@@ -12,7 +12,7 @@ const AdultTeethChart = (props) => {
 
    const getChildTeethChart = async () => {
       const res = await axios.get(
-         `${process.env.REACT_APP_API_URL}/adultteeth/1/`,
+         `${process.env.REACT_APP_API_URL}/treatment/a/1/`,
          {
             headers: {
                "Content-Type": "application/json",
