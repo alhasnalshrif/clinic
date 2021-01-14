@@ -12,19 +12,19 @@ import {
 // GET PATIENT
 
 export const getPATN = () => async (dispatch) => {
-  if (localStorage.getItem("access")) {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${localStorage.getItem("access")}`,
-        Accept: "application/json",
-      },
-    };
+  // if (localStorage.getItem("access")) {
+  //   const config = {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `JWT ${localStorage.getItem("access")}`,
+  //       Accept: "application/json",
+  //     },
+  //   };
 
     try {
       const res = await axios.get(
         `${process.env.REACT_APP_API_URL}/patient/`,
-        config
+        // config
       );
 
       dispatch({
@@ -37,11 +37,11 @@ export const getPATN = () => async (dispatch) => {
         type: GET_PATIENTS_LIST_FAIL,
       });
     }
-  } else {
-    dispatch({
-      type: GET_PATIENTS_LIST_FAIL,
-    });
-  }
+  // } else {
+  //   dispatch({
+  //     type: GET_PATIENTS_LIST_FAIL,
+  //   });
+  // }
 };
 
 
@@ -50,19 +50,19 @@ export const getPATN = () => async (dispatch) => {
 
 
 export const getPATNDetail = (id) => async (dispatch) => {
-  if (localStorage.getItem("access")) {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${localStorage.getItem("access")}`,
-        Accept: "application/json",
-      },
-    };
+  // if (localStorage.getItem("access")) {
+  //   const config = {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `JWT ${localStorage.getItem("access")}`,
+  //       Accept: "application/json",
+  //     },
+  //   };
 
     try {
       const res = await axios.get(
         `${process.env.REACT_APP_API_URL}/patient/${id}/`,
-        config
+        // config
       );
 
       dispatch({
@@ -75,11 +75,11 @@ export const getPATNDetail = (id) => async (dispatch) => {
         type: GET_PATIENT_DETAIL_FAIL,
       });
     }
-  } else {
-    dispatch({
-      type: GET_PATIENT_DETAIL_FAIL,
-    });
-  }
+  // } else {
+  //   dispatch({
+  //     type: GET_PATIENT_DETAIL_FAIL,
+  //   });
+  // }
 };
 
 
@@ -90,19 +90,19 @@ export const getPATNDetail = (id) => async (dispatch) => {
 // CREATE PATIENT 
 
 export const createPATN = (asnt) => async (dispatch) => {
-  if (localStorage.getItem("access")) {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${localStorage.getItem("access")}`,
-        Accept: "application/json",
-      },
-    };
+  // if (localStorage.getItem("access")) {
+    // const config = {
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Authorization: `JWT ${localStorage.getItem("access")}`,
+    //     Accept: "application/json",
+    //   },
+    // };
 
     try {
       const res = await axios.post(
         `${process.env.REACT_APP_API_URL}/patient/`,
-        config,
+        // config,
         asnt
       );
 
@@ -116,11 +116,11 @@ export const createPATN = (asnt) => async (dispatch) => {
         type: CREATE_PATIENT_FAIL,
       });
     }
-  } else {
-    dispatch({
-      type: GET_PATIENT_DETAIL_FAIL,
-    });
-  }
+  // } else {
+  //   dispatch({
+  //     type: GET_PATIENT_DETAIL_FAIL,
+  //   });
+  // }
 };
 
 

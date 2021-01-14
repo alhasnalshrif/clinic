@@ -8,7 +8,7 @@ const { Title } = Typography;
 const { Content } = Layout;
 const { TabPane } = Tabs;
 
-function PatientAccountSettings(props) {
+function UserAccountSettings(props) {
    const [state, setState] = useState({
       account: {}
    });
@@ -70,6 +70,6 @@ function PatientAccountSettings(props) {
 }
 
 
-export default PatientAccountSettings;
+export default UserAccountSettings;
 
 // account={state.account}

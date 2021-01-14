@@ -4,6 +4,8 @@ import DescriptionItem from '../components/DentalRecord/DescriptionItem';
 import axios from 'axios';
 import moment from 'moment';
 import UpdateContactForm from '../components/UpdateContactForm';
+import CreateDentalRecordModal from '../components/dental/CreateDentalRecordModal'
+import CreateAppointmentModal from '../components/appointments/CreateAppointmentModal';
 
 const { TabPane } = Tabs;
 const { Text, Title } = Typography;
@@ -20,6 +22,23 @@ function PatientHomePage(props) {
       confirmedAppointments: []
    });
 
+   const handleCreate = (values) => {
+      const hide = message.loading('Creating New Dental Record...', 0);
+      values.birthday = values.birthday.format('YYYY-MM-DD');
+      axios.post('patients/create', values)
+         .then((response) => {
+            if (response.status === 200) {
+               hide();
+               message.success('New Dental Record Created Successfully');
+               // getPatients();
+            }
+         })
+         .catch((err) => {
+            console.log(err);
+            hide();
+            message.error('Something went wrong! Please, try again.');
+         });
+   }
 
    // componentDidMount() {
    //    getDentalRecord(props.user.patient_id);
@@ -210,13 +229,21 @@ function PatientHomePage(props) {
    return (
       <>
          <Content style={{ margin: '24px 24px 24px 36px', padding: 24, background: '#fff' }}>
-            <Title level={4}>HOME</Title>
-            <Tabs tabPosition="top">
-               <TabPane tab="My Dental Record Info" key="1">
+            <Title level={4}>الاستقبال</Title>
+
+            <Tabs tabPosition="top" >
+
+               <TabPane tab="كشف مريض" key="1" style={{ paddingLeft: 0, paddingRight: 100, margin: 0 }}>
+
                   <Alert style={{ marginBottom: 11 }} showIcon message="Note: You cannot edit or update any information on your Dental Record here except your contact number. In case of inaccurate information kindly contact us or visit us." />
                   {!state.dentalRecord.contact_number ? (
                      <Alert style={{ marginBottom: 11 }} showIcon closable message="You have no provided contact number. Please, kindly provide one to be able to receive sms notifications (appointment reminder, promos, etc.)" type="warning" />
                   ) : null}
+
+                  <Col align="right" style={{ marginBottom: '8px' }}>
+                     <CreateDentalRecordModal onCreate={handleCreate} />
+                  </Col>
+
                   <Row type="flex">
                      <Col span={8}><DescriptionItem title="Code" content={state.dentalRecord.code} /></Col>
                      <Col span={8}><DescriptionItem title="Name" content={state.dentalRecord.name} /></Col>
@@ -232,29 +259,8 @@ function PatientHomePage(props) {
                   </Row>
                </TabPane>
 
-               <TabPane tab="My Balances" key="2">
-                  <Table
-                     locale={{ emptyText: 'No Balances' }}
-                     dataSource={state.balances}
-                     size="medium"
-                     columns={balancesColumns}
-                     rowKey={(record) => record.id}
-                     pagination={
-                        {
-                           position: 'bottom',
-                           showSizeChanger: true,
-                           showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} balances`,
-                           defaultCurrent: 1,
-                           pageSize: 8,
-                           onChange: (page, pageSize) => {
+               <TabPane tab="حجز" key="2">
 
-                           }
-                        }
-                     }
-                  />
-               </TabPane>
-
-               <TabPane tab="My Appointments" key="3">
                   {!state.dentalRecord.contact_number ? (
                      <Alert style={{ marginBottom: 11 }} showIcon closable message="You have no provided contact number on your Dental Record. Please, kindly provide one to be able to receive sms notifications (appointment reminder, appointment status, etc.)" type="warning" />
                   ) : null}
@@ -271,7 +277,9 @@ function PatientHomePage(props) {
                         {/* <PatientCreateAppointmentModal onCreate={handleCreateAppointment} patientId={props.user.patient_id} /> */}
                      </Col>
                   </Row>
-
+                  <Col style={{ marginBottom: 8 }} align="right">
+                     <CreateAppointmentModal />
+                  </Col>
                   <Table
                      scroll={{ x: 700 }}
                      locale={{ emptyText: 'No Appointments' }}
@@ -293,6 +301,31 @@ function PatientHomePage(props) {
                      }
                   />
                </TabPane>
+
+               <TabPane tab="الفاتوره" key="3">
+
+                  <Table
+                     locale={{ emptyText: 'No Balances' }}
+                     dataSource={state.balances}
+                     size="medium"
+                     columns={balancesColumns}
+                     rowKey={(record) => record.id}
+                     pagination={
+                        {
+                           position: 'bottom',
+                           showSizeChanger: true,
+                           showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} balances`,
+                           defaultCurrent: 1,
+                           pageSize: 8,
+                           onChange: (page, pageSize) => {
+
+                           }
+                        }
+                     }
+                  />
+               </TabPane>
+
+
 
 
 

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Row, Col, Card, Divider, Typography, notification, Form, Input, Button } from 'antd';
 import { UserAddOutlined, LockOutlined, LoginOutlined } from '@ant-design/icons';
 import ForgotPasswordModal from '../components/register/ForgotPasswordModal';
 
 import { login } from "../redux";
 
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 const { Title } = Typography;
 
@@ -54,9 +54,8 @@ const Login = (props, { isAuthenticated }) => {
          <Row type="flex" align="middle" style={{ minHeight: '100vh' }}>
             <Col md={{ span: 8, offset: 8 }} sm={{ span: 16, offset: 4 }} xs={{ span: 22, offset: 1 }}>
                <Card bordered={true} style={{ boxShadow: '0px 3px 10px -4px #8c8c8c' }}>
-                  <Link to="/">Back to homepage</Link>
                   <Title style={{ textAlign: 'center', marginTop: 18, marginBottom: 0 }} level={3}>
-                     Andres Dental Clinic Portal
+                    تسجيل الدخول
                      </Title>
                   <Divider style={{ margin: '6px 0 12px 0' }} />
 
@@ -67,7 +66,7 @@ const Login = (props, { isAuthenticated }) => {
                      onFinish={onFinish}
                   >
 
-                     <Form.Item style={{ margin: 0 }} label="Username" name="username" rules={[{ required: true, message: 'Please input your username!' }]}>
+                     <Form.Item style={{ margin: 0 }} label="اسم المستخدم" name="username" rules={[{ required: true, message: 'Please input your username!' }]}>
 
                         <Input
                            prefix={<UserAddOutlined className="site-form-item-icon" />}
@@ -80,7 +79,7 @@ const Login = (props, { isAuthenticated }) => {
                         />
 
                      </Form.Item>
-                     <Form.Item style={{ margin: 0 }} label="Password" name="password" rules={[{ required: true, message: 'Please input your password!' }]}>
+                     <Form.Item style={{marginTop: 11 }} label="الرقم السري" name="password" rules={[{ required: true, message: 'Please input your password!' }]}>
 
                         <Input.Password
                            prefix={<LockOutlined className="site-form-item-icon" />}
@@ -93,10 +92,11 @@ const Login = (props, { isAuthenticated }) => {
                            required
                         />
                      </Form.Item>
+
                      <Form.Item style={{ marginTop: 11 }}>
                         <Button block type="primary" htmlType="submit" className="login-form-button">
                            <LoginOutlined />
-                              Log in
+                              تسجيل الدخول
                         </Button>
                      </Form.Item>
                   </Form>

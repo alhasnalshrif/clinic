@@ -12,19 +12,19 @@ import {
 // GET BILL
 
 export const getBILLS = () => async (dispatch) => {
-  if (localStorage.getItem("access")) {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${localStorage.getItem("access")}`,
-        Accept: "application/json",
-      },
-    };
+  // if (localStorage.getItem("access")) {
+  //   const config = {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `JWT ${localStorage.getItem("access")}`,
+  //       Accept: "application/json",
+  //     },
+  //   };
 
     try {
       const res = await axios.get(
         `${process.env.REACT_APP_API_URL}/bill/`,
-        config
+        // config
       );
 
       dispatch({
@@ -37,11 +37,11 @@ export const getBILLS = () => async (dispatch) => {
         type: GET_BILLS_LIST_FAIL,
       });
     }
-  } else {
-    dispatch({
-      type: GET_BILLS_LIST_FAIL,
-    });
-  }
+  // } else {
+  //   dispatch({
+  //     type: GET_BILLS_LIST_FAIL,
+  //   });
+  // }
 };
 
 
@@ -50,19 +50,19 @@ export const getBILLS = () => async (dispatch) => {
 
 
 export const getBILLDetail = (id) => async (dispatch) => {
-  if (localStorage.getItem("access")) {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${localStorage.getItem("access")}`,
-        Accept: "application/json",
-      },
-    };
+  // if (localStorage.getItem("access")) {
+  //   const config = {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `JWT ${localStorage.getItem("access")}`,
+  //       Accept: "application/json",
+  //     },
+  //   };
 
     try {
       const res = await axios.get(
         `${process.env.REACT_APP_API_URL}/bill/${id}/`,
-        config
+        // config
       );
 
       dispatch({
@@ -75,11 +75,11 @@ export const getBILLDetail = (id) => async (dispatch) => {
         type: GET_BILL_DETAIL_FAIL,
       });
     }
-  } else {
-    dispatch({
-      type: GET_BILL_DETAIL_FAIL,
-    });
-  }
+  // } else {
+  //   dispatch({
+  //     type: GET_BILL_DETAIL_FAIL,
+  //   });
+  // }
 };
 
 
@@ -90,14 +90,14 @@ export const getBILLDetail = (id) => async (dispatch) => {
 // CREATE BILL 
 
 export const createBILL = (formData) => async (dispatch) => {
-  if (localStorage.getItem("access")) {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${localStorage.getItem("access")}`,
-        Accept: "application/json",
-      },
-    };
+  // if (localStorage.getItem("access")) {
+  //   const config = {
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `JWT ${localStorage.getItem("access")}`,
+  //       Accept: "application/json",
+  //     },
+  //   };
 
     try {
       const res = await axios.post(
@@ -116,11 +116,11 @@ export const createBILL = (formData) => async (dispatch) => {
         type: CREATE_BILL_FAIL,
       });
     }
-  } else {
-    dispatch({
-      type: GET_BILL_DETAIL_FAIL,
-    });
-  }
+  // } else {
+  //   dispatch({
+  //     type: GET_BILL_DETAIL_FAIL,
+  //   });
+  // }
 };
 
 

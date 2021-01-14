@@ -35,6 +35,8 @@ const getMonthName = (monthNumber) => {
          return "November";
       case 12:
          return "December";
+      default:
+         break;
    }
 }
 
@@ -54,6 +56,8 @@ const getDayName = (dayNumber) => {
          return "Saturday";
       case 6:
          return "Sunday";
+      default:
+         break;
    }
 }
 
@@ -90,17 +94,17 @@ class VisitChart extends React.Component {
    }
 
    handleSelectChange = async (value) => {
-      await this.setState({ filterBy: value });
+      this.setState({ filterBy: value });
       this.getVisits();
    }
 
    handleRangeDateChange = async (dates) => {
       if (dates.length === 0)
-         await this.setState({
+         this.setState({
             rangeDate: [moment().startOf('year'), moment().endOf('year')]
          });
       else
-         await this.setState({
+         this.setState({
             rangeDate: dates
          });
       this.getVisits();

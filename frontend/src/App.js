@@ -10,7 +10,7 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group'
 // PAGES 
 import Login from './pages/Login';
 import PatientHomePage from './pages/PatientHomePage';
-import PatientAccountSettings from './pages/PatientAccountSettings';
+import UserAccountSettings from './pages/UserAccountSettings';
 import Dashboard from './pages/Dashboard';
 import DentalRecords from './pages/DentalRecords';
 import Payments from './pages/Payments';
@@ -35,7 +35,6 @@ function App() {
 		<Provider store={store}>
 			<Router>
 				<CustomLayout>
-					<Layout style={{ minHeight: '100vh' }}>
 
 						<Route render={({ location }) => (
 							<TransitionGroup>
@@ -50,7 +49,9 @@ function App() {
 									<Switch location={location}>
 										<Route exact path="/" component={Dashboard} />
 										<Route exact path="/home" component={PatientHomePage} />
-										<Route exact path="/settings" component={PatientAccountSettings} />
+
+										<Route exact path="/settings" component={UserAccountSettings} />
+
 										<Route exact path="/dentalrecords" component={DentalRecords} />
 
 										<Route exact path="/dentalrecords/:id" component={DentalRecords} />
@@ -67,7 +68,6 @@ function App() {
 								</CSSTransition>
 							</TransitionGroup>
 						)} />
-					</Layout>
 				</CustomLayout>
 			</Router>
 		</Provider>

@@ -13,19 +13,25 @@ const SiderNavigation = withRouter((props) => {
 
    return (
       // <Menu style={{ background: '#3f4d67', color: '#a9b7d0', }}  mode="inline" selectedKeys={[selectedItem]}>
-      <Menu theme='dark'  mode="inline" selectedKeys={[selectedItem]}>
+      <Menu theme='dark' mode="inline" selectedKeys={[selectedItem]}>
 
 
          <Menu.Item key="/">
             <DashboardFilled />
-            <span>Dashboard</span>
+            <span>بيانات العياده</span>
             <Link to="/"></Link>
          </Menu.Item>
 
 
+         <Menu.Item key="/home">
+            <HomeOutlined />
+            <span>الاستقبال</span>
+            <Link to="/home"></Link>
+         </Menu.Item>
+
          <Menu.Item key="/dentalrecords">
             <IdcardFilled />
-            <span>Dental Records</span>
+            <span>المرضي</span>
             <Link to="/dentalrecords"></Link>
          </Menu.Item>
 
@@ -39,37 +45,24 @@ const SiderNavigation = withRouter((props) => {
 
          <Menu.Item key="/appointments">
             <CalendarFilled />
-            <span>Appointments</span>
+            <span>الحجوزات</span>
             <Link to="/appointments"></Link>
          </Menu.Item>
 
          <Menu.Item key="/sms">
             <MessageFilled />
-            <span>SMS</span>
+            <span>الرسائل</span>
             <Link to="/sms"></Link>
          </Menu.Item>
 
 
          <Menu.Item key="/useraccounts">
             <TeamOutlined />
-            <span>User Accounts</span>
+            <span>المستخدمين</span>
             <Link to="/useraccounts"></Link>
          </Menu.Item>
 
-         <Menu.Item key="/home">
-            <HomeOutlined />
-            <span>Home</span>
-            <Link to="/home"></Link>
-         </Menu.Item>
 
-         <Menu.Item key="/settings">
-            {/* <Icon type="user" /> */}
-            <span>Account Settings</span>
-            <Link to="/settings"></Link>
-         </Menu.Item>
-
-
-   
       </Menu>
    );
 });

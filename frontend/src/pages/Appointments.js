@@ -12,35 +12,46 @@ const { Content } = Layout;
 
 function Appointments(props) {
 
+   const [appointment, setAppointment] = useState();
 
-   const [state, setState] = useState({
-      appointmentsTableLoading: true,
-      appointmentsTable: []
-   });
 
-   // console.log(state)
 
    useEffect(() => {
-      getAppointmentsTable()
+      getAppointmentsTable();
 
    }, []);
 
 
    const getAppointmentsTable = async () => {
 
-      props.getABNTs()
+      return await props.getABNTs()
+         .then(() => {
+            setAppointment(props.appointments);
+         });
 
    }
+
+
+   const updateInput = async (value) => {
+
+      const filtered = props.appointments.filter(a => {
+         return a.patient.includes(value);
+      });
+
+      setAppointment(filtered);
+   }
+
+   console.log(appointment)
 
    return (
       <Content style={{ margin: '24px 24px 24px 36px', padding: 24, background: '#fff' }}>
          <Title level={4}>APPOINTMENTS</Title>
          <Tabs defaultActiveKey="1">
             <TabPane tab="Table View" key="1">
-               <AppointmentsTable appointments={props.appointment} />
+               <AppointmentsTable appointments={appointment} updateInput={updateInput} />
             </TabPane>
             <TabPane tab="Calendar View" key="2">
-               <AppointmentsCalendar appointments={props.appointment} getAppointments={getAppointmentsTable} />
+               <AppointmentsCalendar appointments={appointment} getAppointments={getAppointmentsTable} />
             </TabPane>
          </Tabs>
       </Content>
@@ -53,7 +64,7 @@ function Appointments(props) {
 const mapStateToProps = state => {
    return {
 
-      appointment: state.Abointments.assignmentes,
+      appointments: state.Abointments.assignmentes,
       // loading: state.Abointment.loading
    };
 };
@@ -64,6 +75,3 @@ export default connect(
    { getABNTs }
 )(Appointments);
 
-
-{/* <AppointmentsCalendar appointments={state.appointmentsTable} /> */ }
-{/* <AppointmentsTable tableLoading={state.appointmentsTableLoading} appointments={state.appointmentsTable} getAppointments={props.appointment} /> */ }

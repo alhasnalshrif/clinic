@@ -48,7 +48,7 @@ function Dashboard(props) {
 
    return (
       <Content style={{ margin: '24px 24px 24px 36px' }}>
-         
+
          <Row gutter={24} style={{ marginBottom: 24 }}>
             <Col span={6}>
                <Card bordered={false}>
@@ -79,7 +79,7 @@ function Dashboard(props) {
          </Row>
 
 
-         <Row className="card-container"  style={{ marginBottom: 24 }}>
+         <Row className="card-container" style={{ marginBottom: 24 }}>
 
             <Col style={{ backgroundColor: "#fff" }} span={24}>
 
@@ -87,17 +87,19 @@ function Dashboard(props) {
 
             </Col>
 
+
          </Row>
 
-         <Row className="card-container">
+         <Row className="card-container" style={{ padding: 24, background: '#fff' }}>
 
-            <Col style={{ backgroundColor: "#fff" }} span={24}>
+            <Col span={24}>
 
-               <Tabs defaultActiveKey="1">
-                  <TabPane style={{ marginLeft: 100 }} tab={<Text style={{ fontSize: 18 }}> Visits</Text>} key="1">
+               <Tabs defaultActiveKey="1" >
+
+                  <TabPane style={{ paddingLeft: 0, paddingRight: 100, margin: 0 }} tab={<Text style={{ fontSize: 18 }}> الزيارات</Text>} key="1">
                      <VisitChart />
                   </TabPane>
-                  <TabPane tab={<Text style={{ fontSize: 18 }}><LineChartOutlined />  Finances</Text>} key="2">Content of Tab Pane 2</TabPane>
+                  <TabPane tab={<Text style={{ fontSize: 18 }}> <LineChartOutlined /> الماليه</Text>} key="2">Content of Tab Pane 2</TabPane>
                </Tabs>
             </Col>
 

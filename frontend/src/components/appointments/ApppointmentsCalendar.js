@@ -13,32 +13,15 @@ function AppointmentsCalendar(props) {
    const [state, setState] = useState({
       value: moment(Date.now()),
       visiblePopover: false,
-      appoin: []
    });
 
 
-   // useEffect(() => {
 
-   //    props.getABNTs();
-
-   // }, []);
-
-   // useEffect(() => {
-   //    const fetchData = () => {
-
-   //       setState({ appoin: props.appointmentes });
-
-
-   //    };
-   //    fetchData();
-   // }, []);
-
-   // console.log(state.appoin)
 
    const getAppointmentCount = (value) => {
-      const dateValue = moment(value.format('MMMM DD')).unix('X');
+      const dateValue = moment(value.format('yyyy MMMM DD')).unix('X');
       return props.appointments.filter((appointment) => {
-         return dateValue === moment(moment(appointment.date).format('MMMM DD')).unix('X');
+         return dateValue === moment(moment(appointment.date).format('yyyy MMMM DD')).unix('X');
       }).length;
    }
 
@@ -58,6 +41,7 @@ function AppointmentsCalendar(props) {
 
 
    const dateFullCellRender = (date) => {
+
       const appointmentCount = getAppointmentCount(date);
       const startOfMonth = moment(JSON.parse(JSON.stringify(state.value))).startOf('month').unix('X');
       const endOfMonth = moment(JSON.parse(JSON.stringify(state.value))).endOf('month').unix('X');
@@ -185,7 +169,7 @@ function AppointmentsCalendar(props) {
                <Text strong style={{ fontSize: '21px', margin: '0px 12px 0px 0px' }}>{moment(Date.now()).format('MMMM DD, YYYY')}</Text>
             </Col>
          </Row>
-         {/* <Alert message={`You selected date: ${value.format('MMMM DD, YYYY')}`} /> */}
+         <Alert message={`You selected date: ${value.format('MMMM DD, YYYY')}`} />
 
          <Calendar
             dateFullCellRender={dateFullCellRender}

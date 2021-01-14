@@ -2,11 +2,12 @@ import React, { useEffect } from "react";
 import { Layout, Row, Col, Dropdown, Menu, Typography, Avatar } from 'antd';
 
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 import { checkAuthenticated, load_user, logout } from "../redux";
 import SiderNavigation from './SiderNavigation';
-import { UserOutlined, LogoutOutlined } from '@ant-design/icons';
-import Logo from '../alhassn.png';
+import { UserOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons';
+import Logo from '../tooth.svg';
 import Login from '../pages/Login';
 
 import "./Layout.css";
@@ -28,8 +29,6 @@ const CustomLayout = (props) => {
   }, []);
 
 
-
-
   return (
     <>
 
@@ -44,12 +43,12 @@ const CustomLayout = (props) => {
               collapsed={0}
               breakpoint="lg"
               width="15%"
-
+              // theme='light'
               // style={{ height: '100vh', background: '#3f4d67', boxShadow: '3px 0px 15px 2px #8c8c8c', position: 'fixed', left: 0, overflow: 'auto', }}
-              style={{ height: '100vh', boxShadow: '3px 0px 15px 2px #8c8c8c', position: 'fixed', left: 0, overflow: 'auto', }}
+              style={{ height: '100vh', position: 'fixed', right: 0, overflow: 'auto', }}
             >
               <div className="logo">
-                <img style={{ width: '100%', maxWidth: '150px' }} src={Logo} />
+                <img style={{ width: '100%', maxWidth: '150px', height: '70%' }} src={Logo} />
                 <br />
 
                 <Text style={{ color: '#fff' }}></Text>
@@ -60,19 +59,27 @@ const CustomLayout = (props) => {
 
             </Sider>
 
-            <Layout className="site-layout" style={{ marginLeft: "15%" }}>
+            <Layout className="site-layout" style={{ marginRight: "15%", minHeight: '100vh' }}>
 
-              <Header style={{ boxShadow: '0px -1px 3px rgba(0, 0, 0, 1)', background: '#fff', width: '100%' }}>
+              <Header style={{ background: '#F0F2F5', width: '100%' }}>
                 <Row>
-                  <Col style={{ paddingRight: 16 }} align="right" span={24}>
+                  <Col align="left" span={24}>
                     <Dropdown overlay={
-                      <Menu >
+                      <Menu style={{ marginTop: 10 }}>
                         <Menu.Item key="1" onClick={props.logout}>
                           <LogoutOutlined />
-                      Logout
-                  </Menu.Item>
+                        تسجيل الخروج
+                        </Menu.Item>
+                        <Menu.Item key="2" >
+                          <Link to={`/settings`}>
+                            <SettingOutlined style={{ marginLeft: 8, marginRight: 0 }} />
+                            الاعدادات
+                          </Link>
+                        </Menu.Item>
                       </Menu >
-                    } trigger={['click']}>
+                    }
+
+                      trigger={['click']}>
                       <a className="ant-dropdown-link" >
                         <Avatar style={{ backgroundColor: '#1890ff' }} icon={<UserOutlined />} />
                         {props.username == null ? (

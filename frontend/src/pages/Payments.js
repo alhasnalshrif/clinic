@@ -263,6 +263,7 @@ console.log(props.bill)
                   onSearch={(value) => getPaymentTransactions(value, state.rangeDate)}
                   onChange={handleSearchChange}
                />
+
             </Col>
             <Col span={12} align="right">
                <Radio.Group value={state.selectedFilterBy} onChange={onRadioChange}>
@@ -272,9 +273,11 @@ console.log(props.bill)
                   <Radio.Button value="year">All Year</Radio.Button>
                </Radio.Group>
             </Col>
+
             <Col style={{ marginBottom: 8 }} span={12}>
                <RangePicker allowClear={true} value={state.rangeDate} format="MMMM DD, YYYY" onChange={onRangePickerChange} style={{ width: '100%' }} />
             </Col>
+            
          </Row>
          <Row>
             <Col align="right">

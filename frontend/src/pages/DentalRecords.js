@@ -8,15 +8,6 @@ const { Content } = Layout;
 function DentalRecords(props) {
 
 
-   // useEffect(() => {
-   //    const fetchData = async () => {
-   //       try {
-   //          await props.getASNTSDetail(props.match.params.id);
-   //       } catch (err) { }
-   //    };
-   //    fetchData();
-   // }, []);
-
    const { id: match } = props.match.params;
 
    if (props.match.params.id)
