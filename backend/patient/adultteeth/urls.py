@@ -1,7 +1,7 @@
 
 from django.urls import path
 from rest_framework.routers import DefaultRouter
-from treatment.views import AdultTeethChartViewSet
+from patient.views import AdultTeethChartViewSet
 
 
 router = DefaultRouter()

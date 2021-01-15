@@ -22,10 +22,8 @@ function DentalRecordsTable(props) {
    }, []);
 
    const fetchData = async () => {
-      return await props.getPATN()
-         .then(() => {
-            setPatients(props.patients);
-         });
+      await props.getPATN();
+      setPatients(props.patients);
    }
 
    const updateInput = async (value) => {

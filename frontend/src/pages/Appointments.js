@@ -14,8 +14,6 @@ function Appointments(props) {
 
    const [appointment, setAppointment] = useState();
 
-
-
    useEffect(() => {
       getAppointmentsTable();
 
@@ -24,15 +22,13 @@ function Appointments(props) {
 
    const getAppointmentsTable = async () => {
 
-      return await props.getABNTs()
-         .then(() => {
-            setAppointment(props.appointments);
-         });
+      await props.getABNTs();
+      setAppointment(props.appointments);
 
    }
 
 
-   const updateInput = async (value) => {
+   const updateInput = (value) => {
 
       const filtered = props.appointments.filter(a => {
          return a.patient.includes(value);

@@ -1,14 +1,18 @@
 from rest_framework.response import Response
-
 from rest_framework import permissions
 from rest_framework import viewsets
-from rest_framework.generics import ListAPIView, CreateAPIView
-
 from patient.models import Patient
+from .models import Treatment
+from .serializers import TreatmentSerializer
 
-
-from .models import Treatment, ChildTeethChart, AdultTeethChart
-from .serializers import TreatmentSerializer, ChildTeethChartSerializer, AdultTeethChartSerializer
+from rest_framework.generics import (
+    ListAPIView,
+    RetrieveAPIView,
+    CreateAPIView,
+    DestroyAPIView,
+    UpdateAPIView
+)
+from rest_framework.decorators import APIView
 
 
 class TreatmentViewSet(viewsets.ModelViewSet):
@@ -16,7 +20,19 @@ class TreatmentViewSet(viewsets.ModelViewSet):
     queryset = Treatment.objects.all()
     permission_classes = (permissions.AllowAny,)
 
-   # for recive two or more filter
+    def retrieve(self, request, *args, **kwargs):
+        params = kwargs
+
+        cars = Treatment.objects.filter(patient=params['pk'])
+        serializer = TreatmentSerializer(cars, many=True)
+        return Response(serializer.data)
+
+
+class TreatmentViewSetFilter(viewsets.ModelViewSet):
+    serializer_class = TreatmentSerializer
+    queryset = Treatment.objects.all()
+    permission_classes = (permissions.AllowAny,)
+
     def retrieve(self, request, *args, **kwargs):
         params = kwargs
         print(params['pk'])
@@ -26,14 +42,3 @@ class TreatmentViewSet(viewsets.ModelViewSet):
         serializer = TreatmentSerializer(cars, many=True)
         return Response(serializer.data)
 
-
-class ChildTeethChartViewSet(viewsets.ModelViewSet):
-    serializer_class = ChildTeethChartSerializer
-    queryset = ChildTeethChart.objects.all()
-    permission_classes = (permissions.AllowAny,)
-
-
-class AdultTeethChartViewSet(viewsets.ModelViewSet):
-    serializer_class = AdultTeethChartSerializer
-    queryset = AdultTeethChart.objects.all()
-    permission_classes = (permissions.AllowAny,)

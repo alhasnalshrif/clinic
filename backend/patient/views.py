@@ -7,8 +7,8 @@ from rest_framework.status import (
     HTTP_400_BAD_REQUEST
 )
 
-from .models import Patient
-from .serializers import PatientSerializer
+from .models import Patient, ChildTeethChart, AdultTeethChart
+from .serializers import PatientSerializer, ChildTeethChartSerializer, AdultTeethChartSerializer
 # from django.contrib.auth.models import User
 from users.models import User
 
@@ -36,3 +36,15 @@ class PatientViewSet(viewsets.ModelViewSet):
         serializer = PatientSerializer(new_car)
 
         return Response(serializer.data)
+
+
+class ChildTeethChartViewSet(viewsets.ModelViewSet):
+    serializer_class = ChildTeethChartSerializer
+    queryset = ChildTeethChart.objects.all()
+    permission_classes = (permissions.AllowAny,)
+
+
+class AdultTeethChartViewSet(viewsets.ModelViewSet):
+    serializer_class = AdultTeethChartSerializer
+    queryset = AdultTeethChart.objects.all()
+    permission_classes = (permissions.AllowAny,)

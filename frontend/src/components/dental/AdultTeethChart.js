@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { message } from 'antd';
-import DMFTPopover from '../treatment/DMFTPopover';
+import DMFTPopover from './DMFTPopover';
 import axios from 'axios';
 
 
@@ -12,14 +12,14 @@ const AdultTeethChart = (props) => {
 
    const getChildTeethChart = async () => {
       const res = await axios.get(
-         `${process.env.REACT_APP_API_URL}/treatment/a/1/`,
-         {
-            headers: {
-               "Content-Type": "application/json",
-               Authorization: `JWT ${localStorage.getItem("access")}`,
-               Accept: "application/json",
-            },
-         }
+         `${process.env.REACT_APP_API_URL}/adultteeth/${props.patientId}/`,
+         // {
+         //    headers: {
+         //       "Content-Type": "application/json",
+         //       Authorization: `JWT ${localStorage.getItem("access")}`,
+         //       Accept: "application/json",
+         //    },
+         // }
       );
       setValues(res.data);
    }
@@ -50,7 +50,7 @@ const AdultTeethChart = (props) => {
 
 
    const onToothStatusChange = (toothPosition, value) => {
-      axios.patch(`${process.env.REACT_APP_API_URL}/adultteeth/1/`, { [toothPosition]: value })
+      axios.patch(`${process.env.REACT_APP_API_URL}/adultteeth/${props.patientId}/`, { [toothPosition]: value })
          .then((response) => {
             if (response.status === 200) {
                getChildTeethChart();
@@ -67,40 +67,47 @@ const AdultTeethChart = (props) => {
       <div style={{ width: '500px', margin: '0 auto' }} className="tooth-chart">
          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 450 700" enableBackground="new 0 0 450 700" xmlSpace="preserve">
             <g id="toothLabels">
-               <text id="lbl32" transform="matrix(1 0 0 1 97.9767 402.1409)" fontFamily="'Avenir-Heavy'" fontSize="21px">32</text>
-               <text id="lbl31" transform="matrix(1 0 0 1 94.7426 449.1693)" fontFamily="'Avenir-Heavy'" fontSize="21px">31</text>
-               <text id="lbl30" transform="matrix(1 0 0 1 106.0002 495.5433)" fontFamily="'Avenir-Heavy'" fontSize="21px">30</text>
-               <text id="lbl29" transform="matrix(1 0 0 1 118.0002 538.667)" fontFamily="'Avenir-Heavy'" fontSize="21px">29</text>
-               <text id="lbl28" transform="matrix(0.9999 -1.456241e-02 1.456241e-02 0.9999 136.4086 573.5098)" fontFamily="'Avenir-Heavy'" fontSize="21px">28</text>
-               <text id="lbl27" transform="matrix(1 0 0 1 157.3335 603.8164)" fontFamily="'Avenir-Heavy'" fontSize="17px">27</text>
-               <text id="lbl26" transform="matrix(1 0 0 1 179.3335 623.8164)" fontFamily="'Avenir-Heavy'" fontSize="18px">26</text>
-               <text id="lbl25" transform="matrix(1 0 0 1 204.6669 628.483)" fontFamily="'Avenir-Heavy'" fontSize="18px">25</text>
-               <text id="lbl24" transform="matrix(1 0 0 1 231.3335 628.1497)" fontFamily="'Avenir-Heavy'" fontSize="18px">24</text>
-               <text id="lbl23" transform="matrix(1 0 0 1 256.3335 619.1497)" fontFamily="'Avenir-Heavy'" fontSize="17px">23</text>
-               <text id="lbl22" transform="matrix(1 0 0 1 276.3335 602.483)" fontFamily="'Avenir-Heavy'" fontSize="18px">22</text>
-               <text id="lbl21" transform="matrix(1 0 0 1 286.6669 573.1497)" fontFamily="'Avenir-Heavy'" fontSize="21px">21</text>
-               <text id="lbl20" transform="matrix(1 0 0 1 303.6327 538.667)" fontFamily="'Avenir-Heavy'" fontSize="21px">20</text>
-               <text id="lbl19" transform="matrix(1 0 0 1 322.983 495.5432)" fontFamily="'Avenir-Heavy'" fontSize="21px">19</text>
-               <text id="lbl18" transform="matrix(1 0 0 1 325.1251 449.1686)" fontFamily="'Avenir-Heavy'" fontSize="21px">18</text>
-               <text id="lbl17" transform="matrix(1 0 0 1 324.0004 402.1405)" fontFamily="'Avenir-Heavy'" fontSize="21px">17</text>
-               <text id="lbl16" transform="matrix(1 0 0 1 312.8534 324.1021)" fontFamily="'Avenir-Heavy'" fontSize="21px">16</text>
-               <text id="lbl15" transform="matrix(1 0 0 1 315.3335 275.3333)" fontFamily="'Avenir-Heavy'" fontSize="21px">15</text>
-               <text id="lbl14" transform="matrix(1 0 0 1 311.3335 236)" fontFamily="'Avenir-Heavy'" fontSize="21px">14</text>
-               <text id="lbl13" transform="matrix(1 0 0 1 300.3335 200.6667)" fontFamily="'Avenir-Heavy'" fontSize="21px">13</text>
-               <text id="lbl12" transform="matrix(1 0 0 1 286.6669 172)" fontFamily="'Avenir-Heavy'" fontSize="21px">12</text>
-               <text id="lbl11" transform="matrix(1 0 0 1 270.2269 142.439)" fontFamily="'Avenir-Heavy'" fontSize="21px">11</text>
-               <text id="lbl10" transform="matrix(1 0 0 1 247.5099 118.9722)" fontFamily="'Avenir-Heavy'" fontSize="21px">10</text>
-               <text id="lbl9" transform="matrix(1 0 0 1 227.8432 112.9722)" fontFamily="'Avenir-Heavy'" fontSize="21px">9</text>
-               <text id="lbl8" transform="matrix(1 0 0 1 200.1766 112.9722)" fontFamily="'Avenir-Heavy'" fontSize="21px">8</text>
-               <text id="lbl7" transform="matrix(1 0 0 1 170.5099 117.6388)" fontFamily="'Avenir-Heavy'" fontSize="21px">7</text>
-               <text id="lbl6" transform="matrix(1 0 0 1 148.6667 134.167)" fontFamily="'Avenir-Heavy'" fontSize="21px">6</text>
-               <text id="lbl5" transform="matrix(1 0 0 1 131.3605 164.8335)" fontFamily="'Avenir-Heavy'" fontSize="21px">5</text>
-               <text id="lbl4" transform="matrix(1 0 0 1 119.3927 195.6387)" fontFamily="'Avenir-Heavy'" fontSize="21px">4</text>
-               <text id="lbl3" transform="matrix(1 0 0 1 103.8631 234.4391)" fontFamily="'Avenir-Heavy'" fontSize="21px">3</text>
-               <text id="lbl2" transform="matrix(1 0 0 1 96.2504 275.9999)" fontFamily="'Avenir-Heavy'" fontSize="21px">2</text>
-               <text id="lbl1" transform="matrix(1 0 0 1 93.9767 324.769)" fontFamily="'Avenir-Heavy'" fontSize="21px">1</text>
+               <text id="lbl32" transform="matrix(1 0 0 1 110.9767 402.1409)" fontFamily="'Avenir-Heavy'" fontSize="21px">32</text>
+               <text id="lbl31" transform="matrix(1 0 0 1 110.7426 449.1693)" fontFamily="'Avenir-Heavy'" fontSize="21px">31</text>
+               <text id="lbl30" transform="matrix(1 0 0 1 120.0002 495.5433)" fontFamily="'Avenir-Heavy'" fontSize="21px">30</text>
+               <text id="lbl29" transform="matrix(1 0 0 1 135.0002 538.667)" fontFamily="'Avenir-Heavy'" fontSize="21px">29</text>
+
+               {/* <text id="lbl28" transform="matrix(0.9999 -1.456241e-02 1.456241e-02 0.9999 136.4086 573.5098)" fontFamily="'Avenir-Heavy'" fontSize="21px">28</text> */}
+               <text id="lbl28" transform="matrix(1 0 0 0.9999 160.4086 577.5098)" fontFamily="'Avenir-Heavy'" fontSize="21px">28</text>
+
+               <text id="lbl27" transform="matrix(1 0 0 1 172.3335 603.8164)" fontFamily="'Avenir-Heavy'" fontSize="17px">27</text>
+               <text id="lbl26" transform="matrix(1 0 0 1 190.3335 623.8164)" fontFamily="'Avenir-Heavy'" fontSize="18px">26</text>
+               <text id="lbl25" transform="matrix(1 0 0 1 220.6669 628.483)" fontFamily="'Avenir-Heavy'" fontSize="18px">25</text>
+               <text id="lbl24" transform="matrix(1 0 0 1 245.3335 628.1497)" fontFamily="'Avenir-Heavy'" fontSize="18px">24</text>
+               <text id="lbl23" transform="matrix(1 0 0 1 267.3335 619.1497)" fontFamily="'Avenir-Heavy'" fontSize="17px">23</text>
+
+               <text id="lbl22" transform="matrix(1 0 0 1 290.3335 602.483)" fontFamily="'Avenir-Heavy'" fontSize="18px">22</text>
+               <text id="lbl21" transform="matrix(1 0 0 1 305.6669 573.1497)" fontFamily="'Avenir-Heavy'" fontSize="21px">21</text>
+               <text id="lbl20" transform="matrix(1 0 0 1 321.6327 538.667)" fontFamily="'Avenir-Heavy'" fontSize="21px">20</text>
+               <text id="lbl19" transform="matrix(1 0 0 1 340.983 495.5432)" fontFamily="'Avenir-Heavy'" fontSize="21px">19</text>
+               <text id="lbl18" transform="matrix(1 0 0 1 345.1251 449.1686)" fontFamily="'Avenir-Heavy'" fontSize="21px">18</text>
+               <text id="lbl17" transform="matrix(1 0 0 1 340.0004 402.1405)" fontFamily="'Avenir-Heavy'" fontSize="21px">17</text>
+
+               <text id="lbl16" transform="matrix(1 0 0 1 340.8534 324.1021)" fontFamily="'Avenir-Heavy'" fontSize="21px">16</text>
+               <text id="lbl15" transform="matrix(1 0 0 1 338.3335 275.3333)" fontFamily="'Avenir-Heavy'" fontSize="21px">15</text>
+               <text id="lbl14" transform="matrix(1 0 0 1 330.3335 236)" fontFamily="'Avenir-Heavy'" fontSize="21px">14</text>
+               <text id="lbl13" transform="matrix(1 0 0 1 321.3335 200.6667)" fontFamily="'Avenir-Heavy'" fontSize="21px">13</text>
+               <text id="lbl12" transform="matrix(1 0 0 1 305 172)" fontFamily="'Avenir-Heavy'" fontSize="21px">12</text>
+               <text id="lbl11" transform="matrix(1 0 0 1 290 142.439)" fontFamily="'Avenir-Heavy'" fontSize="21px">11</text>
+               <text id="lbl10" transform="matrix(1 0 0 1 280 118.9722)" fontFamily="'Avenir-Heavy'" fontSize="21px">10</text>
+
+               <text id="lbl9" transform="matrix(1 0 0 1 240.8432 112.9722)" fontFamily="'Avenir-Heavy'" fontSize="21px">9</text>
+               <text id="lbl8" transform="matrix(1 0 0 1 215.1766 112.9722)" fontFamily="'Avenir-Heavy'" fontSize="21px">8</text>
+               <text id="lbl7" transform="matrix(1 0 0 1 175.5099 117.6388)" fontFamily="'Avenir-Heavy'" fontSize="21px">7</text>
+               <text id="lbl6" transform="matrix(1 0 0 1 155.6667 134.167)" fontFamily="'Avenir-Heavy'" fontSize="21px">6</text>
+               <text id="lbl5" transform="matrix(1 0 0 1 139.3605 164.8335)" fontFamily="'Avenir-Heavy'" fontSize="21px">5</text>
+               <text id="lbl4" transform="matrix(1 0 0 1 125.3927 195.6387)" fontFamily="'Avenir-Heavy'" fontSize="21px">4</text>
+               <text id="lbl3" transform="matrix(1 0 0 1 113.8631 234.4391)" fontFamily="'Avenir-Heavy'" fontSize="21px">3</text>
+               <text id="lbl2" transform="matrix(1 0 0 1 110.2504 275.9999)" fontFamily="'Avenir-Heavy'" fontSize="21px">2</text>
+               <text id="lbl1" transform="matrix(1 0 0 1 105.9767 324.769)" fontFamily="'Avenir-Heavy'" fontSize="21px">1</text>
+
             </g>
-            <g id="dmftLabels">
+            {/* <g id="dmftLabels">
                <text id="txtTooth32" transform="matrix(1 0 0 1 5.0001 386.3778)" fontFamily="'MyriadPro-Regular'" fontSize="16px">DFM</text>
                <text id="txtTooth31" transform="matrix(1 0 0 1 0.9998 449.7374)" fontFamily="'MyriadPro-Regular'" fontSize="16px">DFM</text>
                <text id="txtTooth30" transform="matrix(1 0 0 1 9.6668 513.5912)" fontFamily="'MyriadPro-Regular'" fontSize="16px">DFM</text>
@@ -134,6 +141,7 @@ const AdultTeethChart = (props) => {
                <text id="txtTooth2" transform="matrix(1 0 0 1 3.25 260.1059)" fontFamily="'MyriadPro-Regular'" fontSize="16px">DFM</text>
                <text id="txtTooth1" transform="matrix(1 0 0 1 5.0001 338.4393)" fontFamily="'MyriadPro-Regular'" fontSize="16px">DFM</text>
             </g>
+             */}
             <g className="spots">
 
                {/* LOWER RIGHT QUADRANT  */}

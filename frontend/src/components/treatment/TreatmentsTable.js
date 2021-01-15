@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Table, Dropdown, Menu, Button, message, Tag, Typography, Modal } from 'antd';
 import axios from 'axios';
 import moment from 'moment';
@@ -35,20 +35,25 @@ function TreatmentsTable(props) {
    });
 
 
+   console.log(state.treatments);
 
-   // componentDidMount() {
-   //    getTreatments();
-   // }
+
+   useEffect(() => {
+
+      getTreatments();
+
+
+   }, []);
+   console.log(state.treatments);
+
 
    const getTreatments = () => {
       setState({ loading: true });
-      axios.get(`treatments/${props.patientId}`)
+      axios.get(`${process.env.REACT_APP_API_URL}/treatments/${props.patientId}/`)
          .then((response) => {
             if (response.status === 200) {
-               setState({ treatments: response.data.treatments });
-               setTimeout(() => {
-                  setState({ loading: false });
-               }, 500);
+               setState({ treatments: response.data });
+
             }
          })
          .catch((err) => {
@@ -60,13 +65,13 @@ function TreatmentsTable(props) {
    const handleAddTreatment = (values) => {
       const hide = message.loading('Adding New Treatment...', 0);
       // values.date_treated = values.date_treated.format('YYYY-MM-DD');
-      axios.post(`treatments/${props.patientId}/add`, values)
+      axios.post(`${process.env.REACT_APP_API_URL}/treatments/${props.patientId}/`, values)
          .then((response) => {
             if (response.status === 200) {
                hide();
                message.success('New Treatment Added Sucessfully');
                getTreatments();
-               props.getPatient();
+               // props.getPatient();
             }
          })
          .catch((err) => {
@@ -75,11 +80,12 @@ function TreatmentsTable(props) {
             message.error('Someting went wrong! Please, try again');
          });
    }
+   console.log(state.treatments);
 
    const handlePayInstallment = (id, values) => {
       const hide = message.loading('Processing Payment...', 0);
       // values.date_paid = values.date_paid.format('YYYY-MM-DD');
-      axios.post(`paymentTransactions/${id}/add`, values)
+      axios.post(`${process.env.REACT_APP_API_URL}/payment/${id}/`, values)
          .then((response) => {
             if (response.status === 200) {
                hide();
@@ -101,7 +107,7 @@ function TreatmentsTable(props) {
          onOk: () => {
             const hide = message.loading('Deleting Treatment...', 0);
             // values.date_paid = values.date_paid.format('YYYY-MM-DD');
-            axios.delete(`treatments/${id}/delete`)
+            axios.delete(`${process.env.REACT_APP_API_URL}/treatments/${id}/`)
                .then((response) => {
                   if (response.status === 200) {
                      hide();
@@ -167,7 +173,7 @@ function TreatmentsTable(props) {
          onOk: () => {
             const hide = message.loading('Voiding Last Payment Transaction...', 0);
             // values.date_paid = values.date_paid.format('YYYY-MM-DD');
-            axios.delete(`treatments/${id}/voidLastPaymentTransaction`)
+            axios.delete(`${process.env.REACT_APP_API_URL}/treatments/${id}/voidLastPaymentTransaction`)
                .then((response) => {
                   if (response.status === 200) {
                      hide();
@@ -184,7 +190,7 @@ function TreatmentsTable(props) {
          onCancel() { },
       });
    }
-
+   console.log(state.treatments);
    const columns = [
       {
          title: <Text strong>Description</Text>,
@@ -220,7 +226,8 @@ function TreatmentsTable(props) {
          title: <Text strong>Payment Type</Text>,
          dataIndex: 'payment_type',
          render: (text, record) => {
-            return record.payment_type.substring(0, 1).toUpperCase() + record.payment_type.substring(1, record.payment_type.length);
+            // return record.payment_type.substring(0, 1).toUpperCase() + record.payment_type.substring(1, record.payment_type.length);
+            return record.payment_type;
          }
       },
       {
@@ -267,14 +274,14 @@ function TreatmentsTable(props) {
                const fullyPaidMenu = (
                   <Menu>
                      <Menu.Item>
-                        <a  onClick={() => handlePrintPaymentReceipt(record)} target="_blank" rel="noopener noreferrer"><PrinterFilled />Print Receipt</a>
+                        <a onClick={() => handlePrintPaymentReceipt(record)} target="_blank" rel="noopener noreferrer"><PrinterFilled />Print Receipt</a>
                      </Menu.Item>
                      {
-                        props.role === 'dentist' ? (
-                           <Menu.Item>
-                              <a  onClick={() => handleDeleteTreatment(record.id)} target="_blank" rel="noopener noreferrer">Delete Treatment</a>
-                           </Menu.Item>
-                        ) : (null)
+                        // props.role === 'dentist' ? (
+                        <Menu.Item>
+                           <a onClick={() => handleDeleteTreatment(record.id)} target="_blank" rel="noopener noreferrer">Delete Treatment</a>
+                        </Menu.Item>
+                        // ) : (null)
                      }
 
                   </Menu>
@@ -307,15 +314,15 @@ function TreatmentsTable(props) {
                      <InstallmentPaymentsHistoryModal treatment={record} treatmentId={record.id} />
                   </Menu.Item>
 
-                  {props.role === 'dentist' && record.transaction_count === 1 ? (
-                     <Menu.Item>
-                        <a  onClick={() => handleDeleteTreatment(record.id)} target="_blank" rel="noopener noreferrer">Delete Treatment</a>
-                     </Menu.Item>
-                  ) : props.role === 'dentist' && record.transaction_count > 1 ? (
-                     <Menu.Item>
-                        <a   onClick={() => handleVoidLastPaymentTransaction(record.id)} target="_blank" rel="noopener noreferrer">Void Last Payment Transaction</a>
-                     </Menu.Item>
-                  ) : (null)}
+                  {/* {props.role === 'dentist' && record.transaction_count === 1 ? ( */}
+                  <Menu.Item>
+                     <a onClick={() => handleDeleteTreatment(record.id)} target="_blank" rel="noopener noreferrer">Delete Treatment</a>
+                  </Menu.Item>
+                  {/*  ) : props.role === 'dentist' && record.transaction_count > 1 ? ( */}
+                  <Menu.Item>
+                     <a onClick={() => handleVoidLastPaymentTransaction(record.id)} target="_blank" rel="noopener noreferrer">Void Last Payment Transaction</a>
+                  </Menu.Item>
+                  {/*  ) : (null)} */}
                </Menu>
             );
 
@@ -342,21 +349,22 @@ function TreatmentsTable(props) {
             loading={state.loading}
             dataSource={state.treatments}
             size="medium"
+            // width="100%"
             columns={columns}
             scroll={{ x: 1000 }}
             rowKey={(record) => record.id}
-            pagination={
-               {
-                  position: 'both',
-                  showSizeChanger: true,
-                  showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} treatments`,
-                  defaultCurrent: 1,
-                  pageSize: 8,
-                  onChange: (page, pageSize) => {
+            // pagination={
+            //    {
+            //       position: 'both',
+            //       showSizeChanger: true,
+            //       showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} treatments`,
+            //       defaultCurrent: 1,
+            //       pageSize: 8,
+            //       onChange: (page, pageSize) => {
 
-                  }
-               }
-            }
+            //       }
+            //    }
+            // }
          />
       </>
    );

@@ -14,10 +14,8 @@ class Appointment(models.Model):
     created_at = models.DateField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateField(auto_now=True, blank=True, null=True)
     reason = models.CharField(max_length=150)
-    amount_paid = models.IntegerField()
-    current_balance_before = models.IntegerField()
-    new_balance_after = models.IntegerField()
-    date = models.DateField(auto_now=True)
+
+   
     
     def __str__(self):
         return str(self.patient)

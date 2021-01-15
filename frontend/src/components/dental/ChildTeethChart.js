@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { message } from 'antd';
-import DMFTPopover from '../treatment/DMFTPopover';
+import DMFTPopover from './DMFTPopover';
 import axios from 'axios';
 
 const ChildTeethChart = (props) => {
@@ -11,14 +11,14 @@ const ChildTeethChart = (props) => {
 
     const getChildTeethChart = async () => {
         const res = await axios.get(
-            `${process.env.REACT_APP_API_URL}/treatment/c/1/`,
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `JWT ${localStorage.getItem("access")}`,
-                    Accept: "application/json",
-                },
-            }
+            `${process.env.REACT_APP_API_URL}/childteeth/${props.patientId}/`,
+            // {
+            //     headers: {
+            //         "Content-Type": "application/json",
+            //         Authorization: `JWT ${localStorage.getItem("access")}`,
+            //         Accept: "application/json",
+            //     },
+            // }
         );
         setValues(res.data);
     }
@@ -33,7 +33,7 @@ const ChildTeethChart = (props) => {
         fetchData();
     }, [props.user]);
 
-    
+
     const statusColor = (value) => {
         switch (value) {
             case 'Decayed':
@@ -49,7 +49,7 @@ const ChildTeethChart = (props) => {
 
 
     const onToothStatusChange = (toothPosition, value) => {
-        axios.patch(`${process.env.REACT_APP_API_URL}/childteeth/1/`, { [toothPosition]: value })
+        axios.patch(`${process.env.REACT_APP_API_URL}/childteeth/${props.patientId}/`, { [toothPosition]: value })
             .then((response) => {
                 if (response.status === 200) {
                     getChildTeethChart();
@@ -67,28 +67,31 @@ const ChildTeethChart = (props) => {
 
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 450 700" enableBackground="new 0 0 450 700" xmlSpace="preserve">
                 <g className="toothLabels">
-                    <text id="lblT" transform="matrix(1 0 0 1 109.31 423.6409)" fontFamily="'Avenir-Heavy'" fontSize="24px">T</text>
-                    <text id="lblS" transform="matrix(1 0 0 1 126.7426 490.0023)" fontFamily="'Avenir-Heavy'" fontSize="24px">S</text>
-                    <text id="lblR" transform="matrix(1 0 0 1 146.5064 533.043)" fontFamily="'Avenir-Heavy'" fontSize="24px">R</text>
-                    <text id="lblQ" transform="matrix(1 0 0 1 168.0594 560.1663)" fontFamily="'Avenir-Heavy'" fontSize="21px">Q</text>
+
+                    <text id="lblT" transform="matrix(1 0 0 1 120.31 423.6409)" fontFamily="'Avenir-Heavy'" fontSize="24px">T</text>
+                    <text id="lblS" transform="matrix(1 0 0 1 130.7426 490.0023)" fontFamily="'Avenir-Heavy'" fontSize="24px">S</text>
+                    <text id="lblR" transform="matrix(1 0 0 1 160.5064 533.043)" fontFamily="'Avenir-Heavy'" fontSize="24px">R</text>
+                    <text id="lblQ" transform="matrix(1 0 0 1 180.0594 560.1663)" fontFamily="'Avenir-Heavy'" fontSize="21px">Q</text>
                     <text id="lblP" transform="matrix(1 0 0 1 201.0274 564.6503)" fontFamily="'Avenir-Heavy'" fontSize="21px">P</text>
-                    <text id="lblO" transform="matrix(1 0 0 1 229.0002 564.6497)" fontFamily="'Avenir-Heavy'" fontSize="21px">O</text>
-                    <text id="lblN" transform="matrix(1 0 0 1 261.966 560.167)" fontFamily="'Avenir-Heavy'" fontSize="21px">N</text>
-                    <text id="lblM" transform="matrix(1 0 0 1 274.6497 533.0432)" fontFamily="'Avenir-Heavy'" fontSize="24px">M</text>
-                    <text id="lblL" transform="matrix(1 0 0 1 301.4584 490.002)" fontFamily="'Avenir-Heavy'" fontSize="24px">L</text>
-                    <text id="lblK" transform="matrix(1 0 0 1 318.6671 423.6405)" fontFamily="'Avenir-Heavy'" fontSize="24px">K</text>
-                    <text id="lblJ" transform="matrix(1 0 0 1 326.1867 278.9355)" fontFamily="'Avenir-Heavy'" fontSize="24px">J</text>
-                    <text id="lblI" transform="matrix(1 0 0 1 308.6669 224.1667)" fontFamily="'Avenir-Heavy'" fontSize="24px">I</text>
-                    <text id="lblH" transform="matrix(1 0 0 1 280.8936 185.2723)" fontFamily="'Avenir-Heavy'" fontSize="24px">H</text>
-                    <text id="lblG" transform="matrix(1 0 0 1 256.5099 157.1388)" fontFamily="'Avenir-Heavy'" fontSize="24px">G</text>
-                    <text id="lblF" transform="matrix(1 0 0 1 230.6667 151.667)" fontFamily="'Avenir-Heavy'" fontSize="24px">F</text>
-                    <text id="lblE" transform="matrix(1 0 0 1 196.0272 151.6668)" fontFamily="'Avenir-Heavy'" fontSize="24px">E</text>
-                    <text id="lblD" transform="matrix(1 0 0 1 166.0594 157.1387)" fontFamily="'Avenir-Heavy'" fontSize="24px">D</text>
-                    <text id="lblC" transform="matrix(1 0 0 1 147.1964 185.2724)" fontFamily="'Avenir-Heavy'" fontSize="24px">C</text>
-                    <text id="lblB" transform="matrix(1 0 0 1 121.5838 224.1666)" fontFamily="'Avenir-Heavy'" fontSize="24px">B</text>
-                    <text id="lblA" transform="matrix(1 0 0 1 109.31 278.9357)" fontFamily="'Avenir-Heavy'" fontSize="24px">A</text>
+                    <text id="lblO" transform="matrix(1 0 0 1 235.0002 564.6497)" fontFamily="'Avenir-Heavy'" fontSize="21px">O</text>
+                    <text id="lblN" transform="matrix(1 0 0 1 276.966 560.167)" fontFamily="'Avenir-Heavy'" fontSize="21px">N</text>
+                    <text id="lblM" transform="matrix(1 0 0 1 300.6497 533.0432)" fontFamily="'Avenir-Heavy'" fontSize="24px">M</text>
+                    <text id="lblL" transform="matrix(1 0 0 1 320.4584 490.002)" fontFamily="'Avenir-Heavy'" fontSize="24px">L</text>
+                    <text id="lblK" transform="matrix(1 0 0 1 335.6671 423.6405)" fontFamily="'Avenir-Heavy'" fontSize="24px">K</text>
+
+                    <text id="lblJ" transform="matrix(1 0 0 1 335.1867 278.9355)" fontFamily="'Avenir-Heavy'" fontSize="24px">J</text>
+                    <text id="lblI" transform="matrix(1 0 0 1 320.6669 224.1667)" fontFamily="'Avenir-Heavy'" fontSize="24px">I</text>
+                    <text id="lblH" transform="matrix(1 0 0 1 300.8936 185.2723)" fontFamily="'Avenir-Heavy'" fontSize="24px">H</text>
+                    <text id="lblG" transform="matrix(1 0 0 1 276.5099 160.1388)" fontFamily="'Avenir-Heavy'" fontSize="24px">G</text>
+                    <text id="lblF" transform="matrix(1 0 0 1 250.6667 151.667)" fontFamily="'Avenir-Heavy'" fontSize="24px">F</text>
+                    <text id="lblE" transform="matrix(1 0 0 1 210.0272 151.6668)" fontFamily="'Avenir-Heavy'" fontSize="24px">E</text>
+                    <text id="lblD" transform="matrix(1 0 0 1 180.0594 160.1387)" fontFamily="'Avenir-Heavy'" fontSize="24px">D</text>
+                    <text id="lblC" transform="matrix(1 0 0 1 160.1964 185.2724)" fontFamily="'Avenir-Heavy'" fontSize="24px">C</text>
+                    <text id="lblB" transform="matrix(1 0 0 1 130.5838 224.1666)" fontFamily="'Avenir-Heavy'" fontSize="24px">B</text>
+                    <text id="lblA" transform="matrix(1 0 0 1 120.31 278.9357)" fontFamily="'Avenir-Heavy'" fontSize="24px">A</text>
                 </g>
-                <g className="dtfmLabels">
+
+                {/* <g className="dtfmLabels">
                     <text id="txtToothT" transform="matrix(1 0 0 1 1.0001 447.0915)" fontFamily="'MyriadPro-Regular'" fontSize="16px">DFM</text>
                     <text id="txtToothS" transform="matrix(1 0 0 1 23.3102 506.416)" fontFamily="'MyriadPro-Regular'" fontSize="16px">DFM</text>
                     <text id="txtToothR" transform="matrix(1 0 0 1 57.4898 569.9049)" fontFamily="'MyriadPro-Regular'" fontSize="16px">DFM</text>
@@ -109,7 +112,7 @@ const ChildTeethChart = (props) => {
                     <text id="txtToothC" transform="matrix(1 0 0 1 59.4649 141.1669)" fontFamily="'MyriadPro-Regular'" fontSize="16px">DFM</text>
                     <text id="txtToothB" transform="matrix(1 0 0 1 25.25 184.2726)" fontFamily="'MyriadPro-Regular'" fontSize="16px">DFM</text>
                     <text id="txtToothA" transform="matrix(1 0 0 1 7.6667 247.2726)" fontFamily="'MyriadPro-Regular'" fontSize="16px">DFM</text>
-                </g>
+                </g> */}
 
                 <g className="spots">
                     <DMFTPopover patientId={props.patientId} toothPosition="LR_T" value={values.LR_T} onChange={onToothStatusChange}>

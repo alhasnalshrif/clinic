@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Radio } from 'antd';
-import TreatmentsPopoverDrawer from './TreatmentsPopoverDrawer';
+import TreatmentsPopoverDrawer from '../treatment/TreatmentsPopoverDrawer';
 import axios from 'axios';
 
 const RadioGroup = Radio.Group;
@@ -38,10 +38,10 @@ const DMFTPopover = (props) => {
 
    const DMFTRadioGroup = (
       <RadioGroup defaultValue="None" value={props.value || ""} onChange={onChange} >
-         <Radio style={radioStyle} value="">None</Radio>
-         <Radio style={radioStyle} value="Decayed">Decayed</Radio>
-         <Radio style={radioStyle} value="Missing">Missing</Radio>
-         <Radio style={radioStyle} value="Filled">Filled Teeth</Radio>
+         <Radio style={radioStyle} value="">لاشئ</Radio>
+         <Radio style={radioStyle} value="Decayed">فاسد</Radio>
+         <Radio style={radioStyle} value="Missing">مفقودة</Radio>
+         <Radio style={radioStyle} value="Filled">محشو</Radio>
       </RadioGroup>);
 
    return (

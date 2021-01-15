@@ -9,16 +9,17 @@ urlpatterns = [
     path("auth/", include("djoser.urls.jwt")),
     path('auth/', include('djoser.urls.authtoken')),
 
-    path('treatment/', include('treatment.treatment.urls')),
-    path('childteeth/', include('treatment.childurl.urls')),
-    path('adultteeth/', include('treatment.adultteeth.urls')),
+    path('treatments/', include('treatment.urls')),
+    path('treatmentsid/', include('treatment.filter.urls')),
+    path('childteeth/', include('patient.childurl.urls')),
+    path('adultteeth/', include('patient.adultteeth.urls')),
 
     path('patient/', include('patient.urls')),
     path('appointments/', include('appointment.urls')),
 
     path('users/', include('users.users.urls')),
     path('stuff/', include('stuff.urls')),
-    path('bill/', include('bill.urls')),
+    path('payment/', include('payment.urls')),
 
 ]
 

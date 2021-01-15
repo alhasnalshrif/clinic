@@ -1,37 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Typography, Skeleton, Row, Col, Tag, Tabs, message } from 'antd';
-import axios from 'axios';
+// import { Link } from 'react-router-dom';
+import { Typography, Row, Col, Tag, Tabs, message, Select } from 'antd';
+// import axios from 'axios';
 import moment from 'moment';
 
 import DescriptionItem from './DescriptionItem';
 import AdultTeethChart from '../dental/AdultTeethChart';
 import ChildTeethChart from '../dental/ChildTeethChart';
 
-import TreatmentsTable from './TreatmentsTable';
+import TreatmentsTable from '../treatment/TreatmentsTable';
 
-import UpdatePersonalInfoModal from './UpdatePersonalInfoModal';
+// import UpdatePersonalInfoModal from './UpdatePersonalInfoModal';
 import { connect } from "react-redux";
 import { getPATNDetail } from "../../redux";
 
 const { TabPane } = Tabs;
 const { Text } = Typography;
+const { Option } = Select;
 
 
 
 function DentalRecord(props) {
 
-  const [state, setState] = useState({
-    loading: true,
-    patient: {},
-    treatments: []
-  });
+
+
+  const [selectedOption, setSelectedOption] = useState("adult");
 
   useEffect(() => {
 
     props.getPATNDetail(props.id);
 
   }, []);
+
+
 
 
   console.log(props.patient)
@@ -55,17 +56,18 @@ function DentalRecord(props) {
   //     });
   // }
 
-  const getRecordOnAddTreatment = (id) => {
-    axios.get(`patients/${id}`)
-      .then((response) => {
-        if (response.status === 200)
-          setState({ patient: response.data });
-      })
-      .catch((err) => {
-        console.error(err);
-        message.error('Something went wrong! Please, try again.');
-      });
-  }
+  // const getRecordOnAddTreatment = (id) => {
+    // axios.get(`patients/${id}`)
+    //   .then((response) => {
+    //     if (response.status === 200)
+    //       setState({ patient: response.data });
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //     message.error('Something went wrong! Please, try again.');
+    //   });
+
+  // }
 
   // const handleUpdate = (id, values) => {
   //   const hide = message.loading('Updating Personal Info...', 0);
@@ -85,69 +87,83 @@ function DentalRecord(props) {
   //     });
   // }
 
-  const lastVisit = !state.patient.last_visit ? (<Tag color="geekblue">New Record</Tag>) : moment(state.patient.last_visit).format('MMMM, DD YYYY');
-  const birthday = moment(state.patient.birthday).format('MMMM DD, YYYY');
-  const age = moment().diff(state.patient.birthday, 'years');
+  const lastVisit = !props.patient.last_visit ? (<Tag color="geekblue">New Record</Tag>) : moment(props.patient.last_visit).format('MMMM, DD YYYY');
+  const birthday = moment(props.patient.birthday).format('MMMM DD, YYYY');
+  const age = moment().diff(props.patient.birthday, 'years');
 
   return (
+
     <>
-      <div style={{ marginBottom: 8 }}>
-        <Row>
-          <Col align="left">
-            <Link to="/dentalrecords"> Back to Dental Records</Link>
-          </Col>
-          {/* <Col align="right">
-            <UpdatePersonalInfoModal patient={state.patient} onUpdate={handleUpdate} />
-          </Col> */}
 
-          <Col align="center" md={{ span: 12 }} sm={{ span: 24 }}>
-            <AdultTeethChart patientId={state.patient.id} />
-          </Col>
+      <Row type="flex">
+        <Col span={8}><DescriptionItem title="الكود" content={props.patient.id} /></Col>
+        <Col span={8}><DescriptionItem title="الاسم" content={props.patient.name} /></Col>
+        <Col span={8}><DescriptionItem title="اخر زياره" content={lastVisit} /></Col>
+        <Col span={8}><DescriptionItem title="تاريخ الميلاد" content={birthday} /></Col>
+        <Col span={8}><DescriptionItem title="العمر" content={age} /></Col>
+        <Col span={8}><DescriptionItem title="العنوان" content={props.patient.address} /></Col>
+        <Col span={8}><DescriptionItem title="المهنه" content={props.patient.occupation} /></Col>
+        <Col span={8}><DescriptionItem title="رقم الهاتف" content={props.patient.phone} /></Col>
+      </Row>
 
-        </Row>
+      <Tabs defaultActiveKey="2">
 
-      </div>
+        <TabPane tab="العلاجات و / أو الإجراءات" key="2">
+          <TreatmentsTable  patientId={props.patient.id} />
+          {/* <TreatmentsTable role={props.role} getPatient={() => getRecordOnAddTreatment(props.id)} patientId={props.patient.id} /> */}
+        </TabPane>
 
-      {/* {state.loading ? (<Skeleton loading={state.loading} paragraph={{ rows: 14 }} active />) : ( */}
-      <>
-        <Row type="flex">
-          <Col span={8}><DescriptionItem title="Code" content={props.patient.id} /></Col>
-          <Col span={8}><DescriptionItem title="Name" content={props.patient.name} /></Col>
-          <Col span={8}><DescriptionItem title="Last Visit" content={lastVisit} /></Col>
-          <Col span={8}><DescriptionItem title="Birthday" content={birthday} /></Col>
-          <Col span={8}><DescriptionItem title="Age" content={age} /></Col>
-          <Col span={8}><DescriptionItem title="Address" content={props.patient.address} /></Col>
-          <Col span={8}><DescriptionItem title="Occupation" content={props.patient.occupation} /></Col>
-          <Col span={8}><DescriptionItem title="Civil Status" content={props.patient.civil_status} /></Col>
-          <Col span={8}><DescriptionItem title="Contact Number" content={props.patient.phone} /></Col>
-        </Row>
-        <Tabs defaultActiveKey="2">
-          <TabPane tab="Treatments and/or Procedures" key="2">
-            {/* <TreatmentsTable role={props.role} getPatient={() => getRecordOnAddTreatment(props.id)} patientId={state.patient.id} /> */}
-          </TabPane>
-          <TabPane tab="Dental Chart" key="3">
-            <Row>
-              <Col align="center" span={24}>
-                <Text strong>Legend: </Text>
-                <br />
-                <Tag color="#ffc53d">Decayed</Tag>
-                <Tag color="#ff4d4f">Missing</Tag>
-                <Tag color="#40a9ff">Filled Teeth</Tag>
-              </Col>
+        <TabPane tab="الاسنان" key="3">
 
-              <Col align="center" md={{ span: 12 }} sm={{ span: 24 }}>
-                <ChildTeethChart patientId={state.patient.id} />
-              </Col>
+          <Row>
 
-              <Col align="center" md={{ span: 12 }} sm={{ span: 24 }}>
-                <AdultTeethChart patientId={state.patient.id} />
-              </Col>
+            <Col align="center" span={24}>
 
-            </Row>
-          </TabPane>
-        </Tabs>
-      </>
-      {/* )} */}
+              <Text strong>عنوان : </Text>
+              <br />
+              <Tag color="#ffc53d">فاسد</Tag>
+              <Tag color="#ff4d4f">مفقودة</Tag>
+              <Tag color="#40a9ff">محشو</Tag>
+            </Col>
+
+
+            <Select
+              style={{ width: 120 }}
+              onChange={value => {
+                console.log(value);
+                setSelectedOption(value)
+              }}
+              defaultValue={selectedOption}
+
+            >
+
+
+              <Option value={"adult"}>
+                بالغ
+              </Option>
+
+              <Option value={"child"}>
+                طفل
+              </Option>
+            </Select>
+
+            {selectedOption === "child" ? (
+              <ChildTeethChart patientId={props.patient.id} />
+
+            ) : (
+                <AdultTeethChart patientId={props.patient.id} />
+
+              )}
+
+
+
+          </Row>
+        </TabPane>
+
+
+      </Tabs>
+
+
     </>
   );
 
@@ -158,7 +174,6 @@ const mapStateToProps = state => {
   return {
 
     patient: state.patient.patientsDetail,
-    // loading: state.Abointment.loading
   };
 };
 
