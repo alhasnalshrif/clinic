@@ -38,7 +38,7 @@ const SiderNavigation = withRouter((props) => {
 
          <Menu.Item key="/transactionlog">
             <DollarCircleFilled />
-            <span>Transaction Log</span>
+            <span>سجل المعاملات</span>
             <Link to="/transactionlog"></Link>
          </Menu.Item>
 

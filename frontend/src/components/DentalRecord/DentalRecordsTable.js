@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Button, Row, Col, message, Typography, Input, Tag } from 'antd';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-
+import axios from 'axios';
 import { connect } from "react-redux";
 import { getPATN } from "../../redux";
 
@@ -24,6 +24,12 @@ function DentalRecordsTable(props) {
    const fetchData = async () => {
       await props.getPATN();
       setPatients(props.patients);
+
+      const res = await axios.get(
+         `${process.env.REACT_APP_API_URL}/patient/`,
+
+      );
+      setPatients(res.data);
    }
 
    const updateInput = async (value) => {

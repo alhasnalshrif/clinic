@@ -23,7 +23,7 @@ export const getBILLS = () => async (dispatch) => {
 
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}/bill/`,
+        `${process.env.REACT_APP_API_URL}/payment/`,
         // config
       );
 
@@ -61,7 +61,7 @@ export const getBILLDetail = (id) => async (dispatch) => {
 
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}/bill/${id}/`,
+        `${process.env.REACT_APP_API_URL}/payment/${id}/`,
         // config
       );
 
@@ -101,7 +101,7 @@ export const createBILL = (formData) => async (dispatch) => {
 
     try {
       const res = await axios.post(
-        `${process.env.REACT_APP_API_URL}/bill/`,
+        `${process.env.REACT_APP_API_URL}/payment/`,
         // config,
         formData
       );

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Divider, Timeline, Popover, Drawer, } from 'antd';
-import moment from 'moment';
 
 function AppointmentsPopoverDrawer(props) {
 
@@ -69,27 +68,13 @@ function AppointmentsPopoverDrawer(props) {
 
                      return (
                         <Timeline.Item key={appointment.id}>
-                           {appointment.patient.name} @ {moment(appointment.time).format('h:mm A')} <Divider type="vertical" /> {appointment.reason}
+                           {appointment.patient} @ {appointment.time} <Divider type="vertical" /> {appointment.reason}
                         </Timeline.Item>
                      );
                   })
                }
             </Timeline>
 
-            {/* SECOND LEVEL DAWER*/}
-            {/* <Button type="primary" onClick={showChildrenDrawer}>
-                  Two-level drawer
-               </Button>
-               <Drawer
-                  title="Two-level Drawer"
-                  width={320}
-                  closable={true}
-                  onClose={onChildrenDrawerClose}
-                  visible={state.childrenDrawer}
-               >
-                  This is two-level drawer
-               </Drawer> */}
-            {/* SECOND LEVEL DAWER*/}
 
 
          </Drawer>

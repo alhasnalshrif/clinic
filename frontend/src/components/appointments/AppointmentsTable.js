@@ -332,6 +332,7 @@ function AppointmentsTable(props) {
                   enterButton
                   onChange={(e) => props.updateInput(e.target.value)}
                />
+
             </Col>
 
          </Row>

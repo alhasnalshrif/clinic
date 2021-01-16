@@ -3,7 +3,6 @@ from patient.models import Patient
 from users.models import User
 
 
-
 class Appointment(models.Model):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE )
     doctor = models.ForeignKey(
@@ -22,3 +21,6 @@ class Appointment(models.Model):
 
     class Meta:
         ordering = ('date',)
+
+
+

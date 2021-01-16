@@ -119,7 +119,7 @@ function AppointmentsCalendar(props) {
                         </Card>
                      )
                }
-            </AppointmentsPopoverDrawer>
+            </AppointmentsPopoverDrawer >
 
          </div>
       );

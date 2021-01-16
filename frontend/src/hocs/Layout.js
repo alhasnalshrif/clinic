@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { checkAuthenticated, load_user, logout } from "../redux";
 import SiderNavigation from './SiderNavigation';
 import { UserOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons';
-import Logo from '../tooth.svg';
+import Logo from '../tothh.png';
 import Login from '../pages/Login';
 
 import "./Layout.css";
@@ -48,7 +48,7 @@ const CustomLayout = (props) => {
               style={{ height: '100vh', position: 'fixed', right: 0, overflow: 'auto', }}
             >
               <div className="logo">
-                <img style={{ width: '100%', maxWidth: '150px', height: '70%' }} src={Logo} />
+                <img style={{ width: '100%', maxWidth: '150px', height: '120px' }} src={Logo} />
                 <br />
 
                 <Text style={{ color: '#fff' }}></Text>
