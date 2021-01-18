@@ -3,7 +3,7 @@ import { Row, Col, Table, Dropdown, Menu, Button, message, Tag, Typography, Moda
 import axios from 'axios';
 import moment from 'moment';
 
-import AddTreatmentModal from '../payments/AddTreatmentModal';
+import AddTreatmentModal from './AddTreatmentModal';
 import InstallmentPaymentsHistoryModal from '../payments/InstallmentPaymentsHistoryModal';
 import PayInstallmentModal from '../payments/PayInstallmentModal';
 

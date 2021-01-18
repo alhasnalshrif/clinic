@@ -56,13 +56,13 @@ function CreateDentalRecordModal(props) {
             <UsergroupAddOutlined />
                   Create New Dental Record
                </Button>
-         <Modal
+         {/* <Modal
             visible={state.visible}
             title="Create a New Dental Record"
             okText="Create"
             onCancel={hideModal}
             onOk={handleSubmit}
-         >
+         > */}
             <Form layout="vertical" onSubmit={handleSubmit}
                form={form}>
                <Row>
@@ -124,7 +124,7 @@ function CreateDentalRecordModal(props) {
                </Row>
                <Button hidden htmlType="submit"></Button>
             </Form>
-         </Modal>
+         {/* </Modal> */}
       </>
    );
 

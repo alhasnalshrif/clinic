@@ -45,13 +45,13 @@ function DeclineCancelAppointmentModal(props) {
       <>
          <a disabled={props.disabled}  onClick={showModal} target="_blank" rel="noopener noreferrer">{buttonText}</a>
 
-         <Modal
+         {/* <Modal
             visible={state.visible}
             title={title}
             okText="Send"
             onCancel={hideModal}
             onOk={handleSubmit}
-         >
+         > */}
             <Form layout="vertical" onSubmit={handleSubmit}
                form={form}>
                <Row gutter={8}>
@@ -65,7 +65,7 @@ function DeclineCancelAppointmentModal(props) {
                </Row>
                <Button hidden htmlType="submit"></Button>
             </Form>
-         </Modal>
+         {/* </Modal> */}
       </>
    );
 

@@ -49,13 +49,13 @@ function PatientCreateAppointmentModal(props) {
    return (
       <>
          <Button onClick={showModal} type="primary">Create New Appointment</Button>
-         <Modal
+         {/* <Modal
             visible={state.visible}
             title="Create a New Appointment"
             okText="Create"
             onCancel={hideModal}
             onOk={handleSubmit}
-         >
+         > */}
             <Form layout="vertical" onSubmit={handleSubmit}
                form={form}>
                <Row gutter={8}>
@@ -96,7 +96,7 @@ function PatientCreateAppointmentModal(props) {
                </Row>
                <Button hidden htmlType="submit"></Button>
             </Form>
-         </Modal>
+         {/* </Modal> */}
       </>
    );
 

@@ -44,13 +44,13 @@ function PayInstallmentModal(props) {
    return (
       <>
          <a  disabled={props.disabled} onClick={showModal} target="_blank" rel="noopener noreferrer">Pay Installment</a>
-         <Modal
+         {/* <Modal
             visible={state.visible}
             title="Pay Installment"
             okText="Pay"
             onCancel={hideModal}
             onOk={handleSubmit}
-         >
+         > */}
             <Form layout="vertical" onSubmit={handleSubmit} form={form}>
 
                <Row gutter={8}>
@@ -73,7 +73,7 @@ function PayInstallmentModal(props) {
                </Row>
                <Button hidden htmlType="submit"></Button>
             </Form>
-         </Modal>
+         {/* </Modal> */}
       </>
    );
 

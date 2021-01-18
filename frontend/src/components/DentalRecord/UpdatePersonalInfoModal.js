@@ -55,13 +55,13 @@ function UpdatePersonalInfoModal(props) {
    return (
       <>
          <Button onClick={showModal} type="default"><EditFilled /> Update Info</Button>
-         <Modal
+         {/* <Modal
             visible={state.visible}
             title="Update Patient's Personal Info"
             okText="Update"
             onCancel={hideModal}
             onOk={handleSubmit}
-         >
+         > */}
             <Form layout="vertical" onSubmit={handleSubmit}
                form={form}>
                <Row gutter={8}>
@@ -114,7 +114,7 @@ function UpdatePersonalInfoModal(props) {
                </Row>
                <Button hidden htmlType="submit"></Button>
             </Form>
-         </Modal>
+         {/* </Modal> */}
       </>
    );
 

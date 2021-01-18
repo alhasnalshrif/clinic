@@ -101,13 +101,13 @@ function CreateAppointmentModal(props, { createABNT }) {
       <>
          <Button onClick={showModal} type="primary"><PlusCircleFilled />Create New Appointment</Button>
 
-         <Modal
+         {/* <Modal
             visible={state.visible}
             title="Create a New Appointment"
             okText="Create"
             onCancel={hideModal}
          // onOk={onFinish}
-         >
+         > */}
 
 
             <Form
@@ -212,7 +212,7 @@ function CreateAppointmentModal(props, { createABNT }) {
                </Button>
 
             </Form>
-         </Modal>
+         {/* </Modal> */}
       </>
    );
 

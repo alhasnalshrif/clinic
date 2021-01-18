@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
-import SpinningComponent from '../components/SpinningComponent';
+// import SpinningComponent from '../components/SpinningComponent';
 
 function ResetPasswordLinkPage(props) {
 
@@ -25,7 +25,7 @@ function ResetPasswordLinkPage(props) {
 
 
    if (state.resetPasswordStatus === undefined)
-      return <SpinningComponent message="Resetting password..." />
+      // return <SpinningComponent message="Resetting password..." />
    return <Redirect to={{
       pathname: '/login',
       state: { resetPasswordStatus: state.resetPasswordStatus }
