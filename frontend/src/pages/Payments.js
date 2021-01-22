@@ -63,12 +63,6 @@ function Payments(props) {
 
 
 
-
-
-
-
-
-
    const onRadioChange = (e) => {
       const { value: filterBy } = e.target;
       setState({ selectedFilterBy: filterBy });
@@ -227,7 +221,7 @@ function Payments(props) {
                   enterButton
                   // onSearch={(value) => getPaymentTransactions(value, state.rangeDate)}
                   // onChange={handleSearchChange}
-                  onChange={(e) => props.updateInput(e.target.value)}
+                  onChange={(e) => handleSearch(e.target.value)}
 
                />
 
@@ -258,6 +252,14 @@ function Payments(props) {
             scroll={{ x: 500 }}
             rowKey={(record) => record.id}
 
+            pagination={
+               {
+                  position: 'both',
+                  defaultCurrent: 1,
+                  pageSize: 10,
+                
+               }
+            }
          />
       </Layout>
    );

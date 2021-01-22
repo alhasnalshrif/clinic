@@ -52,10 +52,7 @@ function CreateDentalRecordModal(props) {
 
    return (
       <>
-         <Button type="primary" onClick={showModal}>
-            <UsergroupAddOutlined />
-                  Create New Dental Record
-               </Button>
+         
          {/* <Modal
             visible={state.visible}
             title="Create a New Dental Record"
@@ -122,7 +119,10 @@ function CreateDentalRecordModal(props) {
                      </Form.Item>
                   </Col>
                </Row>
-               <Button hidden htmlType="submit"></Button>
+               <Button type="primary" htmlType="submit">
+            <UsergroupAddOutlined />
+                  Create New Dental Record
+               </Button>
             </Form>
          {/* </Modal> */}
       </>

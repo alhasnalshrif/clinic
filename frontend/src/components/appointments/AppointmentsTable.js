@@ -351,7 +351,7 @@ function AppointmentsTable(props) {
                {
                   position: 'both',
                   defaultCurrent: 1,
-                  pageSize: 8,
+                  pageSize: 10,
                   // showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} appointments`,
                   // onChange: (page, pageSize) => {
                   //    props.getAppointments(state.search, state.rangeDate);

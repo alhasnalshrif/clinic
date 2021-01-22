@@ -12,38 +12,7 @@ import Login from '../pages/Login';
 
 import "./Layout.css";
 
-const data = [
-  {
-    id: '000000001',
-    avatar: 'https://gw.alipayobjects.com/zos/rmsportal/ThXAXghbEsBCCSDihZxY.png',
-    title: '你收到了 14 份新周报',
-    datetime: '2017-08-09',
-    type: 'notification',
-  },
-  {
-    id: '000000002',
-    avatar: 'https://gw.alipayobjects.com/zos/rmsportal/OKJXDXrmkNshAMvwtvhu.png',
-    title: '你推荐的 曲妮妮 已通过第三轮面试',
-    datetime: '2017-08-08',
-    type: 'notification',
-  },
-  {
-    id: '000000003',
-    avatar: 'https://gw.alipayobjects.com/zos/rmsportal/kISTdvpyTAhtGxpovNWd.png',
-    title: '这种模板可以区分多种通知类型',
-    datetime: '2017-08-07',
-    read: true,
-    type: 'notification',
-  },
-  {
-    id: '000000004',
-    avatar: 'https://gw.alipayobjects.com/zos/rmsportal/GvqBnKhFgObvnSGkDsje.png',
-    title: '左侧图标用于区分不同的类型',
-    datetime: '2017-08-07',
-    type: 'notification',
-  },
 
-];
 const { Sider, Header } = Layout;
 const { Text } = Typography;
 
@@ -74,7 +43,7 @@ const CustomLayout = (props) => {
               trigger={null}
               collapsed={0}
               breakpoint="lg"
-              width="15%"
+              width="290px"
               // theme='light'
               // style={{ height: '100vh', background: '#3f4d67', boxShadow: '3px 0px 15px 2px #8c8c8c', position: 'fixed', left: 0, overflow: 'auto', }}
               style={{ height: '100vh', position: 'fixed', right: 0, overflow: 'auto', }}
@@ -91,7 +60,7 @@ const CustomLayout = (props) => {
 
             </Sider>
 
-            <Layout className="site-layout" style={{ marginRight: "15%", minHeight: '100vh' }}>
+            <Layout className="site-layout" style={{ marginRight: "290px", minHeight: '100vh' }}>
 
               <Header style={{ background: '#F0F2F5', width: '100%' }}>
 

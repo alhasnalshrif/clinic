@@ -24,13 +24,13 @@ INSTALLED_APPS = [
     "djoser",
     "corsheaders",
 
-
     'patient',
     'stuff',
     'appointment',
     'payment',
     'treatment',
     'users',
+    'dashboard',
 
 ]
 

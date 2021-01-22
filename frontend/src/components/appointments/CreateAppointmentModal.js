@@ -99,27 +99,20 @@ function CreateAppointmentModal(props, { createABNT }) {
 
    return (
       <>
-         <Button onClick={showModal} type="primary"><PlusCircleFilled />Create New Appointment</Button>
-
-         {/* <Modal
-            visible={state.visible}
-            title="Create a New Appointment"
-            okText="Create"
-            onCancel={hideModal}
-         // onOk={onFinish}
-         > */}
 
 
-            <Form
-               layout="vertical"
-               //  onSubmit={handleSubmit}
-               onFinish={onFinish}
 
-               form={form}
-            >
+         <Form
+            layout="vertical"
+            //  onSubmit={handleSubmit}
+            onFinish={onFinish}
 
-               <Row gutter={8}>
-                  {/* <Col span={24}>
+            form={form}
+         >
+
+            <Row gutter={8}>
+
+               {/* <Col span={24}>
                      <Form.Item label="Date and Time" name="date" rules={[{ required: true, message: 'Date and Time is required.' }]} >
 
 
@@ -142,10 +135,11 @@ function CreateAppointmentModal(props, { createABNT }) {
 
                      </Form.Item>
                   </Col> */}
-                  <Col span={24}>
-                     <Form.Item label="Patient Name" rules={[{ required: true, message: 'Patient name is required' }]}>
 
-                        {/* <Select
+               <Col span={24}>
+                  <Form.Item label="Patient Name" rules={[{ required: true, message: 'Patient name is required' }]}>
+
+                     {/* <Select
                            name="patient"
                            allowClear
                            showSearch
@@ -159,60 +153,59 @@ function CreateAppointmentModal(props, { createABNT }) {
                         >
                            {options}
                         </Select> */}
-                        <Input
-                           name="patient"
-                           value={patient}
-                           onChange={(e) => onChange(e)}
-                        />
-                     </Form.Item>
+                     <Input
+                        name="patient"
+                        value={patient}
+                        onChange={(e) => onChange(e)}
+                     />
+                  </Form.Item>
 
-                  </Col>
+               </Col>
 
-                  <Col span={24}>
-                     <Form.Item label="token" rules={[{ required: true, message: 'Reason is required.' }]}
-                     >
+               <Col span={24}>
+                  <Form.Item label="token" rules={[{ required: true, message: 'Reason is required.' }]}
+                  >
 
-                        <Input
-                           name="token"
-                           value={token}
-                           onChange={(e) => onChange(e)}
-                        />
+                     <Input
+                        name="token"
+                        value={token}
+                        onChange={(e) => onChange(e)}
+                     />
 
-                     </Form.Item>
-                  </Col>
-                  <Col span={24}>
-                     <Form.Item label="Reason" rules={[{ required: true, message: 'Reason is required.' }]}
-                     >
+                  </Form.Item>
+               </Col>
+               <Col span={24}>
+                  <Form.Item label="Reason" rules={[{ required: true, message: 'Reason is required.' }]}
+                  >
 
-                        <Input
-                           name="reason"
-                           value={reason}
-                           onChange={(e) => onChange(e)}
-                        />
+                     <Input
+                        name="reason"
+                        value={reason}
+                        onChange={(e) => onChange(e)}
+                     />
 
-                     </Form.Item>
-                  </Col>
-                  <Col span={24}>
-                     <Form.Item label="doctor" rules={[{ required: true, message: 'Reason is required.' }]}
-                     >
+                  </Form.Item>
+               </Col>
+               <Col span={24}>
+                  <Form.Item label="doctor" rules={[{ required: true, message: 'Reason is required.' }]}
+                  >
 
-                        <Input
-                           name="doctor"
-                           value={doctor}
-                           onChange={(e) => onChange(e)}
-                        />
+                     <Input
+                        name="doctor"
+                        value={doctor}
+                        onChange={(e) => onChange(e)}
+                     />
 
-                     </Form.Item>
-                  </Col>
+                  </Form.Item>
+               </Col>
 
-               </Row>
+            </Row>
 
-               <Button type="primary" htmlType="submit">
-                  Submita
-               </Button>
+            <Button type="primary" htmlType="submit"><PlusCircleFilled />Create New Appointment</Button>
 
-            </Form>
-         {/* </Modal> */}
+
+         </Form>
+
       </>
    );
 
