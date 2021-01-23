@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Row, Col, message, Typography, Input, Tag } from 'antd';
+import { Table, Button, Row, Col, Typography, Input, Tag } from 'antd';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 import axios from 'axios';
@@ -109,7 +109,6 @@ function DentalRecordsTable(props) {
                   style={{ width: '100%', margin: 10 }}
                   placeholder="search dental record by patient name"
                   enterButton
-                  // onSearch={(value) => updateInput(value)}
                   onChange={(e) => updateInput(e.target.value)}
 
                />
@@ -130,10 +129,7 @@ function DentalRecordsTable(props) {
                   position: 'both',
                   defaultCurrent: 1,
                   pageSize: 10,
-                  // showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} appointments`,
-                  // onChange: (page, pageSize) => {
-                  //    props.getAppointments(state.search, state.rangeDate);
-                  // }
+                 
                }
             }
 

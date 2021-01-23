@@ -7,7 +7,7 @@ const TreatmentsPopoverDrawer = (props) => {
 
    const [visible, setVisible] = useState(false);
    const [visiblePopover, setVisiblePopover] = useState(false);
-   const [childrenDrawer, setChildrenDrawer] = useState(false);
+   // const [childrenDrawer, setChildrenDrawer] = useState(false);
 
    const showDrawer = () => {
       props.getTreatments();
@@ -21,13 +21,13 @@ const TreatmentsPopoverDrawer = (props) => {
 
    };
 
-   const showChildrenDrawer = () => {
-      setChildrenDrawer(true);
-   };
+   // const showChildrenDrawer = () => {
+   //    setChildrenDrawer(true);
+   // };
 
-   const onChildrenDrawerClose = () => {
-      setChildrenDrawer(false);
-   };
+   // const onChildrenDrawerClose = () => {
+   //    setChildrenDrawer(false);
+   // };
 
    const handleVisiblePopoverChange = (visible) => {
       setVisiblePopover(visible);

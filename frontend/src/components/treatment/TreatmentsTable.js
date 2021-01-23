@@ -44,6 +44,7 @@ function TreatmentsTable(props) {
 
 
    }, []);
+   
    console.log(state.treatments);
 
 
@@ -274,12 +275,12 @@ function TreatmentsTable(props) {
                const fullyPaidMenu = (
                   <Menu>
                      <Menu.Item>
-                        <a onClick={() => handlePrintPaymentReceipt(record)} target="_blank" rel="noopener noreferrer"><PrinterFilled />Print Receipt</a>
+                        <a href={() => false} onClick={() => handlePrintPaymentReceipt(record)} target="_blank" rel="noopener noreferrer"><PrinterFilled />Print Receipt</a>
                      </Menu.Item>
                      {
                         // props.role === 'dentist' ? (
                         <Menu.Item>
-                           <a onClick={() => handleDeleteTreatment(record.id)} target="_blank" rel="noopener noreferrer">Delete Treatment</a>
+                           <a href={() => false} onClick={() => handleDeleteTreatment(record.id)} target="_blank" rel="noopener noreferrer">Delete Treatment</a>
                         </Menu.Item>
                         // ) : (null)
                      }
@@ -316,11 +317,11 @@ function TreatmentsTable(props) {
 
                   {/* {props.role === 'dentist' && record.transaction_count === 1 ? ( */}
                   <Menu.Item>
-                     <a onClick={() => handleDeleteTreatment(record.id)} target="_blank" rel="noopener noreferrer">Delete Treatment</a>
+                     <a href={() => false} onClick={() => handleDeleteTreatment(record.id)} target="_blank" rel="noopener noreferrer">Delete Treatment</a>
                   </Menu.Item>
                   {/*  ) : props.role === 'dentist' && record.transaction_count > 1 ? ( */}
                   <Menu.Item>
-                     <a onClick={() => handleVoidLastPaymentTransaction(record.id)} target="_blank" rel="noopener noreferrer">Void Last Payment Transaction</a>
+                     <a href={() => false} onClick={() => handleVoidLastPaymentTransaction(record.id)} target="_blank" rel="noopener noreferrer">Void Last Payment Transaction</a>
                   </Menu.Item>
                   {/*  ) : (null)} */}
                </Menu>
@@ -353,18 +354,16 @@ function TreatmentsTable(props) {
             columns={columns}
             scroll={{ x: 1000 }}
             rowKey={(record) => record.id}
-            // pagination={
-            //    {
-            //       position: 'both',
-            //       showSizeChanger: true,
-            //       showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} treatments`,
-            //       defaultCurrent: 1,
-            //       pageSize: 8,
-            //       onChange: (page, pageSize) => {
-
-            //       }
-            //    }
-            // }
+         pagination={
+            {
+               position: 'both',
+               showSizeChanger: true,
+               showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} treatments`,
+               defaultCurrent: 1,
+               pageSize: 8,
+         
+            }
+         }
          />
       </>
    );

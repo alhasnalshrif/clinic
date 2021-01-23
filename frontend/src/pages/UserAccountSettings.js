@@ -18,17 +18,17 @@ function UserAccountSettings(props) {
    //    getUserAccount(props.user.id);
    // }
 
-   const getUserAccount = (id) => {
-      axios.get(`users/${id}`)
-         .then((response) => {
-            if (response.status === 200)
-               setState({ account: response.data.user });
-         })
-         .catch((err) => {
-            console.log(err);
-            message.error('Something went wrong! Please, try again.');
-         });
-   }
+   // const getUserAccount = (id) => {
+   //    axios.get(`users/${id}`)
+   //       .then((response) => {
+   //          if (response.status === 200)
+   //             setState({ account: response.data.user });
+   //       })
+   //       .catch((err) => {
+   //          console.log(err);
+   //          message.error('Something went wrong! Please, try again.');
+   //       });
+   // }
 
 
    const handleUpdate = (values) => {
@@ -72,4 +72,3 @@ function UserAccountSettings(props) {
 
 export default UserAccountSettings;
 
-// account={state.account}

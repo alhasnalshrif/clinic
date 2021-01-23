@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, Tag, Typography, BackTop, Calendar, Row, Col, Alert } from 'antd'
 import AppointmentsPopoverDrawer from './AppointmentsPopoverDrawer';
 import moment from 'moment';
-import { connect } from "react-redux";
 
-import { getABNTs } from "../../redux";
 
 const { Text } = Typography;
 
@@ -126,13 +124,7 @@ function AppointmentsCalendar(props) {
 
    }
 
-   // const hidePopover = () => {
-   //    setState({ visiblePopover: false });
-   // }
 
-   // const handleVisiblePopoverChange = (visible) => {
-   //    setState({ visiblePopover: visible });
-   // }
 
 
    const monthCellRender = (date) => {
@@ -184,19 +176,9 @@ function AppointmentsCalendar(props) {
 }
 
 
-const mapStateToProps = state => {
-   return {
-
-      appointmentes: state.Abointments.assignmentes,
-
-   };
-};
 
 
-export default connect(
-   // mapStateToProps,
-   // { getABNTs }
-)(AppointmentsCalendar);
+export default AppointmentsCalendar;
 
 
 

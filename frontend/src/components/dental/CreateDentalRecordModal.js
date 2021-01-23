@@ -10,10 +10,7 @@ const { Option } = Select;
 function CreateDentalRecordModal(props) {
    const [form] = Form.useForm();
 
-   const [state, setState] = useState({
-      confirmDirty: false,
-      visible: false
-   });
+  
 
    const handleSubmit = (e) => {
       e.preventDefault();
@@ -21,18 +18,12 @@ function CreateDentalRecordModal(props) {
          if (err)
             return
          props.onCreate(values);
-         hideModal();
       });
    }
 
-   const showModal = () => {
-      setState({ visible: true });
-   }
+  
 
-   const hideModal = () => {
-      setState({ visible: false });
-      form.resetFields();
-   }
+ 
 
    const validateContactNumber = (rule, value, callback) => {
 
@@ -53,13 +44,7 @@ function CreateDentalRecordModal(props) {
    return (
       <>
          
-         {/* <Modal
-            visible={state.visible}
-            title="Create a New Dental Record"
-            okText="Create"
-            onCancel={hideModal}
-            onOk={handleSubmit}
-         > */}
+        
             <Form layout="vertical" onSubmit={handleSubmit}
                form={form}>
                <Row>
@@ -124,7 +109,7 @@ function CreateDentalRecordModal(props) {
                   Create New Dental Record
                </Button>
             </Form>
-         {/* </Modal> */}
+        
       </>
    );
 

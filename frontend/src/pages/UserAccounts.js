@@ -2,6 +2,7 @@ import React from 'react';
 import UserAccountsTable from '../components/user/UserAccountsTable';
 import { Layout } from 'antd';
 import UserAccount from '../components/user/UserAccount';
+
 const { Content } = Layout;
 
 function UserAccounts(props) {

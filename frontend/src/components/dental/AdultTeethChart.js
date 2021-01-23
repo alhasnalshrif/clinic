@@ -13,13 +13,7 @@ const AdultTeethChart = (props) => {
    const getChildTeethChart = async () => {
       const res = await axios.get(
          `${process.env.REACT_APP_API_URL}/adultteeth/${props.patientId}/`,
-         // {
-         //    headers: {
-         //       "Content-Type": "application/json",
-         //       Authorization: `JWT ${localStorage.getItem("access")}`,
-         //       Accept: "application/json",
-         //    },
-         // }
+        
       );
       setValues(res.data);
    }

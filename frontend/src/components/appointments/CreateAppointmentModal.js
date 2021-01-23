@@ -1,24 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { message, Modal, Form, Input, Row, Col, DatePicker, Select, Button } from 'antd';
-import axios from 'axios';
-import moment from 'moment';
+import { message, Form, Input, Row, Col, DatePicker, Select, Button } from 'antd';
+// import moment from 'moment';
 import { PlusCircleFilled } from '@ant-design/icons';
 
 import { connect } from "react-redux";
-import { createABNT } from "../../redux";
+import {  createABNT } from "../../redux";
 
 const { Option } = Select;
 
 
 
-function CreateAppointmentModal(props, { createABNT }) {
+function CreateAppointmentModal(props, {  createABNT }) {
 
-   const [state, setState] = useState({
-      visible: false,
-   });
+ 
 
    const [formData, setFormData] = useState({
-      token: null,
       reason: "",
       patient: "",
       doctor: "",
@@ -26,7 +22,7 @@ function CreateAppointmentModal(props, { createABNT }) {
 
    console.log(formData)
 
-   const { patient, reason, doctor, token } = formData;
+   const { patient, reason, doctor } = formData;
 
    console.log(formData)
 
@@ -41,7 +37,7 @@ function CreateAppointmentModal(props, { createABNT }) {
    // useEffect(() => {
    //    const fetchData = async () => {
    //       try {
-   //          await props.getPATN();
+   //          await getPATN();
 
    //       } catch (err) { }
    //    };
@@ -52,20 +48,7 @@ function CreateAppointmentModal(props, { createABNT }) {
    console.log(props.patient)
 
 
-   // const handleSubmit = (e) => {
 
-   //    e.preventDefault();
-
-   //    // props.form.validateFields((err, values) => {
-   //    //    if (err)
-   //    //       return
-
-   //    props.createABNT(patient, reason);
-
-   //    // hideModal();
-
-   //    // });
-   // }
    const onFinish = () => {
       console.log(formData)
 
@@ -76,26 +59,18 @@ function CreateAppointmentModal(props, { createABNT }) {
    console.log(onFinish())
 
 
-   const showModal = () => {
-      setState({ visible: true });
-   }
-
-   const hideModal = () => {
-      setState({ visible: false });
-      form.resetFields();
-   }
 
 
-   const disabledDateTime = () => {
-      return {
-         disabledHours: () => [0, 1, 2, 3, 4, 5, 6, 7, 18, 19, 20, 21, 22, 23],
-      };
-   }
+   // const disabledDateTime = () => {
+   //    return {
+   //       disabledHours: () => [0, 1, 2, 3, 4, 5, 6, 7, 18, 19, 20, 21, 22, 23],
+   //    };
+   // }
 
    const [form] = Form.useForm();
 
 
-   // const options = props.patient.map(d => <Option key={d.id}>{d.name}</Option>)
+   const options = props.patient.map(d => <Option key={d.id}>{d.name}</Option>)
 
    return (
       <>
@@ -104,7 +79,7 @@ function CreateAppointmentModal(props, { createABNT }) {
 
          <Form
             layout="vertical"
-            //  onSubmit={handleSubmit}
+
             onFinish={onFinish}
 
             form={form}
@@ -137,43 +112,29 @@ function CreateAppointmentModal(props, { createABNT }) {
                   </Col> */}
 
                <Col span={24}>
-                  <Form.Item label="Patient Name" rules={[{ required: true, message: 'Patient name is required' }]}>
+                  <Form.Item label="اسم المريض" rules={[{ required: true, message: 'Patient name is required' }]}>
 
-                     {/* <Select
-                           name="patient"
-                           allowClear
-                           showSearch
-                           placeholder=""
-                           defaultActiveFirstOption={false}
-                           showArrow={false}
-                           filterOption={false}
-                           notFoundContent={null}
-                           value={patient}
-                           onChange={(e) => onChange(e)}
-                        >
-                           {options}
-                        </Select> */}
-                     <Input
+                     <Select
                         name="patient"
+                        allowClear
+                        showSearch
+                        placeholder=""
+                        defaultActiveFirstOption={false}
+                        showArrow={false}
+                        filterOption={false}
+                        notFoundContent={null}
                         value={patient}
                         onChange={(e) => onChange(e)}
-                     />
+                     >
+                        {options}
+                     </Select>
+
+
                   </Form.Item>
 
                </Col>
 
-               <Col span={24}>
-                  <Form.Item label="token" rules={[{ required: true, message: 'Reason is required.' }]}
-                  >
 
-                     <Input
-                        name="token"
-                        value={token}
-                        onChange={(e) => onChange(e)}
-                     />
-
-                  </Form.Item>
-               </Col>
                <Col span={24}>
                   <Form.Item label="Reason" rules={[{ required: true, message: 'Reason is required.' }]}
                   >
@@ -217,15 +178,10 @@ const mapStateToProps = state => {
 
       patient: state.patient.patients,
 
-      // loading: state.Abointment.loading
    };
 };
 
-// const mapDispatchToProps = dispatch => {
-//    return {
-//       createASNT: (asnt) => dispatch(createASNT(asnt))
-//    };
-// };
+
 
 export default connect(
    mapStateToProps,

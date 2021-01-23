@@ -1,15 +1,12 @@
 import React from 'react';
 import 'antd/dist/antd.css';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { Layout } from 'antd';
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 
-// MY COMPONENTS
-// import SpinningComponent from './components/SpinningComponent';
 
 // PAGES 
 import Login from './pages/Login';
-import PatientHomePage from './pages/PatientHomePage';
+import Reception from './pages/Reception';
 import UserAccountSettings from './pages/UserAccountSettings';
 import Dashboard from './pages/Dashboard';
 import DentalRecords from './pages/DentalRecords';
@@ -18,7 +15,6 @@ import Appointments from './pages/Appointments';
 import SMSTextMessaging from './pages/SMSTextMessaging';
 import UserAccounts from './pages/UserAccounts';
 
-// import ResetPasswordLinkPage from './pages/ResetPasswordLinkPage';
 
 
 
@@ -48,7 +44,7 @@ function App() {
 								>
 									<Switch location={location}>
 										<Route exact path="/" component={Dashboard} />
-										<Route exact path="/home" component={PatientHomePage} />
+										<Route exact path="/home" component={Reception} />
 
 										<Route exact path="/settings" component={UserAccountSettings} />
 

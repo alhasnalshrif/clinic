@@ -4,8 +4,6 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { ConfigProvider } from 'antd';
-import "./styles.less";
-import "antd/dist/antd.less";
 
 ReactDOM.render(<ConfigProvider direction="rtl">
     <App />

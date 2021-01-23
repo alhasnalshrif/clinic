@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Modal, Form, Input, InputNumber, Row, Col, DatePicker, Select, Button, Radio } from 'antd';
-// import axios from 'axios';
+import {Form, Input, InputNumber, Row, Col, DatePicker, Select, Button, Radio } from 'antd';
+
 import moment from 'moment';
 import { PlusCircleFilled } from '@ant-design/icons';
 import { connect } from "react-redux";
@@ -17,16 +17,6 @@ function AddTreatmentModal(props) {
 
    console.log(props.username)
 
-   // componentDidMount() {
-   //    axios.get('users/admins')
-   //       .then((response) => {
-   //          if (response.status === 200)
-   //             setState({ treatedBySelectOptions: response.data.users });
-   //       })
-   //       .catch((err) => {
-   //          console.log(err);
-   //       });
-   // }
 
    const handleSubmit = (e) => {
       e.preventDefault();
@@ -64,13 +54,7 @@ function AddTreatmentModal(props) {
    return (
       <>
          <Button onClick={showModal} type="primary"><PlusCircleFilled />Add New Treatment</Button>
-         {/* <Modal
-            visible={state.visible}
-            title="Add New Treatment"
-            okText="Add"
-            onCancel={hideModal}
-            onOk={handleSubmit}
-         > */}
+        
             <Form layout="vertical" onSubmit={handleSubmit} form={form}>
 
                <Row gutter={8}>
@@ -211,19 +195,17 @@ function AddTreatmentModal(props) {
                </Row>
                <Button hidden htmlType="submit"></Button>
             </Form>
-         {/* </Modal> */}
+        
       </>
    );
 
 }
 const mapStateToProps = state => {
    return {
-      // token: state.auth.token,
       username: state.auth.user,
 
 
    };
 };
-// export default AddTreatmentModal;
 
 export default connect(mapStateToProps)(AddTreatmentModal);

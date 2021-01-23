@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Radio } from 'antd';
-import TreatmentsPopoverDrawer from '../treatment/TreatmentsPopoverDrawer';
+import TreatmentsPopoverDrawer from '../appointments/TreatmentsPopoverDrawer';
 import axios from 'axios';
 
 const RadioGroup = Radio.Group;

@@ -1,25 +1,23 @@
-import React, { useState } from 'react';
-import { Alert, Button, Badge, Layout, Row, Tabs, Col, notification, Typography, Table, Tag, message, Popconfirm } from 'antd';
-import DescriptionItem from '../components/DentalRecord/DescriptionItem';
-import axios from 'axios';
-import moment from 'moment';
+import React from 'react';
+import { Layout, Tabs, Col,  Typography} from 'antd';
+// import DescriptionItem from '../components/DentalRecord/DescriptionItem';
 import CreateDentalRecordModal from '../components/dental/CreateDentalRecordModal'
 import CreateAppointmentModal from '../components/appointments/CreateAppointmentModal';
 
 const { TabPane } = Tabs;
-const { Text, Title } = Typography;
+const { Title } = Typography;
 const { Content } = Layout;
 
-function PatientHomePage(props) {
+function Reception(props) {
 
 
-   const [state, setState] = useState({
-      dentalRecord: {},
-      balances: [],
-      myAppointments: [],
-      myAppointmentsLoading: false,
-      confirmedAppointments: []
-   });
+   // const [state, setState] = useState({
+   //    dentalRecord: {},
+   //    balances: [],
+   //    myAppointments: [],
+   //    myAppointmentsLoading: false,
+   //    confirmedAppointments: []
+   // });
 
 
    return (
@@ -64,4 +62,4 @@ function PatientHomePage(props) {
    );
 }
 
-export default PatientHomePage;
+export default Reception;

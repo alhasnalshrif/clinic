@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 // import { Link } from 'react-router-dom';
 // import { Typography, Row, Col, Tag, Tabs, message, Select } from 'antd';
-import { Alert, Button, Badge, Layout, Row, Tabs, Col, Select, notification, Typography, Table, Tag, message, Popconfirm } from 'antd';
+import { Alert, Button, Badge, Row, Tabs, Col, Select, notification, Typography, Table, Tag, message, Popconfirm } from 'antd';
 
 import axios from 'axios';
 import moment from 'moment';
@@ -13,7 +13,7 @@ import ChildTeethChart from '../dental/ChildTeethChart';
 
 import TreatmentsTable from '../treatment/TreatmentsTable';
 import PatientCreateAppointmentModal from './PatientCreateAppointmentModal'
-// import UpdatePersonalInfoModal from './UpdatePersonalInfoModal';
+import UpdatePersonalInfoModal from './UpdatePersonalInfoModal';
 import { connect } from "react-redux";
 import { getPATNDetail } from "../../redux";
 
@@ -330,6 +330,8 @@ function DentalRecord(props) {
           {/* <TreatmentsTable role={props.role} getPatient={() => getRecordOnAddTreatment(props.id)} patientId={props.patient.id} /> */}
         </TabPane>
 
+
+
         <TabPane tab="الاسنان" key="2">
 
 
@@ -414,6 +416,7 @@ function DentalRecord(props) {
               (<><Text strong>Attention!</Text> Before you make an appoinment, kindly check the clinic's calendar for available time and day otherwise your appointment will be declined or ignored.</>)
             }
             type="warning" />
+
           <Row style={{ marginBottom: 12 }}>
             <Col align="right">
               {/* <PatientCreateAppointmentModal onCreate={handleCreateAppointment} patientId={props.patient.id} /> */}
@@ -465,7 +468,9 @@ function DentalRecord(props) {
             }
           />
         </TabPane>
-
+        <TabPane tab="تعديل" key="6">
+          <UpdatePersonalInfoModal patientId={props.patient.id} />
+        </TabPane>
       </Tabs>
 
 

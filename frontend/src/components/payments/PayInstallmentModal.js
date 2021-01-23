@@ -32,13 +32,13 @@ function PayInstallmentModal(props) {
       form.resetFields();
    }
 
-   const checkBalance = (rule, value, callback) => {
-      const { currentBalance } = props;;
-      if ((value > currentBalance) || (value < 1 && currentBalance))
-         callback('Cannot be lower or greater than current balance');
-      else
-         callback();
-   }
+   // const checkBalance = (rule, value, callback) => {
+   //    const { currentBalance } = props;;
+   //    if ((value > currentBalance) || (value < 1 && currentBalance))
+   //       callback('Cannot be lower or greater than current balance');
+   //    else
+   //       callback();
+   // }
 
 
    return (

@@ -6,8 +6,7 @@ import { DashboardFilled, IdcardFilled, DollarCircleFilled, CalendarFilled, Mess
 
 const SiderNavigation = withRouter((props) => {
 
-   // get the basepath of the current url
-   // to use as a selected key to correspond with the menu
+  
    const selectedItem = `/${props.location.pathname.split('/')[1]}`;
 
 

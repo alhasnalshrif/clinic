@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
-import { Tabs, Card, Row, Col, Layout, Typography, Skeleton } from 'antd';
-import axios from 'axios';
+import { Tabs, Card, Row, Col, Layout, Typography } from 'antd';
 import VisitChart from '../components/VisitChart';
-import { LineChartOutlined } from '@ant-design/icons';
-import './dashboard.css';
-import RegisterDrawer from '../components/register/RegisterDrawer';
+// import { LineChartOutlined } from '@ant-design/icons';
 
 const { Title, Text } = Typography;
 const { Content } = Layout;
@@ -79,16 +76,6 @@ function Dashboard(props) {
          </Row>
 
 
-         <Row className="card-container" style={{ marginBottom: 24 }}>
-
-            <Col style={{ backgroundColor: "#fff" }} span={24}>
-
-               <RegisterDrawer />
-
-            </Col>
-
-
-         </Row>
 
          <Row className="card-container" style={{ padding: 24, background: '#fff' }}>
 
@@ -99,7 +86,6 @@ function Dashboard(props) {
                   <TabPane style={{ paddingLeft: 0, paddingRight: 100, margin: 0 }} tab={<Text style={{ fontSize: 18 }}> الزيارات</Text>} key="1">
                      <VisitChart />
                   </TabPane>
-                  <TabPane tab={<Text style={{ fontSize: 18 }}> <LineChartOutlined /> الماليه</Text>} key="2">Content of Tab Pane 2</TabPane>
                </Tabs>
             </Col>
 

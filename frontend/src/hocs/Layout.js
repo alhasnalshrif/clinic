@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { checkAuthenticated, load_user, logout } from "../redux";
 import SiderNavigation from './SiderNavigation';
 import { UserOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons';
-import Logo from '../tothh.png';
+import Logo from './tothh.png';
 import Login from '../pages/Login';
 
 import "./Layout.css";
@@ -19,96 +19,95 @@ const { Text } = Typography;
 const CustomLayout = (props) => {
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await props.checkAuthenticated();
-        await props.load_user();
-      } catch (err) { }
-    };
 
-    fetchData();
+    props.checkAuthenticated();
+    props.load_user();
+
+  
   }, []);
 
 
   return (
     <>
 
-      {!props.isAuthenticated ? (
-        <Login />
-      ) : (
-          <Layout className="layout">
+      {props.isAuthenticated ? (
+
+        <Layout className="layout">
 
 
-            <Sider
-              trigger={null}
-              collapsed={0}
-              breakpoint="lg"
-              width="290px"
-              // theme='light'
-              // style={{ height: '100vh', background: '#3f4d67', boxShadow: '3px 0px 15px 2px #8c8c8c', position: 'fixed', left: 0, overflow: 'auto', }}
-              style={{ height: '100vh', position: 'fixed', right: 0, overflow: 'auto', }}
-            >
-              <div className="logo">
-                <img style={{ width: '100%', maxWidth: '150px', height: '120px' }} src={Logo} />
-                <br />
+          <Sider
+            trigger={null}
+            collapsed={0}
+            breakpoint="lg"
+            width="290px"
 
-                <Text style={{ color: '#fff' }}></Text>
+            style={{ height: '100vh', position: 'fixed', right: 0, overflow: 'auto', }}
+          >
+            <div className="logo">
+              <img style={{ width: '100%', maxWidth: '150px', height: '120px' }} src={Logo} />
+              <br />
+
+              <Text style={{ color: '#fff' }}></Text>
 
 
-              </div>
-              <SiderNavigation />
+            </div>
+            <SiderNavigation />
 
-            </Sider>
+          </Sider>
 
-            <Layout className="site-layout" style={{ marginRight: "290px", minHeight: '100vh' }}>
+          <Layout className="site-layout" style={{ marginRight: "290px", minHeight: '100vh' }}>
 
-              <Header style={{ background: '#F0F2F5', width: '100%' }}>
+            <Header style={{ background: '#F0F2F5', width: '100%' }}>
 
-                <Row>
+              <Row>
 
-                  <Col align="left" span={24}>
+                <Col align="left" span={24}>
 
 
 
 
-                    <Dropdown overlay={
-                      <Menu style={{ marginTop: 10 }}>
-                        <Menu.Item key="1" onClick={props.logout}>
-                          <LogoutOutlined />
-                        تسجيل الخروج
-                        </Menu.Item>
-                        <Menu.Item key="2" >
-                          <Link to={`/settings`}>
-                            <SettingOutlined style={{ marginLeft: 8, marginRight: 0 }} />
+                  <Dropdown overlay={
+                    <Menu style={{ marginTop: 10 }}>
+                      <Menu.Item key="1" onClick={props.logout}>
+                        <Link to={`/settings`}>
+                          <SettingOutlined style={{ marginLeft: 8, marginRight: 0 }} />
                             الاعدادات
                           </Link>
-                        </Menu.Item>
-                      </Menu >
-                    }
+                      </Menu.Item>
+                      <Menu.Item key="2" >
+                        <LogoutOutlined />
+                        تسجيل الخروج
 
-                      trigger={['click']}>
-                      <a className="ant-dropdown-link" >
-                        <Avatar style={{ backgroundColor: '#1890ff' }} icon={<UserOutlined />} />
-                        {props.username == null ? (
-                          <Text style={{ color: '#1890ff' }}> hey there </Text>
+                      </Menu.Item>
+                    </Menu >
+                  }
 
-                        ) : (
-                            <Text style={{ color: '#1890ff' }}> {props.username.username} </Text>
+                    trigger={['click']}>
+                    <a className="ant-dropdown-link" >
+                      <Avatar style={{ backgroundColor: '#1890ff' }} icon={<UserOutlined />} />
+                      {props.username == null ? (
+                        <Text style={{ color: '#1890ff' }}> hey there </Text>
 
-
-                          )}
-                      </a>
-                    </Dropdown>
-                  </Col>
-                </Row>
-              </Header>
-
-              {props.children}
+                      ) : (
+                          <Text style={{ color: '#1890ff' }}> {props.username.username} </Text>
 
 
-            </Layout>
+                        )}
+                    </a>
+                  </Dropdown>
+                </Col>
+              </Row>
+            </Header>
+
+            {props.children}
+
 
           </Layout>
+
+        </Layout>
+      ) : (
+
+          <Login />
         )}
 
     </>
@@ -117,7 +116,7 @@ const CustomLayout = (props) => {
 
 const mapStateToProps = state => {
   return {
-    // token: state.auth.token,
+
     username: state.auth.user,
     isAuthenticated: state.auth.isAuthenticated,
 
