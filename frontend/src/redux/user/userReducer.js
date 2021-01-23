@@ -19,9 +19,9 @@ import {
 const initialState = {
   access: localStorage.getItem("access"),
   refresh: localStorage.getItem("refresh"),
-  isAuthenticated: null,
+  isAuthenticated: true,
   user: {},
-  profile:{}
+  profile: {}
 };
 
 export default function auth(state = initialState, action) {

@@ -18,12 +18,12 @@ const { Text } = Typography;
 
 const CustomLayout = (props) => {
 
-  useEffect(() => {
+  useEffect(async () => {
 
-    props.checkAuthenticated();
-    props.load_user();
+    await props.checkAuthenticated();
+    await props.load_user();
 
-  
+
   }, []);
 
 
@@ -68,13 +68,13 @@ const CustomLayout = (props) => {
 
                   <Dropdown overlay={
                     <Menu style={{ marginTop: 10 }}>
-                      <Menu.Item key="1" onClick={props.logout}>
+                      <Menu.Item key="1" >
                         <Link to={`/settings`}>
                           <SettingOutlined style={{ marginLeft: 8, marginRight: 0 }} />
                             الاعدادات
                           </Link>
                       </Menu.Item>
-                      <Menu.Item key="2" >
+                      <Menu.Item key="2" onClick={props.logout}>
                         <LogoutOutlined />
                         تسجيل الخروج
 
@@ -105,8 +105,8 @@ const CustomLayout = (props) => {
           </Layout>
 
         </Layout>
-      ) : (
 
+      ) : (
           <Login />
         )}
 
