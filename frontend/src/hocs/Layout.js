@@ -18,13 +18,18 @@ const { Text } = Typography;
 
 const CustomLayout = (props) => {
 
-  useEffect(async () => {
+  const check = props.checkAuthenticated
+  const load = props.load_user
+  useEffect(() => {
+    const fetchData = async () => {
 
-    await props.checkAuthenticated();
-    await props.load_user();
+      await check();
+      await load();
 
+    }
+    fetchData();
+  }, [check, load]);
 
-  }, []);
 
 
   return (
@@ -39,7 +44,7 @@ const CustomLayout = (props) => {
             trigger={null}
             collapsed={0}
             breakpoint="lg"
-            width="290px"
+            width="275px"
 
             style={{ height: '100vh', position: 'fixed', right: 0, overflow: 'auto', }}
           >
@@ -55,7 +60,7 @@ const CustomLayout = (props) => {
 
           </Sider>
 
-          <Layout className="site-layout" style={{ marginRight: "290px", minHeight: '100vh' }}>
+          <Layout className="site-layout" style={{ marginRight: "275px", minHeight: '100vh' }}>
 
             <Header style={{ background: '#F0F2F5', width: '100%' }}>
 

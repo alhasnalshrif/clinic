@@ -21,10 +21,6 @@ function InstallmentPaymentsHistoryModal(props) {
 
  
 
-   // componentDidMount() {
-   //    getPaymentTransactions();
-   // }
-
    const getPaymentTransactions=()=> {
       setState({ loading: true });
       axios.get(`paymentTransactions/${props.treatmentId}`)
@@ -167,7 +163,6 @@ function InstallmentPaymentsHistoryModal(props) {
             >
                <Table
                   bordered
-                  loading={state.loading}
                   dataSource={state.paymentTransactions}
                   size="small"
                   columns={columns}
@@ -178,10 +173,8 @@ function InstallmentPaymentsHistoryModal(props) {
                         showSizeChanger: true,
                         showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} payments history`,
                         defaultCurrent: 1,
-                        pageSize: 5,
-                        onChange: (page, pageSize) => {
-
-                        }
+                        pageSize: 9,
+                       
                      }
                   }
                />

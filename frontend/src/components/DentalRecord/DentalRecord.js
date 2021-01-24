@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 // import { Link } from 'react-router-dom';
 // import { Typography, Row, Col, Tag, Tabs, message, Select } from 'antd';
-import { Alert, Button, Badge, Row, Tabs, Col, Select, notification, Typography, Table, Tag, message, Popconfirm } from 'antd';
+import { Alert, Button, Badge, Row, Tabs, Col, Select, Typography, Table, Tag, message, Popconfirm } from 'antd';
 
 import axios from 'axios';
 import moment from 'moment';
@@ -51,23 +51,23 @@ function DentalRecord(props) {
     confirmedAppointments: []
   });
 
-  const handleCreate = (values) => {
-    const hide = message.loading('Creating New Dental Record...', 0);
-    values.birthday = values.birthday.format('YYYY-MM-DD');
-    axios.post('patients/create', values)
-      .then((response) => {
-        if (response.status === 200) {
-          hide();
-          message.success('New Dental Record Created Successfully');
-          // getPatients();
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        hide();
-        message.error('Something went wrong! Please, try again.');
-      });
-  }
+  // const handleCreate = (values) => {
+  //   const hide = message.loading('Creating New Dental Record...', 0);
+  //   values.birthday = values.birthday.format('YYYY-MM-DD');
+  //   axios.post('patients/create', values)
+  //     .then((response) => {
+  //       if (response.status === 200) {
+  //         hide();
+  //         message.success('New Dental Record Created Successfully');
+  //         // getPatients();
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       hide();
+  //       message.error('Something went wrong! Please, try again.');
+  //     });
+  // }
 
   // componentDidMount() {
   //    getDentalRecord(props.user.patient_id);
@@ -88,17 +88,17 @@ function DentalRecord(props) {
       });
   }
 
-  const getMyBalances = (patientId) => {
-    axios.get(`/api/patients/${patientId}/myBalances`)
-      .then((response) => {
-        if (response.status === 200)
-          setState({ balances: response.data.balances });
-      })
-      .catch((err) => {
-        console.log(err);
-        message.error('Something went wrong! Please, try again.');
-      });
-  }
+  // const getMyBalances = (patientId) => {
+  //   axios.get(`/api/patients/${patientId}/myBalances`)
+  //     .then((response) => {
+  //       if (response.status === 200)
+  //         setState({ balances: response.data.balances });
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       message.error('Something went wrong! Please, try again.');
+  //     });
+  // }
 
   const getMyAppointments = (patientId) => {
     setState({ myAppointmentsLoading: true });

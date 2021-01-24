@@ -1,8 +1,9 @@
 import React from 'react';
-import { Layout, Tabs, Col,  Typography} from 'antd';
-// import DescriptionItem from '../components/DentalRecord/DescriptionItem';
-import CreateDentalRecordModal from '../components/dental/CreateDentalRecordModal'
-import CreateAppointmentModal from '../components/appointments/CreateAppointmentModal';
+import { Layout, Tabs, Col, Typography } from 'antd';
+
+import CreateDentalRecord from '../components/reception/CreateDentalRecord'
+import CreateAppointment from '../components/reception/CreateAppointment';
+import CreatePayment from '../components/reception/CreatePayment';
 
 const { TabPane } = Tabs;
 const { Title } = Typography;
@@ -29,10 +30,10 @@ function Reception(props) {
 
                <TabPane tab="كشف مريض" key="1" style={{ paddingLeft: 0, paddingRight: 100, margin: 0 }}>
 
-               
+
 
                   <Col align="right" style={{ marginBottom: '8px' }}>
-                     <CreateDentalRecordModal  />
+                     <CreateDentalRecord />
                      {/* <CreateDentalRecordModal onCreate={handleCreate} /> */}
                   </Col>
 
@@ -41,14 +42,14 @@ function Reception(props) {
                <TabPane tab="حجز" key="2">
 
                   <Col style={{ marginBottom: 8 }} align="right">
-                     <CreateAppointmentModal />
+                     <CreateAppointment />
                   </Col>
-                
+
                </TabPane>
 
                <TabPane tab="الفاتوره" key="3">
 
-                 
+                  <CreatePayment />
                </TabPane>
 
 

@@ -10,7 +10,7 @@ const { Option } = Select;
 
 
 
-function CreateAppointmentModal(props, {  createABNT }) {
+function CreatePayment(props, {  createABNT }) {
 
  
 
@@ -187,7 +187,7 @@ export default connect(
    mapStateToProps,
    { createABNT }
 
-)(CreateAppointmentModal);
+)(CreatePayment);
 
 
 

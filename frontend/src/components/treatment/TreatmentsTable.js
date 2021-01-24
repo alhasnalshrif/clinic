@@ -4,6 +4,7 @@ import axios from 'axios';
 import moment from 'moment';
 
 import AddTreatmentModal from './AddTreatmentModal';
+
 import InstallmentPaymentsHistoryModal from '../payments/InstallmentPaymentsHistoryModal';
 import PayInstallmentModal from '../payments/PayInstallmentModal';
 
@@ -44,7 +45,7 @@ function TreatmentsTable(props) {
 
 
    }, []);
-   
+
    console.log(state.treatments);
 
 
@@ -138,25 +139,25 @@ function TreatmentsTable(props) {
       // const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
 
       doc.setFontSize(10);
-      doc.setFontStyle('bold');
-      doc.text('Andres Dental Clinic', 15, 10);
+      // doc.setFontStyle('bold');
+      doc.text('Almasa Dental Clinic', 15, 10);
       doc.setFontSize(8);
       doc.setTextColor(53, 53, 53);
-      doc.setFontStyle('normal');
+      // doc.setFontStyle('normal');
       doc.text('One.O.5ive Department Store', 15, 13);
       doc.text('J. P. Rizal Street, Barangay 18', 15, 16);
       doc.text('Laoag City, 2900 Ilocos Norte', 15, 19);
-      doc.text('09212451903', 15, 22);
+      doc.text('01276328326', 15, 22);
       doc.setTextColor(0, 0, 0);
       doc.setFontSize(11);
       doc.text(`Receipt #: ${treatment.id + '00'}`, 15, 28);
       doc.text(`Date: ${moment(treatment.date_treated).format('MMMM DD, YYYY')}`, 15, 32);
       doc.text(`Payment Type: ${treatment.payment_type}`, 15, 36);
       doc.text(`For: ${treatment.description}`, 15, 40);
-      doc.setFontStyle('bold');
+      // doc.setFontStyle('bold');
 
       doc.line(15, 42, 100, 42); // horizontal line 
-      doc.text(`Amount Paid: P${treatment.total_amount_to_pay.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, 15, 46);
+      // doc.text(`Amount Paid: P${treatment.total_amount_to_pay.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`, 15, 46);
       doc.line(15, 49, 100, 49); // horizontal line 
 
 
@@ -191,7 +192,9 @@ function TreatmentsTable(props) {
          onCancel() { },
       });
    }
+
    console.log(state.treatments);
+
    const columns = [
       {
          title: <Text strong>Description</Text>,
@@ -270,7 +273,9 @@ function TreatmentsTable(props) {
          fixed: 'right',
          dataIndex: 'actions',
          render: (text, record) => {
+
             console.log(record.transaction_count);
+
             if (record.payment_type !== 'installment') {
                const fullyPaidMenu = (
                   <Menu>
@@ -300,14 +305,15 @@ function TreatmentsTable(props) {
 
             // INSTALLMENT PAYMENT TYPE ACTIONS
             const installmentMenu = (
+
                <Menu>
                   { disabled ? (
                      <Menu.Item disabled>
-                        <PayInstallmentModal disabled={disabled} treatmentId={record.id} currentBalance={record.balance} onPay={handlePayInstallment} />
+                        <PayInstallmentModal treatmentId={record.id} currentBalance={record.balance} onPay={handlePayInstallment} />
                      </Menu.Item>
                   ) : (
                         <Menu.Item>
-                           <PayInstallmentModal disabled={disabled} treatmentId={record.id} currentBalance={record.balance} onPay={handlePayInstallment} />
+                           <PayInstallmentModal treatmentId={record.id} currentBalance={record.balance} onPay={handlePayInstallment} />
                         </Menu.Item>
                      )}
 
@@ -325,12 +331,14 @@ function TreatmentsTable(props) {
                   </Menu.Item>
                   {/*  ) : (null)} */}
                </Menu>
+
             );
 
             return (
                <Dropdown overlay={installmentMenu} trigger={['click']}>
                   <Button>
-                     Actions <DownCircleFilled />
+                     <DownCircleFilled />
+                     Actions
                   </Button>
                </Dropdown>
             );
@@ -354,16 +362,16 @@ function TreatmentsTable(props) {
             columns={columns}
             scroll={{ x: 1000 }}
             rowKey={(record) => record.id}
-         pagination={
-            {
-               position: 'both',
-               showSizeChanger: true,
-               showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} treatments`,
-               defaultCurrent: 1,
-               pageSize: 8,
-         
+            pagination={
+               {
+                  // position: 'both',
+                  // showSizeChanger: true,
+                  // showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} treatments`,
+                  // defaultCurrent: 1,
+                  // pageSize: 8,
+
+               }
             }
-         }
          />
       </>
    );

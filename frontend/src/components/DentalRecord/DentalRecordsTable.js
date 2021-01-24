@@ -15,22 +15,25 @@ function DentalRecordsTable(props) {
 
    const [patients, setPatients] = useState();
 
+   const patns = props.patients
+   const myProp = props.getPATN
+
    useEffect(() => {
+      const fetchData = async () => {
 
+         await myProp();
+         setPatients(patns);
+
+         const res = await axios.get(
+            `${process.env.REACT_APP_API_URL}/patient/`,
+
+         );
+         setPatients(res.data);
+      }
       fetchData();
+   }, [myProp]);
 
-   }, []);
 
-   const fetchData = async () => {
-      await props.getPATN();
-      setPatients(props.patients);
-
-      const res = await axios.get(
-         `${process.env.REACT_APP_API_URL}/patient/`,
-
-      );
-      setPatients(res.data);
-   }
 
    const updateInput = async (value) => {
       console.log(value);
@@ -129,7 +132,7 @@ function DentalRecordsTable(props) {
                   position: 'both',
                   defaultCurrent: 1,
                   pageSize: 10,
-                 
+
                }
             }
 

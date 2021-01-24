@@ -18,7 +18,9 @@ package-lock.json
 
 .eslintcache
 debug.log
-npm-debug.log*
 
+/migrations
+
+npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
