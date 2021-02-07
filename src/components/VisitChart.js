@@ -77,20 +77,21 @@ class VisitChart extends React.Component {
    }
 
    getVisits() {
-      // axios.get('dashboard/visits', {
-      //    params: {
-      //       startDate: moment(this.state.rangeDate[0]).format('YYYY-MM-DD'),
-      //       endDate: moment(this.state.rangeDate[1]).format('YYYY-MM-DD'),
-      //       filterBy: this.state.filterBy
-      //    }
-      // })
-      // .then((response) => {
-      // if (response.status === 200)
-      // this.setState({ visitsTrend: response.data.visits, visitsRanking: response.data.visitsRanked });
-      // })
-      // .catch((err) => {
-      //    console.log(err);
-      // });
+      axios.get(`${process.env.REACT_APP_API_URL}/appointments/`
+         , {
+            params: {
+               startDate: moment(this.state.rangeDate[0]).format('YYYY-MM-DD'),
+               endDate: moment(this.state.rangeDate[1]).format('YYYY-MM-DD'),
+               filterBy: this.state.filterBy
+            }
+         })
+         .then((response) => {
+            if (response.status === 200)
+               this.setState({ visitsTrend: response.data.visits, visitsRanking: response.data.visitsRanked });
+         })
+         .catch((err) => {
+            console.log(err);
+         });
    }
 
    handleSelectChange = async (value) => {

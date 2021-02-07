@@ -18,6 +18,7 @@ urlpatterns = [
     path('appointments/', include('appointment.urls')),
 
     path('users/', include('users.users.urls')),
+    
     path('stuff/', include('stuff.urls')),
     path('payment/', include('payment.urls')),
 

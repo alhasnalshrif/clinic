@@ -24,29 +24,6 @@ function AppointmentsTable(props) {
 
 
 
-   // const handleAppointmentCreate = (values) => {
-
-   // values.date = values.date.format('YYYY-MM-DD HH:mm');
-   // const hide = message.loading('Creating New Appointment...', 0);
-
-   // props.createASNT(values);
-
-   // axios.post('appointments/create/', values)
-   //    .then((response) => {
-   //       if (response.status === 200) {
-   //          hide();
-   //          message.success('New Appointment Successfully Created');
-   //          props.getAppointments(state.search, state.rangeDate);
-   //       }
-   //    })
-   //    .catch((err) => {
-   //       console.log(err);
-   //       hide();
-   //       message.error('Something went wrong! Please, try again.');
-   //    });
-
-   // }
-
    const handleDeclineCancelAppointment = (values, id) => {
 
       const hide = message.loading(`${values.type === 'cancel' ? 'Cancelling' : 'Declining'} appointment...`, 0);
@@ -322,21 +299,7 @@ function AppointmentsTable(props) {
    return (
       <>
 
-         <Row align="middle" gutter={8}>
 
-
-
-            <Col style={{ marginBottom: 8 }} span={24}>
-               <Search
-                  style={{ width: '100%', zIndex: -999 }}
-                  placeholder="search appointment by patient name"
-                  enterButton
-                  onChange={(e) => props.updateInput(e.target.value)}
-               />
-
-            </Col>
-
-         </Row>
 
          <Table
 

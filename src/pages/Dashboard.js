@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tabs, Card, Row, Col, Layout, Typography } from 'antd';
-import VisitChart from '../components/VisitChart';
-// import { LineChartOutlined } from '@ant-design/icons';
+// import VisitChart from '../components/VisitChart';
+import AppointmentsTable from '../components/appointments/AppointmentsTable';
+import axios from 'axios';
 
 const { Title, Text } = Typography;
 const { Content } = Layout;
@@ -19,6 +20,26 @@ function Dashboard(props) {
       loading: true
    });
 
+   const [appointment, setAppointment] = useState();
+
+   useEffect(() => {
+      getAppointmentsTable();
+
+   }, []);
+
+
+
+
+
+   const getAppointmentsTable = async () => {
+
+      const res = await axios.get(
+         `${process.env.REACT_APP_API_URL}/appointments/`,
+
+      );
+      setAppointment(res.data);
+
+   }
 
    // componentDidMount() {
    //    axios.get('dashboard/incomereceivable')
@@ -82,10 +103,15 @@ function Dashboard(props) {
             <Col span={24}>
 
                <Tabs defaultActiveKey="1" >
-
-                  <TabPane style={{ paddingLeft: 0, paddingRight: 100, margin: 0 }} tab={<Text style={{ fontSize: 18 }}> الزيارات</Text>} key="1">
-                     <VisitChart />
+                  <TabPane tab={<Text style={{ fontSize: 18 }}> الحجوزات</Text>} key="1">
+                     <AppointmentsTable appointments={appointment} />
                   </TabPane>
+                  
+                  <TabPane tab={<Text style={{ fontSize: 18 }}> الزيارات</Text>} key="2">
+                     {/* <VisitChart /> */}
+                  </TabPane>
+
+
                </Tabs>
             </Col>
 
