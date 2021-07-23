@@ -20,7 +20,7 @@ import UserAccounts from './pages/UserAccounts';
 import { Provider } from "react-redux";
 import store from "./redux/store";
 
-import CustomLayout from "./hocs/Layout";
+import CustomLayout from "./containers/Layout";
 
 function App() {
 

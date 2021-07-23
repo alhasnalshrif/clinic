@@ -2,12 +2,10 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf import settings
 from django.views.generic import TemplateView
+from users.views import CustomAuthToken, UserAPI
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("auth/", include("djoser.urls")),
-    path("auth/", include("djoser.urls.jwt")),
-    path('auth/', include('djoser.urls.authtoken')),
 
     path('treatments/', include('treatment.urls')),
     path('treatmentsid/', include('treatment.filter.urls')),
@@ -17,10 +15,13 @@ urlpatterns = [
     path('patient/', include('patient.urls')),
     path('appointments/', include('appointment.urls')),
 
-    path('users/', include('users.users.urls')),
-    
+
     path('stuff/', include('stuff.urls')),
     path('payment/', include('payment.urls')),
+
+    path('users/', include('users.users.urls')),
+    path('api-token-auth/', CustomAuthToken.as_view()),
+    path('api/auth/user/', UserAPI.as_view()),
 
 ]
 

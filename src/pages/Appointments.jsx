@@ -65,7 +65,6 @@ function Appointments(props) {
                   placeholder="search appointment by patient name"
                   enterButton
                   onChange={(e) => handleSearch(e.target.value)}
-               // onSelect={handleSearch()}
                />
 
             </Col>

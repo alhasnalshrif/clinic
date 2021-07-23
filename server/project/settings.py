@@ -21,7 +21,6 @@ INSTALLED_APPS = [
     'debug_toolbar',
     "rest_framework",
     "rest_framework.authtoken",
-    "djoser",
     "corsheaders",
 
     'patient',
@@ -158,20 +157,17 @@ DEBUG_TOOLBAR_CONFIG = {
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
+        # 'rest_framework.permissions.IsAuthenticated',
         'rest_framework.permissions.AllowAny',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
 
 
     ),
 }
 
-SIMPLE_JWT = {
-    "AUTH_HEADER_TYPES": ("JWT",),
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=100000),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=100000),
-}
+
 
 
 ACCOUNT_EMAIL_REQUIRED = False

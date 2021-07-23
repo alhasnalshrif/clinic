@@ -32,9 +32,7 @@ wrapt = "*"
 requests = "*"
 isort = "*"
 Django = "*"
-djangorestframework-simplejwt = "*"
 pillow = "*"
-djoser = "*"
 django-debug-toolbar = "*"
 
 [dev-packages]

@@ -18,7 +18,7 @@ class PatientViewSet(viewsets.ModelViewSet):
     queryset = Patient.objects.select_related(
         'doctor',
     )
-    permission_classes = (permissions.AllowAny, )
+    # permission_classes = (permissions.AllowAny, )
 
     def create(self, request, *args, **kwargs):
         patient_data = request.data

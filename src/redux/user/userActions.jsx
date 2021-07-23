@@ -13,106 +13,58 @@ import {
   LOGOUT,
   USER_LOADED_SUCCESS,
   USER_LOADED_FAIL,
-  AUTHENTICATED_FAIL,
-  AUTHENTICATED_SUCCESS,
+  // AUTHENTICATED_FAIL,
+  // AUTHENTICATED_SUCCESS,
   PEOFILE_SUCCESS,
   PEOFILE_FAIL
 } from "./userTypes";
 
-// check Authenticated
-export const checkAuthenticated = () => async (dispatch) => {
-  if (typeof window == "undefined") {
-    dispatch({
-      type: AUTHENTICATED_FAIL,
-    });
-  }
-  if (localStorage.getItem("access")) {
-    const config = {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    };
 
-    const body = JSON.stringify({ token: localStorage.getItem("access") });
-
-    try {
-      const res = await axios.post(
-        `${process.env.REACT_APP_API_URL}/auth/jwt/verify/`,
-        body,
-        config
-      );
-
-      if (res.data.code !== "token_not_valid") {
-        dispatch({
-          type: AUTHENTICATED_SUCCESS,
-        });
-      } else {
-        dispatch({
-          type: AUTHENTICATED_FAIL,
-        });
-      }
-    } catch (err) {
-      dispatch({
-        type: AUTHENTICATED_FAIL,
-      });
-    }
-  } else {
-    dispatch({
-      type: AUTHENTICATED_FAIL,
-    });
-  }
-};
 
 
 // load user
 
-export const load_user = () => async (dispatch) => {
-  if (localStorage.getItem("access")) {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `JWT ${localStorage.getItem("access")}`,
-        Accept: "application/json",
-      },
-    };
+export const load_user = () => (dispatch, getState) => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Token ${localStorage.getItem("access")}`,
+      Accept: "application/json",
+    },
+  };
 
-    try {
-      const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}/auth/users/me/`,
-        config
-      );
+  try {
+    const res = axios.get(
+      `${process.env.REACT_APP_API_URL}/api/auth/user/`,
+      tokenConfig(getState)
+    );
 
-      dispatch({
-        type: USER_LOADED_SUCCESS,
-        payload: res.data,
-      });
-    } catch (err) {
-      dispatch({
-        type: USER_LOADED_FAIL,
-      });
-    }
-  } else {
+    dispatch({
+      type: USER_LOADED_SUCCESS,
+      payload: res.data,
+    });
+  } catch (err) {
     dispatch({
       type: USER_LOADED_FAIL,
     });
   }
+
 };
 
 // load profile
 
-export const load_profile = (userid) => async (dispatch) => {
+export const load_profile = (userid) => (dispatch) => {
   if (localStorage.getItem("access")) {
     const config = {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `JWT ${localStorage.getItem("access")}`,
+        Authorization: `Token ${localStorage.getItem("access")}`,
         Accept: "application/json",
       },
     };
 
     try {
-      const res = await axios.get(
+      const res = axios.get(
         `${process.env.REACT_APP_API_URL}/accounts/${userid}/`,
         config
       );
@@ -136,7 +88,7 @@ export const load_profile = (userid) => async (dispatch) => {
 
 // login
 
-export const login = (username, password) => async (dispatch) => {
+export const login = (username, password) => (dispatch) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -146,8 +98,13 @@ export const login = (username, password) => async (dispatch) => {
   const body = JSON.stringify({ username, password });
 
   try {
-    const res = await axios.post(
-      `${process.env.REACT_APP_API_URL}/auth/jwt/create/`,
+    // const res =  axios.post(
+    //   `${process.env.REACT_APP_API_URL}/auth/jwt/create/`,
+    //   body,
+    //   config
+    // );
+    const res = axios.post(
+      `${process.env.REACT_APP_API_URL}/api-token-auth/`,
       body,
       config
     );
@@ -175,7 +132,7 @@ export const signup = ({
   email,
   password,
   re_password,
-}) => async (dispatch) => {
+}) => (dispatch) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -193,7 +150,7 @@ export const signup = ({
   });
 
   try {
-    const res = await axios.post(
+    const res = axios.post(
       `${process.env.REACT_APP_API_URL}/auth/users/`,
       body,
       config
@@ -212,7 +169,7 @@ export const signup = ({
 
 // activation
 
-export const verify = (uid, token) => async (dispatch) => {
+export const verify = (uid, token) => (dispatch) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -222,7 +179,7 @@ export const verify = (uid, token) => async (dispatch) => {
   const body = JSON.stringify({ uid, token });
 
   try {
-    const res = await axios.post(
+    const res = axios.post(
       `${process.env.REACT_APP_API_URL}/auth/users/activation/`,
       body,
       config
@@ -241,7 +198,7 @@ export const verify = (uid, token) => async (dispatch) => {
 
 // reset password
 
-export const reset_password = (email) => async (dispatch) => {
+export const reset_password = (email) => (dispatch) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -251,7 +208,7 @@ export const reset_password = (email) => async (dispatch) => {
   const body = JSON.stringify({ email });
 
   try {
-    const res = await axios.post(
+    const res = axios.post(
       `${process.env.REACT_APP_API_URL}/auth/users/reset_password/`,
       body,
       config
@@ -273,7 +230,7 @@ export const reset_password_confirm = (
   token,
   new_password,
   re_new_password
-) => async (dispatch) => {
+) => (dispatch) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -283,7 +240,7 @@ export const reset_password_confirm = (
   const body = JSON.stringify({ uid, token, new_password, re_new_password });
 
   try {
-    const res = await axios.post(
+    const res = axios.post(
       `${process.env.REACT_APP_API_URL}/auth/users/reset_password_confirm/`,
       body,
       config
@@ -304,4 +261,25 @@ export const reset_password_confirm = (
 
 export const logout = () => (dispatch) => {
   dispatch({ type: LOGOUT });
+};
+
+
+// Setup config with token - helper function
+export const tokenConfig = (getState) => {
+  // Get token from state
+  const token = getState().auth.token;
+
+  // Headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  // If token, add to headers config
+  if (token) {
+    config.headers['Authorization'] = `Token ${token}`;
+  }
+
+  return config;
 };
