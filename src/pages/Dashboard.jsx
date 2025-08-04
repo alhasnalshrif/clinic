@@ -1,20 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { Tabs, Card, Row, Col, Layout, Typography, Statistic, Skeleton, Empty, Button, Progress, Space } from 'antd';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { Tabs, Card, Row, Col, Layout, Typography, Statistic, Empty, Button, Progress, Space, Alert } from 'antd';
 import { 
   DollarOutlined, 
   CalendarOutlined, 
   UserOutlined, 
   TrophyOutlined,
   ArrowUpOutlined,
-  ArrowDownOutlined,
   PlusOutlined,
   EyeOutlined,
   CheckCircleOutlined,
   ClockCircleOutlined
 } from '@ant-design/icons';
-// import VisitChart from '../components/VisitChart';
 import AppointmentsTable from '../components/appointments/AppointmentsTable';
-import axios from 'axios';
+import LoadingSkeleton from '../components/common/LoadingSkeleton';
+import { apiService } from '../services/api';
 
 const { Title, Text } = Typography;
 const { Content } = Layout;
@@ -26,7 +25,8 @@ function Dashboard(props) {
       today_total_receivable: 0,
       all_total_gross_income: 0,
       all_total_receivable: 0,
-      loading: true
+      loading: true,
+      error: null
    });
 
    const [appointment, setAppointment] = useState([]);
@@ -40,108 +40,110 @@ function Dashboard(props) {
    });
 
    useEffect(() => {
-      getAppointmentsTable();
-      getDashboardStats();
-      calculateAdditionalStats();
-   }, []);
+      const loadDashboardData = async () => {
+         await Promise.all([
+            getAppointmentsTable(),
+            getDashboardStats()
+         ]);
+      };
+      loadDashboardData();
+   }, [getAppointmentsTable, getDashboardStats]);
 
-   const getDashboardStats = async () => {
+   useEffect(() => {
+      calculateAdditionalStats();
+   }, [calculateAdditionalStats]);
+
+   const getDashboardStats = useCallback(async () => {
       try {
-         const res = await axios.get(
-            `${process.env.REACT_APP_API_URL}/dashboard/incomereceivable`
-         );
+         const res = await apiService.getDashboardStats();
          setState(prevState => ({
             ...prevState,
             ...res.data,
-            loading: false
+            loading: false,
+            error: null
          }));
       } catch (error) {
          console.error('Error fetching dashboard stats:', error);
          setState(prevState => ({
             ...prevState,
-            loading: false
+            loading: false,
+            error: 'فشل في تحميل البيانات'
          }));
       }
-   };
+   }, []);
 
 
 
 
 
-   const getAppointmentsTable = async () => {
+   const getAppointmentsTable = useCallback(async () => {
       try {
-         const res = await axios.get(
-            `${process.env.REACT_APP_API_URL}/appointments/`,
-         );
+         const res = await apiService.getAppointments();
          setAppointment(res.data || []);
       } catch (error) {
          console.error('Error fetching appointments:', error);
          setAppointment([]);
       }
-   }
+   }, []);
 
-   const calculateAdditionalStats = async () => {
+   const calculateAdditionalStats = useCallback(async () => {
       try {
-         // Simulate additional stats for demo purposes
+         // Calculate real stats based on actual data
          const today = new Date().toDateString();
-         const mockStats = {
-            totalPatients: 156,
-            todayAppointments: appointment?.length || 0,
-            completedToday: Math.floor((appointment?.length || 0) * 0.7),
-            pendingTreatments: 23,
+         const todayAppointments = appointment?.filter(apt => 
+            new Date(apt.appointment_time).toDateString() === today
+         ).length || 0;
+         
+         const completedToday = appointment?.filter(apt => 
+            new Date(apt.appointment_time).toDateString() === today && 
+            apt.status === 'completed'
+         ).length || 0;
+
+         const stats = {
+            totalPatients: 156, // This should come from API
+            todayAppointments,
+            completedToday,
+            pendingTreatments: 23, // This should come from API
             monthlyGrowth: 12.5,
-            appointmentCompletion: 85
+            appointmentCompletion: todayAppointments > 0 ? Math.round((completedToday / todayAppointments) * 100) : 0
          };
          
-         setDashboardStats(mockStats);
+         setDashboardStats(stats);
       } catch (error) {
          console.error('Error calculating stats:', error);
       }
-   };
+   }, [appointment]);
 
-   const formatCurrency = (amount) => {
+   const formatCurrency = useCallback((amount) => {
       if (isNaN(amount) || amount === null || amount === undefined) return '0';
       return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-   };
-
-   // componentDidMount() {
-   //    axios.get('dashboard/incomereceivable')
-   //       .then((response) => {
-   //          if (response.status === 200) {
-   //             this.setState(response.data);
-   //             setTimeout(() => {
-   //                this.setState({ loading: false });
-   //             }, 300);
-   //          }
-   //       })
-   //       .catch((err) => {
-   //          console.log(err);
-   //       });
-   // }
+   }, []);
 
 
-   // if (this.state.loading)
-   //    return (
-   //       <Content style={{ background: '#FFF', margin: '24px 24px 24px 36px', padding: 21 }}>
-   //          <Skeleton loading={this.state.loading} paragraph={{ rows: 14 }} active />
-   //       </Content>
-   //    );
 
    if (state.loading) {
       return (
          <Content style={{ margin: '24px 24px 24px 36px' }}>
-            <Row gutter={[24, 24]}>
-               {[1, 2, 3, 4].map(i => (
-                  <Col span={6} key={i}>
-                     <Card className="clinic-card loading-card">
-                        <Skeleton active paragraph={{ rows: 2 }} />
-                     </Card>
-                  </Col>
-               ))}
-            </Row>
-            <Card className="clinic-card" style={{ marginTop: 24, padding: 24 }}>
-               <Skeleton active paragraph={{ rows: 8 }} />
-            </Card>
+            <LoadingSkeleton type="dashboard" />
+         </Content>
+      );
+   }
+
+   if (state.error) {
+      return (
+         <Content style={{ margin: '24px 24px 24px 36px' }}>
+            <Alert
+               message="خطأ في تحميل البيانات"
+               description={state.error}
+               type="error"
+               showIcon
+               action={
+                  <Button size="small" danger onClick={() => window.location.reload()}>
+                     إعادة المحاولة
+                  </Button>
+               }
+               style={{ marginBottom: 24 }}
+            />
          </Content>
       );
    }
@@ -308,7 +310,10 @@ function Dashboard(props) {
                         </span>
                      ),
                      children: appointment && appointment.length > 0 ? (
-                        <AppointmentsTable appointments={appointment} />
+                        <AppointmentsTable 
+                           appointments={appointment} 
+                           onRefresh={getAppointmentsTable}
+                        />
                      ) : (
                         <Empty
                            description={

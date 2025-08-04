@@ -229,3 +229,120 @@ code {
   font-size: 14px;
   color: var(--text-secondary);
 }
+
+/* Responsive Design Enhancements */
+@media (max-width: 768px) {
+  .metric-card {
+    margin-bottom: 16px;
+  }
+  
+  .clinic-card {
+    margin-bottom: 16px;
+  }
+  
+  .ant-statistic-content {
+    font-size: 20px !important;
+  }
+  
+  .metric-title {
+    font-size: 12px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .ant-layout-sider {
+    width: 200px !important;
+  }
+  
+  .site-layout {
+    margin-right: 200px !important;
+  }
+}
+
+/* Enhanced Form Styling */
+.ant-form-item-label > label {
+  font-weight: 500 !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-input, .ant-select-selector {
+  border-radius: 8px !important;
+  border-color: #d1d5db !important;
+}
+
+.ant-input:focus, .ant-select-focused .ant-select-selector {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(13, 115, 119, 0.1) !important;
+}
+
+/* Progress Bar Enhancements */
+.ant-progress-bg {
+  border-radius: 4px !important;
+}
+
+.ant-progress-text {
+  font-weight: 600 !important;
+}
+
+/* Alert Enhancements */
+.ant-alert {
+  border-radius: 8px !important;
+  border: none !important;
+}
+
+.ant-alert-error {
+  background: #fef2f2 !important;
+  border-left: 4px solid #dc2626 !important;
+}
+
+.ant-alert-success {
+  background: #f0fdf4 !important;
+  border-left: 4px solid #16a34a !important;
+}
+
+.ant-alert-warning {
+  background: #fffbeb !important;
+  border-left: 4px solid #d97706 !important;
+}
+
+/* Loading Animation Enhancements */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.clinic-card {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+/* Accessibility Improvements */
+.clinic-btn-primary:focus {
+  outline: 2px solid var(--primary-color) !important;
+  outline-offset: 2px !important;
+}
+
+.ant-menu-item:focus {
+  background: rgba(13, 115, 119, 0.1) !important;
+}
+
+/* Print Styles */
+@media print {
+  .ant-layout-sider {
+    display: none !important;
+  }
+  
+  .site-layout {
+    margin-right: 0 !important;
+  }
+  
+  .clinic-card {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+  }
+}

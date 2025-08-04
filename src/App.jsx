@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 
-
 // PAGES 
 import Reception from './pages/Reception';
 import UserAccountSettings from './pages/UserAccountSettings';
@@ -16,13 +15,11 @@ import TreatmentPlanning from './pages/TreatmentPlanning';
 import MedicalHistory from './pages/MedicalHistory';
 import Reports from './pages/Reports';
 
-
-
-
 import { Provider } from "react-redux";
 import store from "./redux/store";
 
 import CustomLayout from "./containers/Layout";
+import ErrorBoundary from "./components/common/ErrorBoundary";
 
 function AppRoutes() {
 	const location = useLocation();
@@ -59,13 +56,15 @@ function AppRoutes() {
 
 function App() {
 	return (
-		<Provider store={store}>
-			<Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-				<CustomLayout>
-					<AppRoutes />
-				</CustomLayout>
-			</Router>
-		</Provider>
+		<ErrorBoundary>
+			<Provider store={store}>
+				<Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+					<CustomLayout>
+						<AppRoutes />
+					</CustomLayout>
+				</Router>
+			</Provider>
+		</ErrorBoundary>
 	);
 }
 

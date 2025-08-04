@@ -30,8 +30,6 @@ const CustomLayout = (props) => {
     };
     fetchData();
   }, [load]);
-
-  console.log(props.user);
   return (
     <>
       {props.isAuthenticated ? (

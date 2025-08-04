@@ -1,19 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import {
   Modal,
   message,
-  Menu,
-  Dropdown,
-  Badge,
   Button,
   Table,
   Row,
   Col,
-  Input,
   Typography,
-  DatePicker,
-  Radio,
-  Divider,
   Tag,
   Space,
   Tooltip,
@@ -25,70 +18,62 @@ import {
   UserOutlined,
   PhoneOutlined,
   CheckCircleOutlined,
-  ExclamationCircleOutlined,
   CloseCircleOutlined,
   PrinterOutlined,
   EditOutlined,
   EyeOutlined
 } from '@ant-design/icons';
 import moment from "moment";
-import { connect } from "react-redux";
+import { apiService } from '../../services/api';
+import { formatDate, formatTime, isToday, isPast, getStatusConfig } from '../../utils/helpers';
+import { APPOINTMENT_STATUS } from '../../utils/constants';
 
-import axios from "axios";
-
-import jsPDF from "jspdf";
-import "jspdf-autotable";
-
-const { confirm } = Modal;
-const { Search } = Input;
 const { Text } = Typography;
 
-function AppointmentsTable(props) {
-  const [state, setState] = useState({
-    search: "",
-    selectedFilterBy: "",
-    rangeDate: [],
-  });
+function AppointmentsTable({ appointments = [], onRefresh }) {
+  const [loading, setLoading] = useState(false);
 
-  const handleDeclineCancelAppointment = (values, id) => {
-    const hide = message.loading(
-      `${values.type === "cancel" ? "Cancelling" : "Declining"} appointment...`,
-      0
-    );
-    axios
-      .delete(`appointments/${id}/delete`, values)
-      .then((response) => {
-        if (response.status === 200) {
-          hide();
-          message.success(
-            `Appointment Successfully ${
-              values.type === "cancel" ? "Cancelled" : "Declined"
-            } `
-          );
-          // props.getAppointments(state.search, state.rangeDate);
+  const handleConfirmAppointment = useCallback(async (record) => {
+    Modal.confirm({
+      title: 'تأكيد الموعد',
+      content: `هل أنت متأكد من تأكيد موعد ${record.patient}؟`,
+      onOk: async () => {
+        try {
+          setLoading(true);
+          await apiService.updateAppointment(record.id, { status: APPOINTMENT_STATUS.CONFIRMED });
+          message.success('تم تأكيد الموعد بنجاح');
+          onRefresh?.();
+        } catch (error) {
+          console.error('Error confirming appointment:', error);
+          message.error('فشل في تأكيد الموعد');
+        } finally {
+          setLoading(false);
         }
-      })
-      .catch((err) => {
-        console.log(err);
-        hide();
-        message.error("Something went wrong! Please, try again.");
-      });
-  };
-
-  const handleNoContactNumber = (values) => {
-    confirm({
-      title: `Are you sure to ${values.type} this appointment?!`,
-      content:
-        "This patient does not have available contact number, therefore will not be notified through SMS.",
-      okText: "Yes",
-      onOk: () => {
-        handleDeclineCancelAppointment(values);
-      },
-      onCancel() {},
+      }
     });
-  };
+  }, [onRefresh]);
 
-  const handleViewAppointment = (record) => {
+  const handleCancelAppointment = useCallback(async (record) => {
+    Modal.confirm({
+      title: 'إلغاء الموعد',
+      content: `هل أنت متأكد من إلغاء موعد ${record.patient}؟`,
+      onOk: async () => {
+        try {
+          setLoading(true);
+          await apiService.updateAppointment(record.id, { status: APPOINTMENT_STATUS.CANCELLED });
+          message.success('تم إلغاء الموعد بنجاح');
+          onRefresh?.();
+        } catch (error) {
+          console.error('Error cancelling appointment:', error);
+          message.error('فشل في إلغاء الموعد');
+        } finally {
+          setLoading(false);
+        }
+      }
+    });
+  }, [onRefresh]);
+
+  const handleViewAppointment = useCallback((record) => {
     Modal.info({
       title: `تفاصيل الموعد - ${record.patient}`,
       content: (
@@ -100,15 +85,15 @@ function AppointmentsTable(props) {
             </Col>
             <Col span={12}>
               <Text strong>التاريخ: </Text>
-              <Text>{moment(record.date).format('DD/MM/YYYY')}</Text>
+              <Text>{formatDate(record.date)}</Text>
             </Col>
             <Col span={12}>
               <Text strong>الوقت: </Text>
-              <Text>{moment(record.date).format('h:mm A')}</Text>
+              <Text>{formatTime(record.date)}</Text>
             </Col>
             <Col span={12}>
               <Text strong>الحالة: </Text>
-              <Text>{record.status === 'confirmed' ? 'مؤكد' : record.status === 'pending' ? 'في الانتظار' : 'ملغي'}</Text>
+              <Text>{getStatusConfig(record.status).text}</Text>
             </Col>
             <Col span={24}>
               <Text strong>سبب الزيارة: </Text>
@@ -119,146 +104,18 @@ function AppointmentsTable(props) {
       ),
       width: 600,
     });
-  };
+  }, []);
 
-  const handleEditAppointment = (record) => {
+  const handleEditAppointment = useCallback((record) => {
     console.log('تعديل الموعد:', record);
     message.info('سيتم إضافة نافذة تعديل الموعد قريباً');
-  };
+  }, []);
 
-  const handleConfirmAppointment = (record) => {
-    Modal.confirm({
-      title: 'تأكيد الموعد',
-      content: `هل أنت متأكد من تأكيد موعد ${record.patient}؟`,
-      onOk: () => {
-        message.success('تم تأكيد الموعد بنجاح');
-        // Add API call here
-      }
-    });
-  };
-
-  const handleCancelAppointment = (record) => {
-    Modal.confirm({
-      title: 'إلغاء الموعد',
-      content: `هل أنت متأكد من إلغاء موعد ${record.patient}؟`,
-      onOk: () => {
-        message.success('تم إلغاء الموعد بنجاح');
-        // Add API call here
-      }
-    });
-  };
-
-  const handlePrintAppointment = (record) => {
+  const handlePrintAppointment = useCallback((record) => {
     console.log('طباعة الموعد:', record);
     message.info('سيتم طباعة تفاصيل الموعد');
-  };
-    const body = [];
-    let total = 0;
-    // state.paymentTransactions.forEach(({ date_paid, amount_paid, payment_type, from, received_by }) => {
-    props.appointments.forEach(
-      ({ date_paid, amount_paid, payment_type, from, received_by }) => {
-        total += amount_paid;
-        body.push({
-          date_paid: moment(date_paid).format("MMMM DD, YYYY"),
-          amount_paid: amount_paid
-            .toString()
-            .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          payment_type,
-          from,
-          received_by,
-        });
-      }
-    );
-
-    const doc = new jsPDF({
-      format: [612, 792],
-    });
-    const totalPagesExp = "{total_pages_count_string}";
-
-    // Header
-    const pageSize = doc.internal.pageSize;
-    const pageWidth = pageSize.width ? pageSize.width : pageSize.getWidth();
-    const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
-
-    doc.setFontSize(16);
-    // doc.setFontStyle('bold');
-    doc.text("Andres Dental Clinic", pageWidth - 68, 10);
-    doc.setFontSize(10);
-    doc.setTextColor(53, 53, 53);
-    // doc.setFontStyle('normal');
-    doc.text("One.O.5ive Department Store", pageWidth - 60, 14);
-    doc.text("J. P. Rizal Street, Barangay 18", pageWidth - 62, 18);
-    doc.text("Laoag City, 2900 Ilocos Norte", pageWidth - 60, 22);
-    doc.text("09212451903", pageWidth - 35, 26);
-    doc.setFontSize(14);
-    doc.setTextColor(0, 0, 0);
-    doc.text("Transaction Log", 15, 32);
-    const [startDate, endDate] = state.rangeDate;
-    doc.setFontSize(10);
-
-    if (startDate && endDate) {
-      doc.setTextColor(53, 53, 53);
-      doc.text(
-        `(${moment(startDate).format("MMMM DD, YYYY")} - ${moment(
-          endDate
-        ).format("MMMM DD, YYYY")})`,
-        54,
-        32
-      );
-      doc.setTextColor(0, 0, 0);
-    }
-
-    doc.autoTable({
-      columns: [
-        { header: "Date Paid", dataKey: "date_paid" },
-        { header: "Amount Paid", dataKey: "amount_paid" },
-        { header: "Payment Type", dataKey: "payment_type" },
-        { header: "From", dataKey: "from" },
-        { header: "Received By", dataKey: "received_by" },
-      ],
-      body,
-      didDrawPage: (data) => {
-        // Footer
-        var str = "Page " + doc.internal.getNumberOfPages();
-        // Total page number plugin only available in jspdf v1.0+
-        if (typeof doc.putTotalPages === "function") {
-          str = str + " of " + totalPagesExp;
-        }
-        // doc.setFontStyle('normal');
-
-        // jsPDF 1.4+ uses getWidth, <1.4 uses .width
-        doc.text(str, data.settings.margin.left, pageHeight - 10);
-        doc.text(
-          `Generated on ${moment(Date.now()).format("MMMM DD, YYYY hh:mmA")}`,
-          pageWidth - 73,
-          pageHeight - 10
-        );
-      },
-      startY: 34,
-      showHead: "firstPage",
-    });
-
-    doc.line(
-      15,
-      doc.autoTable.previous.finalY + 3,
-      pageWidth - 15,
-      doc.autoTable.previous.finalY + 3
-    ); // horizontal line
-    // doc.setFontStyle('bold');
-    doc.text("TOTAL:", 15, doc.autoTable.previous.finalY + 8);
-    doc.text(
-      `${total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`,
-      48,
-      doc.autoTable.previous.finalY + 8
-    );
-    if (typeof doc.putTotalPages === "function")
-      doc.putTotalPages(totalPagesExp);
-
-    doc.autoPrint();
-    window.open(doc.output("bloburl"), "_blank");
-  };
-
-  const columns = [
+  }, []);
+  const columns = useMemo(() => [
     {
       title: <Text strong style={{ color: 'var(--text-primary)' }}>اسم المريض</Text>,
       dataIndex: "patient",
@@ -283,16 +140,16 @@ function AppointmentsTable(props) {
       dataIndex: "date",
       key: "date",
       render: (text, record) => {
-        const date = moment(record.date).format("DD/MM/YYYY");
-        const time = moment(record.date).format("h:mm A");
-        const isToday = moment(record.date).isSame(moment(), 'day');
-        const isPast = moment(record.date).isBefore(moment());
+        const date = formatDate(record.date);
+        const time = formatTime(record.date);
+        const isAppointmentToday = isToday(record.date);
+        const isAppointmentPast = isPast(record.date);
         
         return (
           <Space direction="vertical" size={0}>
             <Text style={{ 
-              color: isToday ? 'var(--primary-color)' : isPast ? 'var(--text-secondary)' : 'var(--text-primary)',
-              fontWeight: isToday ? 'bold' : 'normal'
+              color: isAppointmentToday ? 'var(--primary-color)' : isAppointmentPast ? 'var(--text-secondary)' : 'var(--text-primary)',
+              fontWeight: isAppointmentToday ? 'bold' : 'normal'
             }}>
               <CalendarOutlined style={{ marginLeft: 8 }} />
               {date}
@@ -321,40 +178,20 @@ function AppointmentsTable(props) {
       dataIndex: "status",
       key: "status",
       filters: [
-        { text: "مؤكد", value: "confirmed" },
-        { text: "في الانتظار", value: "pending" },
-        { text: "ملغي", value: "cancelled" },
+        { text: "مؤكد", value: APPOINTMENT_STATUS.CONFIRMED },
+        { text: "في الانتظار", value: APPOINTMENT_STATUS.PENDING },
+        { text: "ملغي", value: APPOINTMENT_STATUS.CANCELLED },
+        { text: "مكتمل", value: APPOINTMENT_STATUS.COMPLETED },
       ],
       filterMultiple: false,
       onFilter: (value, record) => record.status === value,
       render: (text, record) => {
-        const statusConfig = {
-          confirmed: {
-            color: 'success',
-            icon: <CheckCircleOutlined />,
-            text: 'مؤكد',
-            className: 'status-confirmed'
-          },
-          pending: {
-            color: 'processing',
-            icon: <ClockCircleOutlined />,
-            text: 'في الانتظار',
-            className: 'status-pending'
-          },
-          cancelled: {
-            color: 'error',
-            icon: <CloseCircleOutlined />,
-            text: 'ملغي',
-            className: 'status-cancelled'
-          }
-        };
-
-        const config = statusConfig[record.status] || statusConfig.pending;
+        const config = getStatusConfig(record.status);
         
         return (
           <Tag 
             className={`status-badge ${config.className}`}
-            icon={config.icon}
+            color={config.color}
           >
             {config.text}
           </Tag>
@@ -365,7 +202,7 @@ function AppointmentsTable(props) {
       title: <Text strong style={{ color: 'var(--text-primary)' }}>الإجراءات</Text>,
       key: "actions",
       render: (text, record) => {
-        const isAppointmentPast = moment(record.date).isBefore(moment());
+        const isAppointmentPast = isPast(record.date);
         
         return (
           <Space>
@@ -377,7 +214,7 @@ function AppointmentsTable(props) {
               />
             </Tooltip>
             
-            {!isAppointmentPast && record.status !== 'cancelled' && (
+            {!isAppointmentPast && record.status !== APPOINTMENT_STATUS.CANCELLED && (
               <Tooltip title="تعديل الموعد">
                 <Button 
                   icon={<EditOutlined />} 
@@ -387,7 +224,7 @@ function AppointmentsTable(props) {
               </Tooltip>
             )}
 
-            {record.status === 'pending' && !isAppointmentPast && (
+            {record.status === APPOINTMENT_STATUS.PENDING && !isAppointmentPast && (
               <Tooltip title="تأكيد الموعد">
                 <Button 
                   icon={<CheckCircleOutlined />} 
@@ -399,7 +236,7 @@ function AppointmentsTable(props) {
               </Tooltip>
             )}
 
-            {!isAppointmentPast && record.status !== 'cancelled' && (
+            {!isAppointmentPast && record.status !== APPOINTMENT_STATUS.CANCELLED && (
               <Tooltip title="إلغاء الموعد">
                 <Button 
                   icon={<CloseCircleOutlined />} 
@@ -421,14 +258,15 @@ function AppointmentsTable(props) {
         );
       },
     },
-  ];
+  ], [handleViewAppointment, handleEditAppointment, handleConfirmAppointment, handleCancelAppointment, handlePrintAppointment]);
 
   return (
     <div style={{ direction: 'rtl' }}>
       <Table
-        dataSource={props.appointments}
+        dataSource={appointments}
         columns={columns}
-        rowKey={(record) => record.id}
+        loading={loading}
+        rowKey={(record) => record.id || record.key}
         locale={{
           emptyText: (
             <Empty
@@ -465,14 +303,4 @@ function AppointmentsTable(props) {
   );
 }
 
-// const mapStateToProps = state => {
-//    return {
-
-//       appointment: state.Abointments.assignmentes,
-//       // loading: state.Abointment.loading
-//    };
-// };
-
-export default connect()(AppointmentsTable);
-// mapStateToProps,
-// { getABNTs,createABNT }
+export default AppointmentsTable;
