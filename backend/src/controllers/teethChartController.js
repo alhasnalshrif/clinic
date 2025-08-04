@@ -104,8 +104,7 @@ class TeethChartController {
           name: patients.name,
         },
         ...Object.fromEntries(
-          Object.keys(adultTeethCharts).filter(key => key.startsWith('UR_') || key.startsWith('UL_') || key.startsWith('LL_') || key.startsWith('LR_'))
-            .map(key => [key, adultTeethCharts[key]])
+          ADULT_TOOTH_FIELDS.map(key => [key, adultTeethCharts[key]])
         )
       })
         .from(adultTeethCharts)
