@@ -7,4 +7,4 @@ export default {
   dbCredentials: {
     url: './database.db',
   },
-} satisfies Config;
+};
