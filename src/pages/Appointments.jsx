@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Col, Input, Typography, Tabs, Row, Button, Space, Card } from 'antd';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { Col, Input, Typography, Tabs, Row, Button, Space, Card, Alert } from 'antd';
 import { CalendarOutlined, TableOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import AppointmentsCalendar from '../components/appointments/ApppointmentsCalendar';
 import AppointmentsTable from '../components/appointments/AppointmentsTable';
+import LoadingSkeleton from '../components/common/LoadingSkeleton';
 import { Layout } from 'antd';
-import { getABNTs } from "../redux";
-import { connect } from "react-redux";
-import axios from 'axios';
+import { apiService } from '../services/api';
+import { debounce } from '../utils/helpers';
 
 const { Title } = Typography;
 const { Content } = Layout;
@@ -15,42 +15,60 @@ const { Search } = Input;
 
 
 
-function Appointments(props) {
-
-   const [appointment, setAppointment] = useState();
+function Appointments() {
+   const [appointment, setAppointment] = useState([]);
+   const [filteredAppointments, setFilteredAppointments] = useState([]);
+   const [loading, setLoading] = useState(true);
+   const [error, setError] = useState(null);
+   const [searchValue, setSearchValue] = useState('');
 
 
    useEffect(() => {
       getAppointmentsTable();
+   }, [getAppointmentsTable]);
 
+
+
+
+
+   const getAppointmentsTable = useCallback(async () => {
+      try {
+         setLoading(true);
+         setError(null);
+         const res = await apiService.getAppointments();
+         const appointmentData = res.data || [];
+         setAppointment(appointmentData);
+         setFilteredAppointments(appointmentData);
+      } catch (error) {
+         console.error('Error fetching appointments:', error);
+         setError('فشل في تحميل المواعيد');
+         setAppointment([]);
+         setFilteredAppointments([]);
+      } finally {
+         setLoading(false);
+      }
    }, []);
 
 
 
+   const debouncedSearch = useMemo(
+      () => debounce((value) => {
+         if (!value) {
+            setFilteredAppointments(appointment);
+         } else {
+            const filtered = appointment.filter(({ patient }) => 
+               patient?.toLowerCase().includes(value.toLowerCase())
+            );
+            setFilteredAppointments(filtered);
+         }
+      }, 300),
+      [appointment]
+   );
 
-
-   const getAppointmentsTable = async () => {
-      await props.getABNTs();
-      setAppointment(props.appointments);
-      const res = await axios.get(
-         `${process.env.REACT_APP_API_URL}/appointments/`,
-
-      );
-      setAppointment(res.data);
-
-   }
-
-   console.log(appointment);
-   console.log(props.appointments, "c");
-
-   const handleSearch = (value) => {
-
-
-      setAppointment(props.appointments.filter(({ patient }) => {
-         return patient.includes(value);
-      }));
-
-   }
+   const handleSearch = useCallback((value) => {
+      setSearchValue(value);
+      debouncedSearch(value);
+   }, [debouncedSearch]);
 
 
 
@@ -88,6 +106,7 @@ function Appointments(props) {
                            بحث
                         </Button>
                      }
+                     value={searchValue}
                      onChange={(e) => handleSearch(e.target.value)}
                      style={{ width: '100%' }}
                   />
@@ -95,58 +114,75 @@ function Appointments(props) {
                <Col span={8}>
                   <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
                      <Typography.Text style={{ color: 'var(--text-secondary)' }}>
-                        إجمالي المواعيد: {appointment?.length || 0}
+                        إجمالي المواعيد: {filteredAppointments?.length || 0} من أصل {appointment?.length || 0}
                      </Typography.Text>
                   </Space>
                </Col>
             </Row>
          </Card>
 
-         <Card className="clinic-card" style={{ padding: '24px' }}>
-            <Tabs 
-               defaultActiveKey="1"
-               size="large"
-               items={[
-                  {
-                     key: "1",
-                     label: (
-                        <span style={{ fontSize: 16, fontWeight: 500 }}>
-                           <TableOutlined style={{ marginLeft: 8 }} />
-                           عرض الجدول
-                        </span>
-                     ),
-                     children: <AppointmentsTable appointments={appointment} />
-                  },
-                  {
-                     key: "2",
-                     label: (
-                        <span style={{ fontSize: 16, fontWeight: 500 }}>
-                           <CalendarOutlined style={{ marginLeft: 8 }} />
-                           عرض التقويم
-                        </span>
-                     ),
-                     children: <AppointmentsCalendar appointments={appointment} getAppointments={getAppointmentsTable} />
-                  }
-               ]}
+         {error && (
+            <Alert 
+               message="خطأ في تحميل البيانات" 
+               description={error}
+               type="error"
+               showIcon
+               style={{ marginBottom: 24 }}
+               action={
+                  <Button onClick={getAppointmentsTable} size="small">
+                     إعادة المحاولة
+                  </Button>
+               }
             />
+         )}
+
+         <Card className="clinic-card" style={{ padding: '24px' }}>
+            {loading ? (
+               <LoadingSkeleton type="table" rows={6} />
+            ) : (
+               <Tabs 
+                  defaultActiveKey="1"
+                  size="large"
+                  items={[
+                     {
+                        key: "1",
+                        label: (
+                           <span style={{ fontSize: 16, fontWeight: 500 }}>
+                              <TableOutlined style={{ marginLeft: 8 }} />
+                              عرض الجدول
+                           </span>
+                        ),
+                        children: (
+                           <AppointmentsTable 
+                              appointments={filteredAppointments} 
+                              onRefresh={getAppointmentsTable}
+                           />
+                        )
+                     },
+                     {
+                        key: "2",
+                        label: (
+                           <span style={{ fontSize: 16, fontWeight: 500 }}>
+                              <CalendarOutlined style={{ marginLeft: 8 }} />
+                              عرض التقويم
+                           </span>
+                        ),
+                        children: (
+                           <AppointmentsCalendar 
+                              appointments={filteredAppointments} 
+                              getAppointments={getAppointmentsTable} 
+                           />
+                        )
+                     }
+                  ]}
+               />
+            )}
          </Card>
       </Content>
    );
 
 }
 
-
-
-const mapStateToProps = state => {
-   return {
-      appointments: state.Abointments.assignmentes,
-   };
-};
-
-
-export default connect(
-   mapStateToProps,
-   { getABNTs }
-)(Appointments);
+export default Appointments;
 
 

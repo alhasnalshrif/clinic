@@ -120,6 +120,48 @@ code {
 }
 
 /* Table Enhancements */
+.clinic-table .ant-table {
+  border-radius: 12px !important;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+}
+
+.clinic-table .ant-table-thead > tr > th {
+  background: var(--background-light) !important;
+  color: var(--text-primary) !important;
+  font-weight: 600 !important;
+  border-bottom: 2px solid #e5e7eb !important;
+  padding: 16px !important;
+  font-size: 14px;
+}
+
+.clinic-table .ant-table-tbody > tr > td {
+  padding: 12px 16px !important;
+  border-bottom: 1px solid #f3f4f6 !important;
+}
+
+.clinic-table .ant-table-tbody > tr:hover > td {
+  background: #f8fafc !important;
+}
+
+.clinic-table .ant-pagination {
+  margin-top: 24px !important;
+  text-align: center;
+}
+
+.clinic-table .ant-pagination .ant-pagination-item-active {
+  border-color: var(--primary-color) !important;
+  background: var(--primary-color) !important;
+}
+
+.clinic-table .ant-pagination .ant-pagination-item-active a {
+  color: white !important;
+}
+
+.clinic-table .ant-table-empty .ant-empty {
+  margin: 32px 0;
+}
+
 .ant-table {
   border-radius: 12px !important;
   overflow: hidden;
@@ -260,9 +302,64 @@ code {
 }
 
 /* Enhanced Form Styling */
-.ant-form-item-label > label {
+.clinic-form-item .ant-form-item-label > label {
   font-weight: 500 !important;
   color: var(--text-primary) !important;
+  font-size: 14px;
+}
+
+.clinic-input, .clinic-select .ant-select-selector, .clinic-datepicker .ant-picker, .clinic-timepicker .ant-picker {
+  border-radius: 8px !important;
+  border-color: #d1d5db !important;
+  box-shadow: none !important;
+  transition: all 0.3s ease !important;
+}
+
+.clinic-input:focus, .clinic-select:focus .ant-select-selector, 
+.clinic-datepicker:focus .ant-picker, .clinic-timepicker:focus .ant-picker {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(13, 115, 119, 0.1) !important;
+}
+
+.clinic-input:hover, .clinic-select:hover .ant-select-selector, 
+.clinic-datepicker:hover .ant-picker, .clinic-timepicker:hover .ant-picker {
+  border-color: var(--primary-color) !important;
+}
+
+.clinic-switch.ant-switch {
+  background-color: #d1d5db;
+}
+
+.clinic-switch.ant-switch-checked {
+  background-color: var(--primary-color) !important;
+}
+
+.clinic-radio-group .ant-radio-wrapper {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.clinic-radio-group .ant-radio-checked .ant-radio-inner {
+  border-color: var(--primary-color) !important;
+  background-color: var(--primary-color) !important;
+}
+
+.clinic-checkbox-group .ant-checkbox-wrapper {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.clinic-checkbox-group .ant-checkbox-checked .ant-checkbox-inner {
+  border-color: var(--primary-color) !important;
+  background-color: var(--primary-color) !important;
+}
+
+.ant-form-item-has-error .clinic-input, 
+.ant-form-item-has-error .clinic-select .ant-select-selector,
+.ant-form-item-has-error .clinic-datepicker .ant-picker,
+.ant-form-item-has-error .clinic-timepicker .ant-picker {
+  border-color: var(--error-color) !important;
+  box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.1) !important;
 }
 
 .ant-input, .ant-select-selector {
