@@ -24,8 +24,27 @@ function Dashboard(props) {
 
    useEffect(() => {
       getAppointmentsTable();
-
+      getDashboardStats();
    }, []);
+
+   const getDashboardStats = async () => {
+      try {
+         const res = await axios.get(
+            `${process.env.REACT_APP_API_URL}/dashboard/incomereceivable`
+         );
+         setState(prevState => ({
+            ...prevState,
+            ...res.data,
+            loading: false
+         }));
+      } catch (error) {
+         console.error('Error fetching dashboard stats:', error);
+         setState(prevState => ({
+            ...prevState,
+            loading: false
+         }));
+      }
+   };
 
 
 

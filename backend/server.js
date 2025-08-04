@@ -11,6 +11,7 @@ const treatmentRoutes = require('./src/routes/treatmentRoutes');
 const paymentRoutes = require('./src/routes/paymentRoutes');
 const adultTeethRoutes = require('./src/routes/adultTeethRoutes');
 const childTeethRoutes = require('./src/routes/childTeethRoutes');
+const dashboardRoutes = require('./src/routes/dashboardRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -31,6 +32,7 @@ app.use('/treatments', treatmentRoutes);
 app.use('/payment', paymentRoutes);
 app.use('/adultteeth', adultTeethRoutes);
 app.use('/childteeth', childTeethRoutes);
+app.use('/dashboard', dashboardRoutes);
 
 // Additional routes for compatibility with Django patterns
 app.use('/treatmentsid', treatmentRoutes); // Alias for treatments
