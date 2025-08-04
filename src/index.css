@@ -428,6 +428,108 @@ code {
   background: rgba(13, 115, 119, 0.1) !important;
 }
 
+/* Accessibility Improvements */
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Focus indicators */
+.clinic-btn-primary:focus,
+.clinic-input:focus,
+.clinic-select:focus .ant-select-selector,
+.clinic-datepicker:focus,
+.clinic-timepicker:focus {
+  outline: 2px solid var(--primary-color) !important;
+  outline-offset: 2px !important;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --primary-color: #000000;
+    --secondary-color: #000000;
+    --text-primary: #000000;
+    --text-secondary: #000000;
+    --background-light: #ffffff;
+  }
+  
+  .clinic-card {
+    border: 2px solid #000000 !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .move-enter,
+  .move-enter-active,
+  .move-exit {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  .clinic-card {
+    transition: none !important;
+  }
+  
+  .clinic-card:hover {
+    transform: none !important;
+  }
+}
+
+/* Focus management */
+.focus-trap {
+  position: relative;
+}
+
+.focus-trap:focus {
+  outline: none;
+}
+
+/* Skip links */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--primary-color);
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 9999;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Enhanced touch targets */
+@media (pointer: coarse) {
+  .ant-btn {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+  
+  .ant-table-tbody > tr > td .ant-btn {
+    padding: 8px 16px !important;
+  }
+}
+
 /* Print Styles */
 @media print {
   .ant-layout-sider {
