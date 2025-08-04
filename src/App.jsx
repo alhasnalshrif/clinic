@@ -1,6 +1,5 @@
 import React from 'react';
-import 'antd/dist/antd.css';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 
 
@@ -22,52 +21,46 @@ import store from "./redux/store";
 
 import CustomLayout from "./containers/Layout";
 
+function AppRoutes() {
+	const location = useLocation();
+
+	return (
+		<TransitionGroup>
+			<CSSTransition
+				onEnter={() => {
+					window.scrollTo(0, 0);
+				}}
+				key={location.key}
+				timeout={500}
+				classNames="move"
+			>
+				<Routes location={location}>
+					<Route path="/" element={<Dashboard />} />
+					<Route path="/home" element={<Reception />} />
+					<Route path="/settings" element={<UserAccountSettings />} />
+					<Route path="/dentalrecords" element={<DentalRecords />} />
+					<Route path="/dentalrecords/:id" element={<DentalRecords />} />
+					<Route path="/transactionlog" element={<Payments />} />
+					<Route path="/appointments" element={<Appointments />} />
+					<Route path="/sms" element={<SMSTextMessaging />} />
+					<Route path="/useraccounts" element={<UserAccounts />} />
+					<Route path="/useraccounts/:id" element={<UserAccounts />} />
+				</Routes>
+			</CSSTransition>
+		</TransitionGroup>
+	);
+}
+
 function App() {
-
-
-
 	return (
 		<Provider store={store}>
 			<Router>
 				<CustomLayout>
-
-					<Route render={({ location }) => (
-						<TransitionGroup>
-							<CSSTransition
-								onEnter={() => {
-									window.scrollTo(0, 0);
-								}}
-								key={location.key}
-								timeout={500}
-								classNames="move"
-							>
-								<Switch location={location}>
-									<Route exact path="/" component={Dashboard} />
-									<Route exact path="/home" component={Reception} />
-
-									<Route exact path="/settings" component={UserAccountSettings} />
-
-									<Route exact path="/dentalrecords" component={DentalRecords} />
-
-									<Route exact path="/dentalrecords/:id" component={DentalRecords} />
-
-									<Route exact path="/transactionlog" component={Payments} />
-									<Route exact path="/appointments" component={Appointments} />
-									<Route exact path="/sms" component={SMSTextMessaging} />
-
-									<Route exact path="/useraccounts" component={UserAccounts} />
-									<Route exact path="/useraccounts/:id" component={UserAccounts} />
-
-								</Switch>
-							</CSSTransition>
-						</TransitionGroup>
-					)} />
+					<AppRoutes />
 				</CustomLayout>
 			</Router>
 		</Provider>
-
 	);
-
 }
 
 

@@ -44,53 +44,73 @@ const Notifications = ({ data = defaultNotifications }) => {
 
   const handleClearAll = () => setNotifications([]);
 
-  const notificationsMenu = (
-    <Menu className='action-menu' style={{ minWidth: '280px' }}>
-      <span className='dropdown-header'>
-        <h3 className='dropdown-title'>Notifications</h3>
+  const createNotificationMenuItems = () => {
+    const items = [
+      {
+        key: 'header',
+        type: 'group',
+        label: (
+          <span className='dropdown-header'>
+            <h3 className='dropdown-title'>Notifications</h3>
+            <a onClick={handleClearAll} className='text-danger'>
+              Clear all
+            </a>
+          </span>
+        ),
+      },
+    ];
 
-        <a onClick={handleClearAll} className='text-danger'>
-          Clear all
-        </a>
-      </span>
+    if (notifications.length) {
+      const notificationItems = notifications.map((item, index) => ({
+        key: index,
+        label: (
+          <NavLink className='d-flex w-100' to={homeRoute}>
+            <span className={`icon mr-3 ${item.icon}`} />
+            <span className='text'>
+              <span className='message'>{item.text}</span>
+              <span className='sub-text'>{item.time}</span>
+            </span>
+          </NavLink>
+        ),
+      }));
+      items.push(...notificationItems);
 
-      {notifications.length &&
-        notifications.map((item, index) => (
-          <Menu.Item className='action-item' key={index}>
-            <NavLink className='d-flex w-100' to={homeRoute}>
-              <span className={`icon mr-3 ${item.icon}`} />
-              <span className='text'>
-                <span className='message'>{item.text}</span>
-                <span className='sub-text'>{item.time}</span>
-              </span>
-            </NavLink>
-          </Menu.Item>
-        ))}
+      items.push({
+        key: 'actions',
+        type: 'group',
+        label: (
+          <div className='dropdown-actions'>
+            <Button type='primary' className='w-100'>
+              View all notifications
+              <span
+                style={{ fontSize: '1.2rem' }}
+                className='icofont-calendar ml-3'
+              />
+            </Button>
+          </div>
+        ),
+      });
+    } else {
+      items.push({
+        key: 'empty',
+        label: <span className='empty-item'>No notifications</span>,
+      });
+    }
 
-      {!notifications.length && (
-        <span className='empty-item'>No notifications</span>
-      )}
+    return items;
+  };
 
-      {notifications.length && (
-        <div className='dropdown-actions'>
-          <Button type='primary' className='w-100'>
-            View all notifications
-            <span
-              style={{ fontSize: '1.2rem' }}
-              className='icofont-calendar ml-3'
-            />
-          </Button>
-        </div>
-      )}
-    </Menu>
-  );
   return (
     <Dropdown
       className='mr-3'
-      overlay={notificationsMenu}
+      menu={{
+        items: createNotificationMenuItems(),
+        className: 'action-menu',
+        style: { minWidth: '280px' },
+      }}
       trigger={['click']}
-      visible={visible}
-      onVisibleChange={setVisible}
+      open={visible}
+      onOpenChange={setVisible}
       placement='bottomRight'
     >
       <Badge className='action-badge' count={notifications.length}>

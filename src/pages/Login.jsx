@@ -4,7 +4,7 @@ import { UserAddOutlined, LockOutlined, LoginOutlined } from '@ant-design/icons'
 
 import { login } from "../redux";
 
-import { Redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { connect } from "react-redux";
 const { Title } = Typography;
 
@@ -30,7 +30,7 @@ const Login = (props, { isAuthenticated }) => {
    };
 
 
-   if (isAuthenticated) return <Redirect to="/" />;
+   if (isAuthenticated) return <Navigate to="/" replace />;
 
    return (
       <div style={{ minHeight: '100vh' }}>

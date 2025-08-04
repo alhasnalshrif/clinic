@@ -253,53 +253,50 @@ function AppointmentsTable(props) {
       render: (text, record) => {
         const isAppointmentPast =
           moment(record.date).format("X") < moment(Date.now()).format("X");
-        const menu =
-          record.status === "pending" ? (
-            <Menu>
-              <Menu.Item>
-                {/* <a onClick={() => {
-                        handleConfirmAppoinment({
-                           id: record.id,
-                           date: record.date,
-                           name: record.name, contact_number:
-                              record.contact_number
-                        });
-                     }}  target="_blank" rel="noopener noreferrer" > */}
-                Confirm Appointment
-                {/*  </a> */}
-              </Menu.Item>
-
-              <Menu.Item>
-                {/* {record.contact_number ? 
-                     <DeclineCancelAppointmentModal onDeclineCancel={handleDeclineCancelAppointment}
-                        appointment={{ id: record.id, date: record.date, name: record.name, contact_number: record.contact_number }} type="decline" />
-                        : <a
-                           onClick={() => handleNoContactNumber({ id: record.id, date: record.date, name: record.name, contact_number: record.contact_number, type: 'decline' })}
-                           target="_blank" rel="noopener noreferrer">
-                           Decline Appointment
-                                                </a>} */}
-              </Menu.Item>
-            </Menu>
-          ) : (
-            <Menu>
-              <Menu.Item disabled>Confirm Appointment</Menu.Item>
-
-              {isAppointmentPast ? (
-                <Menu.Item disabled>Cancel Appointment</Menu.Item>
-              ) : (
-                <Menu.Item>
+        const menuItems =
+          record.status === "pending" ? [
+            {
+              key: 'confirm',
+              label: 'Confirm Appointment',
+            },
+            {
+              key: 'decline',
+              label: (
+                <span>
+                  {/* {record.contact_number ? 
+                       <DeclineCancelAppointmentModal onDeclineCancel={handleDeclineCancelAppointment}
+                          appointment={{ id: record.id, date: record.date, name: record.name, contact_number: record.contact_number }} type="decline" />
+                          : <a
+                             onClick={() => handleNoContactNumber({ id: record.id, date: record.date, name: record.name, contact_number: record.contact_number, type: 'decline' })}
+                             target="_blank" rel="noopener noreferrer">
+                             Decline Appointment
+                                                  </a>} */}
+                </span>
+              ),
+            },
+          ] : [
+            {
+              key: 'confirm',
+              label: 'Confirm Appointment',
+              disabled: true,
+            },
+            {
+              key: 'cancel',
+              label: (
+                <span>
                   {/* {record.contact_number ? <DeclineCancelAppointmentModal
-                                    onDeclineCancel={handleDeclineCancelAppointment}
-                                    appointment={{ id: record.id, date: record.date, name: record.name, contact_number: record.contact_number }} type="cancel" />
-                                    : <a
-                                       onClick={() => handleNoContactNumber({ id: record.id, date: record.date, name: record.name, contact_number: record.contact_number, type: 'cancel' })}
-                                       target="_blank" rel="noopener noreferrer">
-                                       Cancel Appointment
-                                                            </a>} */}
-                </Menu.Item>
-              )}
-            </Menu>
-          );
+                                      onDeclineCancel={handleDeclineCancelAppointment}
+                                      appointment={{ id: record.id, date: record.date, name: record.name, contact_number: record.contact_number }} type="cancel" />
+                                      : <a
+                                         onClick={() => handleNoContactNumber({ id: record.id, date: record.date, name: record.name, contact_number: record.contact_number, type: 'cancel' })}
+                                         target="_blank" rel="noopener noreferrer">
+                                         Cancel Appointment
+                                                              </a>} */}
+                </span>
+              ),
+              disabled: isAppointmentPast,
+            },
+          ];
 
         const disabledDropdown =
           record.status === "cancelled" ||
@@ -312,7 +309,7 @@ function AppointmentsTable(props) {
         return (
           <Dropdown
             disabled={disabledDropdown}
-            overlay={menu}
+            menu={{ items: menuItems }}
             trigger={["click"]}
           >
             <Button>Actions</Button>

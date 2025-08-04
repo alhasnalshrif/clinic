@@ -68,22 +68,32 @@ const CustomLayout = (props) => {
               <Row>
                 <Col align="left" span={24}>
                   <Dropdown
-                    overlay={
-                      <Menu style={{ marginTop: 10 }}>
-                        <Menu.Item key="1">
-                          <Link to={`/settings`}>
-                            <SettingOutlined
-                              style={{ marginLeft: 8, marginRight: 0 }}
-                            />
-                            الاعدادات
-                          </Link>
-                        </Menu.Item>
-                        <Menu.Item key="2" onClick={props.logout}>
-                          <LogoutOutlined />
-                          تسجيل الخروج
-                        </Menu.Item>
-                      </Menu>
-                    }
+                    menu={{
+                      style: { marginTop: 10 },
+                      items: [
+                        {
+                          key: '1',
+                          label: (
+                            <Link to={`/settings`}>
+                              <SettingOutlined
+                                style={{ marginLeft: 8, marginRight: 0 }}
+                              />
+                              الاعدادات
+                            </Link>
+                          ),
+                        },
+                        {
+                          key: '2',
+                          label: (
+                            <>
+                              <LogoutOutlined />
+                              تسجيل الخروج
+                            </>
+                          ),
+                          onClick: props.logout,
+                        },
+                      ],
+                    }}
                     trigger={["click"]}
                   >
                     <a className="ant-dropdown-link">

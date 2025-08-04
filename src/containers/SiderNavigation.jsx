@@ -1,69 +1,87 @@
 import React from 'react';
 import { Menu } from 'antd';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { DashboardFilled, IdcardFilled, DollarCircleFilled, CalendarFilled, MessageFilled, TeamOutlined, HomeOutlined } from '@ant-design/icons';
 
 
-const SiderNavigation = withRouter((props) => {
+const SiderNavigation = () => {
+   const location = useLocation();
+   const selectedItem = `/${location.pathname.split('/')[1]}`;
 
-  
-   const selectedItem = `/${props.location.pathname.split('/')[1]}`;
-
+   const menuItems = [
+      {
+         key: '/',
+         icon: <DashboardFilled />,
+         label: (
+            <Link to="/">
+               <span>بيانات العياده</span>
+            </Link>
+         ),
+      },
+      {
+         key: '/home',
+         icon: <HomeOutlined />,
+         label: (
+            <Link to="/home">
+               <span>الاستقبال</span>
+            </Link>
+         ),
+      },
+      {
+         key: '/dentalrecords',
+         icon: <IdcardFilled />,
+         label: (
+            <Link to="/dentalrecords">
+               <span>المرضي</span>
+            </Link>
+         ),
+      },
+      {
+         key: '/transactionlog',
+         icon: <DollarCircleFilled />,
+         label: (
+            <Link to="/transactionlog">
+               <span>سجل المعاملات</span>
+            </Link>
+         ),
+      },
+      {
+         key: '/appointments',
+         icon: <CalendarFilled />,
+         label: (
+            <Link to="/appointments">
+               <span>الحجوزات</span>
+            </Link>
+         ),
+      },
+      {
+         key: '/sms',
+         icon: <MessageFilled />,
+         label: (
+            <Link to="/sms">
+               <span>الرسائل</span>
+            </Link>
+         ),
+      },
+      {
+         key: '/useraccounts',
+         icon: <TeamOutlined />,
+         label: (
+            <Link to="/useraccounts">
+               <span>المستخدمين</span>
+            </Link>
+         ),
+      },
+   ];
 
    return (
-      // <Menu style={{ background: '#3f4d67', color: '#a9b7d0', }}  mode="inline" selectedKeys={[selectedItem]}>
-      <Menu theme='dark' mode="inline" selectedKeys={[selectedItem]}>
-
-
-         <Menu.Item key="/">
-            <DashboardFilled />
-            <span>بيانات العياده</span>
-            <Link to="/"></Link>
-         </Menu.Item>
-
-
-         <Menu.Item key="/home">
-            <HomeOutlined />
-            <span>الاستقبال</span>
-            <Link to="/home"></Link>
-         </Menu.Item>
-
-         <Menu.Item key="/dentalrecords">
-            <IdcardFilled />
-            <span>المرضي</span>
-            <Link to="/dentalrecords"></Link>
-         </Menu.Item>
-
-
-         <Menu.Item key="/transactionlog">
-            <DollarCircleFilled />
-            <span>سجل المعاملات</span>
-            <Link to="/transactionlog"></Link>
-         </Menu.Item>
-
-
-         <Menu.Item key="/appointments">
-            <CalendarFilled />
-            <span>الحجوزات</span>
-            <Link to="/appointments"></Link>
-         </Menu.Item>
-
-         <Menu.Item key="/sms">
-            <MessageFilled />
-            <span>الرسائل</span>
-            <Link to="/sms"></Link>
-         </Menu.Item>
-
-
-         <Menu.Item key="/useraccounts">
-            <TeamOutlined />
-            <span>المستخدمين</span>
-            <Link to="/useraccounts"></Link>
-         </Menu.Item>
-
-
-      </Menu>
+      <Menu 
+         theme='dark' 
+         mode="inline" 
+         selectedKeys={[selectedItem]}
+         items={menuItems}
+      />
    );
-});
+};
 
 export default SiderNavigation;
