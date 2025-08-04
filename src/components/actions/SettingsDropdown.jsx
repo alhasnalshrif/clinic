@@ -11,21 +11,25 @@ const accountItems = [
 ];
 
 const SettingsDropdown = () => {
-  const accountMenu = (
-    <Menu style={{ minWidth: '180px' }}>
-      {accountItems.map((item, index) => (
-        <Menu.Item className='action-item' key={index}>
-          <NavLink className='d-flex w-100' to={item.route} replace>
-            <span className={`icon mr-3 ${item.icon}`} />
-            <span className='text'>{item.text}</span>
-          </NavLink>
-        </Menu.Item>
-      ))}
-    </Menu>
-  );
+  const accountMenuItems = accountItems.map((item, index) => ({
+    key: index,
+    label: (
+      <NavLink className='d-flex w-100' to={item.route} replace>
+        <span className={`icon mr-3 ${item.icon}`} />
+        <span className='text'>{item.text}</span>
+      </NavLink>
+    ),
+  }));
 
   return (
-    <Dropdown overlay={accountMenu} trigger={['click']} placement='bottomRight'>
+    <Dropdown 
+      menu={{ 
+        items: accountMenuItems, 
+        style: { minWidth: '180px' } 
+      }} 
+      trigger={['click']} 
+      placement='bottomRight'
+    >
       <div className='item'>
         <Avatar
           size={40}

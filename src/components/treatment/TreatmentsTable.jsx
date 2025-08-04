@@ -277,23 +277,27 @@ function TreatmentsTable(props) {
             console.log(record.transaction_count);
 
             if (record.payment_type !== 'installment') {
-               const fullyPaidMenu = (
-                  <Menu>
-                     <Menu.Item>
-                        <a href={() => false} onClick={() => handlePrintPaymentReceipt(record)} target="_blank" rel="noopener noreferrer"><PrinterFilled />Print Receipt</a>
-                     </Menu.Item>
-                     {
-                        // props.role === 'dentist' ? (
-                        <Menu.Item>
-                           <a href={() => false} onClick={() => handleDeleteTreatment(record.id)} target="_blank" rel="noopener noreferrer">Delete Treatment</a>
-                        </Menu.Item>
-                        // ) : (null)
-                     }
+               const fullyPaidMenuItems = [
+                  {
+                     key: 'print-receipt',
+                     label: (
+                        <a href={() => false} onClick={() => handlePrintPaymentReceipt(record)} target="_blank" rel="noopener noreferrer">
+                           <PrinterFilled />Print Receipt
+                        </a>
+                     ),
+                  },
+                  {
+                     key: 'delete-treatment',
+                     label: (
+                        <a href={() => false} onClick={() => handleDeleteTreatment(record.id)} target="_blank" rel="noopener noreferrer">
+                           Delete Treatment
+                        </a>
+                     ),
+                  },
+               ];
 
-                  </Menu>
-               );
                return (
-                  <Dropdown overlay={fullyPaidMenu}>
+                  <Dropdown menu={{ items: fullyPaidMenuItems }}>
                      <Button>
                         Actions <DownCircleFilled />
                      </Button>
@@ -304,38 +308,36 @@ function TreatmentsTable(props) {
             const disabled = parseInt(record.balance) === 0 ? true : false;
 
             // INSTALLMENT PAYMENT TYPE ACTIONS
-            const installmentMenu = (
-
-               <Menu>
-                  { disabled ? (
-                     <Menu.Item disabled>
-                        <PayInstallmentModal treatmentId={record.id} currentBalance={record.balance} onPay={handlePayInstallment} />
-                     </Menu.Item>
-                  ) : (
-                        <Menu.Item>
-                           <PayInstallmentModal treatmentId={record.id} currentBalance={record.balance} onPay={handlePayInstallment} />
-                        </Menu.Item>
-                     )}
-
-                  <Menu.Item>
-                     <InstallmentPaymentsHistoryModal treatment={record} treatmentId={record.id} />
-                  </Menu.Item>
-
-                  {/* {props.role === 'dentist' && record.transaction_count === 1 ? ( */}
-                  <Menu.Item>
-                     <a href={() => false} onClick={() => handleDeleteTreatment(record.id)} target="_blank" rel="noopener noreferrer">Delete Treatment</a>
-                  </Menu.Item>
-                  {/*  ) : props.role === 'dentist' && record.transaction_count > 1 ? ( */}
-                  <Menu.Item>
-                     <a href={() => false} onClick={() => handleVoidLastPaymentTransaction(record.id)} target="_blank" rel="noopener noreferrer">Void Last Payment Transaction</a>
-                  </Menu.Item>
-                  {/*  ) : (null)} */}
-               </Menu>
-
-            );
+            const installmentMenuItems = [
+               {
+                  key: 'pay-installment',
+                  disabled: disabled,
+                  label: <PayInstallmentModal treatmentId={record.id} currentBalance={record.balance} onPay={handlePayInstallment} />,
+               },
+               {
+                  key: 'payment-history',
+                  label: <InstallmentPaymentsHistoryModal treatment={record} treatmentId={record.id} />,
+               },
+               {
+                  key: 'delete-treatment',
+                  label: (
+                     <a href={() => false} onClick={() => handleDeleteTreatment(record.id)} target="_blank" rel="noopener noreferrer">
+                        Delete Treatment
+                     </a>
+                  ),
+               },
+               {
+                  key: 'void-last-payment',
+                  label: (
+                     <a href={() => false} onClick={() => handleVoidLastPaymentTransaction(record.id)} target="_blank" rel="noopener noreferrer">
+                        Void Last Payment Transaction
+                     </a>
+                  ),
+               },
+            ];
 
             return (
-               <Dropdown overlay={installmentMenu} trigger={['click']}>
+               <Dropdown menu={{ items: installmentMenuItems }} trigger={['click']}>
                   <Button>
                      <DownCircleFilled />
                      Actions

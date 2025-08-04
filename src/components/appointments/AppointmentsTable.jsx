@@ -1,365 +1,306 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import {
   Modal,
   message,
-  Menu,
-  Dropdown,
-  Badge,
   Button,
   Table,
   Row,
   Col,
-  Input,
   Typography,
-  DatePicker,
-  Radio,
-  Divider,
+  Tag,
+  Space,
+  Tooltip,
+  Empty
 } from "antd";
+import {
+  CalendarOutlined,
+  ClockCircleOutlined,
+  UserOutlined,
+  PhoneOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  PrinterOutlined,
+  EditOutlined,
+  EyeOutlined
+} from '@ant-design/icons';
 import moment from "moment";
-import { connect } from "react-redux";
+import { apiService } from '../../services/api';
+import { formatDate, formatTime, isToday, isPast, getStatusConfig } from '../../utils/helpers';
+import { APPOINTMENT_STATUS } from '../../utils/constants';
 
-import axios from "axios";
-
-import jsPDF from "jspdf";
-import "jspdf-autotable";
-
-const { confirm } = Modal;
-const { Search } = Input;
 const { Text } = Typography;
 
-function AppointmentsTable(props) {
-  const [state, setState] = useState({
-    search: "",
-    selectedFilterBy: "",
-    rangeDate: [],
-  });
+function AppointmentsTable({ appointments = [], onRefresh }) {
+  const [loading, setLoading] = useState(false);
 
-  const handleDeclineCancelAppointment = (values, id) => {
-    const hide = message.loading(
-      `${values.type === "cancel" ? "Cancelling" : "Declining"} appointment...`,
-      0
-    );
-    axios
-      .delete(`appointments/${id}/delete`, values)
-      .then((response) => {
-        if (response.status === 200) {
-          hide();
-          message.success(
-            `Appointment Successfully ${
-              values.type === "cancel" ? "Cancelled" : "Declined"
-            } `
-          );
-          // props.getAppointments(state.search, state.rangeDate);
+  const handleConfirmAppointment = useCallback(async (record) => {
+    Modal.confirm({
+      title: 'تأكيد الموعد',
+      content: `هل أنت متأكد من تأكيد موعد ${record.patient}؟`,
+      onOk: async () => {
+        try {
+          setLoading(true);
+          await apiService.updateAppointment(record.id, { status: APPOINTMENT_STATUS.CONFIRMED });
+          message.success('تم تأكيد الموعد بنجاح');
+          onRefresh?.();
+        } catch (error) {
+          console.error('Error confirming appointment:', error);
+          message.error('فشل في تأكيد الموعد');
+        } finally {
+          setLoading(false);
         }
-      })
-      .catch((err) => {
-        console.log(err);
-        hide();
-        message.error("Something went wrong! Please, try again.");
-      });
-  };
-
-  const handleNoContactNumber = (values) => {
-    confirm({
-      title: `Are you sure to ${values.type} this appointment?!`,
-      content:
-        "This patient does not have available contact number, therefore will not be notified through SMS.",
-      okText: "Yes",
-      onOk: () => {
-        handleDeclineCancelAppointment(values);
-      },
-      onCancel() {},
-    });
-  };
-
-  const handlePrint = () => {
-    const body = [];
-    let total = 0;
-    // state.paymentTransactions.forEach(({ date_paid, amount_paid, payment_type, from, received_by }) => {
-    props.appointments.forEach(
-      ({ date_paid, amount_paid, payment_type, from, received_by }) => {
-        total += amount_paid;
-        body.push({
-          date_paid: moment(date_paid).format("MMMM DD, YYYY"),
-          amount_paid: amount_paid
-            .toString()
-            .replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-          payment_type,
-          from,
-          received_by,
-        });
       }
-    );
-
-    const doc = new jsPDF({
-      format: [612, 792],
     });
-    const totalPagesExp = "{total_pages_count_string}";
+  }, [onRefresh]);
 
-    // Header
-    const pageSize = doc.internal.pageSize;
-    const pageWidth = pageSize.width ? pageSize.width : pageSize.getWidth();
-    const pageHeight = pageSize.height ? pageSize.height : pageSize.getHeight();
-
-    doc.setFontSize(16);
-    // doc.setFontStyle('bold');
-    doc.text("Andres Dental Clinic", pageWidth - 68, 10);
-    doc.setFontSize(10);
-    doc.setTextColor(53, 53, 53);
-    // doc.setFontStyle('normal');
-    doc.text("One.O.5ive Department Store", pageWidth - 60, 14);
-    doc.text("J. P. Rizal Street, Barangay 18", pageWidth - 62, 18);
-    doc.text("Laoag City, 2900 Ilocos Norte", pageWidth - 60, 22);
-    doc.text("09212451903", pageWidth - 35, 26);
-    doc.setFontSize(14);
-    doc.setTextColor(0, 0, 0);
-    doc.text("Transaction Log", 15, 32);
-    const [startDate, endDate] = state.rangeDate;
-    doc.setFontSize(10);
-
-    if (startDate && endDate) {
-      doc.setTextColor(53, 53, 53);
-      doc.text(
-        `(${moment(startDate).format("MMMM DD, YYYY")} - ${moment(
-          endDate
-        ).format("MMMM DD, YYYY")})`,
-        54,
-        32
-      );
-      doc.setTextColor(0, 0, 0);
-    }
-
-    doc.autoTable({
-      columns: [
-        { header: "Date Paid", dataKey: "date_paid" },
-        { header: "Amount Paid", dataKey: "amount_paid" },
-        { header: "Payment Type", dataKey: "payment_type" },
-        { header: "From", dataKey: "from" },
-        { header: "Received By", dataKey: "received_by" },
-      ],
-      body,
-      didDrawPage: (data) => {
-        // Footer
-        var str = "Page " + doc.internal.getNumberOfPages();
-        // Total page number plugin only available in jspdf v1.0+
-        if (typeof doc.putTotalPages === "function") {
-          str = str + " of " + totalPagesExp;
+  const handleCancelAppointment = useCallback(async (record) => {
+    Modal.confirm({
+      title: 'إلغاء الموعد',
+      content: `هل أنت متأكد من إلغاء موعد ${record.patient}؟`,
+      onOk: async () => {
+        try {
+          setLoading(true);
+          await apiService.updateAppointment(record.id, { status: APPOINTMENT_STATUS.CANCELLED });
+          message.success('تم إلغاء الموعد بنجاح');
+          onRefresh?.();
+        } catch (error) {
+          console.error('Error cancelling appointment:', error);
+          message.error('فشل في إلغاء الموعد');
+        } finally {
+          setLoading(false);
         }
-        // doc.setFontStyle('normal');
-
-        // jsPDF 1.4+ uses getWidth, <1.4 uses .width
-        doc.text(str, data.settings.margin.left, pageHeight - 10);
-        doc.text(
-          `Generated on ${moment(Date.now()).format("MMMM DD, YYYY hh:mmA")}`,
-          pageWidth - 73,
-          pageHeight - 10
-        );
-      },
-      startY: 34,
-      showHead: "firstPage",
+      }
     });
+  }, [onRefresh]);
 
-    doc.line(
-      15,
-      doc.autoTable.previous.finalY + 3,
-      pageWidth - 15,
-      doc.autoTable.previous.finalY + 3
-    ); // horizontal line
-    // doc.setFontStyle('bold');
-    doc.text("TOTAL:", 15, doc.autoTable.previous.finalY + 8);
-    doc.text(
-      `${total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`,
-      48,
-      doc.autoTable.previous.finalY + 8
-    );
-    if (typeof doc.putTotalPages === "function")
-      doc.putTotalPages(totalPagesExp);
+  const handleViewAppointment = useCallback((record) => {
+    Modal.info({
+      title: `تفاصيل الموعد - ${record.patient}`,
+      content: (
+        <div style={{ marginTop: 20 }}>
+          <Row gutter={[16, 16]}>
+            <Col span={12}>
+              <Text strong>اسم المريض: </Text>
+              <Text>{record.patient}</Text>
+            </Col>
+            <Col span={12}>
+              <Text strong>التاريخ: </Text>
+              <Text>{formatDate(record.date)}</Text>
+            </Col>
+            <Col span={12}>
+              <Text strong>الوقت: </Text>
+              <Text>{formatTime(record.date)}</Text>
+            </Col>
+            <Col span={12}>
+              <Text strong>الحالة: </Text>
+              <Text>{getStatusConfig(record.status).text}</Text>
+            </Col>
+            <Col span={24}>
+              <Text strong>سبب الزيارة: </Text>
+              <Text>{record.reason || 'فحص عام'}</Text>
+            </Col>
+          </Row>
+        </div>
+      ),
+      width: 600,
+    });
+  }, []);
 
-    doc.autoPrint();
-    window.open(doc.output("bloburl"), "_blank");
-  };
+  const handleEditAppointment = useCallback((record) => {
+    console.log('تعديل الموعد:', record);
+    message.info('سيتم إضافة نافذة تعديل الموعد قريباً');
+  }, []);
 
-  const columns = [
+  const handlePrintAppointment = useCallback((record) => {
+    console.log('طباعة الموعد:', record);
+    message.info('سيتم طباعة تفاصيل الموعد');
+  }, []);
+  const columns = useMemo(() => [
     {
-      title: <Text strong>Patient Name</Text>,
-      dataIndex: "name",
-      render: (text, record) => {
-        return record.patient;
-      },
+      title: <Text strong style={{ color: 'var(--text-primary)' }}>اسم المريض</Text>,
+      dataIndex: "patient",
+      key: "patient",
+      render: (text, record) => (
+        <Space direction="vertical" size={0}>
+          <Text strong style={{ color: 'var(--text-primary)' }}>
+            <UserOutlined style={{ marginLeft: 8, color: 'var(--primary-color)' }} />
+            {record.patient || 'غير محدد'}
+          </Text>
+          {record.phone && (
+            <Text type="secondary" style={{ fontSize: '12px' }}>
+              <PhoneOutlined style={{ marginLeft: 4 }} />
+              {record.phone}
+            </Text>
+          )}
+        </Space>
+      ),
     },
     {
-      title: <Text strong>Date and Time</Text>,
+      title: <Text strong style={{ color: 'var(--text-primary)' }}>التاريخ والوقت</Text>,
       dataIndex: "date",
+      key: "date",
       render: (text, record) => {
-        const date = moment(record.date).format("MMMM DD, YYYY");
-        const time = moment(record.date).format("h:mm A");
+        const date = formatDate(record.date);
+        const time = formatTime(record.date);
+        const isAppointmentToday = isToday(record.date);
+        const isAppointmentPast = isPast(record.date);
+        
         return (
-          <>
-            <Text>{date}</Text>
-            <Divider type="vertical" />
-            <Text>{time}</Text>
-          </>
+          <Space direction="vertical" size={0}>
+            <Text style={{ 
+              color: isAppointmentToday ? 'var(--primary-color)' : isAppointmentPast ? 'var(--text-secondary)' : 'var(--text-primary)',
+              fontWeight: isAppointmentToday ? 'bold' : 'normal'
+            }}>
+              <CalendarOutlined style={{ marginLeft: 8 }} />
+              {date}
+            </Text>
+            <Text type="secondary" style={{ fontSize: '12px' }}>
+              <ClockCircleOutlined style={{ marginLeft: 4 }} />
+              {time}
+            </Text>
+          </Space>
         );
       },
+      sorter: (a, b) => moment(a.date).unix() - moment(b.date).unix(),
     },
     {
-      title: <Text strong>Reason</Text>,
+      title: <Text strong style={{ color: 'var(--text-primary)' }}>سبب الزيارة</Text>,
       dataIndex: "reason",
-      render: (text, record) => {
-        return record.reason;
-      },
+      key: "reason",
+      render: (text, record) => (
+        <Text style={{ color: 'var(--text-primary)' }}>
+          {record.reason || 'فحص عام'}
+        </Text>
+      ),
     },
     {
-      title: <Text strong>Status</Text>,
+      title: <Text strong style={{ color: 'var(--text-primary)' }}>الحالة</Text>,
       dataIndex: "status",
+      key: "status",
       filters: [
-        {
-          text: "Pending",
-          value: "pending",
-        },
-        {
-          text: "Confirmed",
-          value: "confirmed",
-        },
+        { text: "مؤكد", value: APPOINTMENT_STATUS.CONFIRMED },
+        { text: "في الانتظار", value: APPOINTMENT_STATUS.PENDING },
+        { text: "ملغي", value: APPOINTMENT_STATUS.CANCELLED },
+        { text: "مكتمل", value: APPOINTMENT_STATUS.COMPLETED },
       ],
-
       filterMultiple: false,
-      onFilter: (value, record) => {
-        return record.status.indexOf(value) === 0;
-      },
-
+      onFilter: (value, record) => record.status === value,
       render: (text, record) => {
-        return record.status === "confirmed" ? (
-          <Badge
-            status="success"
-            text={<Text style={{ color: "#73d13d" }}>Confirmed</Text>}
-          />
-        ) : record.status === "pending" ? (
-          <Badge
-            status="processing"
-            text={<Text style={{ color: "#108ee9" }}>Pending</Text>}
-          />
-        ) : (
-          <Badge
-            status="error"
-            text={<Text style={{ color: "#ff7875" }}>Cancelled</Text>}
-          />
-        );
-      },
-    },
-    {
-      title: <Text strong>Actions</Text>,
-      dataIndex: "actions",
-      render: (text, record) => {
-        const isAppointmentPast =
-          moment(record.date).format("X") < moment(Date.now()).format("X");
-        const menu =
-          record.status === "pending" ? (
-            <Menu>
-              <Menu.Item>
-                {/* <a onClick={() => {
-                        handleConfirmAppoinment({
-                           id: record.id,
-                           date: record.date,
-                           name: record.name, contact_number:
-                              record.contact_number
-                        });
-                     }}  target="_blank" rel="noopener noreferrer" > */}
-                Confirm Appointment
-                {/*  </a> */}
-              </Menu.Item>
-
-              <Menu.Item>
-                {/* {record.contact_number ? 
-                     <DeclineCancelAppointmentModal onDeclineCancel={handleDeclineCancelAppointment}
-                        appointment={{ id: record.id, date: record.date, name: record.name, contact_number: record.contact_number }} type="decline" />
-                        : <a
-                           onClick={() => handleNoContactNumber({ id: record.id, date: record.date, name: record.name, contact_number: record.contact_number, type: 'decline' })}
-                           target="_blank" rel="noopener noreferrer">
-                           Decline Appointment
-                                                </a>} */}
-              </Menu.Item>
-            </Menu>
-          ) : (
-            <Menu>
-              <Menu.Item disabled>Confirm Appointment</Menu.Item>
-
-              {isAppointmentPast ? (
-                <Menu.Item disabled>Cancel Appointment</Menu.Item>
-              ) : (
-                <Menu.Item>
-                  {/* {record.contact_number ? <DeclineCancelAppointmentModal
-                                    onDeclineCancel={handleDeclineCancelAppointment}
-                                    appointment={{ id: record.id, date: record.date, name: record.name, contact_number: record.contact_number }} type="cancel" />
-                                    : <a
-                                       onClick={() => handleNoContactNumber({ id: record.id, date: record.date, name: record.name, contact_number: record.contact_number, type: 'cancel' })}
-                                       target="_blank" rel="noopener noreferrer">
-                                       Cancel Appointment
-                                                            </a>} */}
-                </Menu.Item>
-              )}
-            </Menu>
-          );
-
-        const disabledDropdown =
-          record.status === "cancelled" ||
-          record.status === "declined" ||
-          (record.status === "pending" && isAppointmentPast) ||
-          (record.status === "confirmed" && isAppointmentPast)
-            ? true
-            : false;
-
+        const config = getStatusConfig(record.status);
+        
         return (
-          <Dropdown
-            disabled={disabledDropdown}
-            overlay={menu}
-            trigger={["click"]}
+          <Tag 
+            className={`status-badge ${config.className}`}
+            color={config.color}
           >
-            <Button>Actions</Button>
-          </Dropdown>
+            {config.text}
+          </Tag>
         );
       },
     },
     {
-      title: <Text strong>Actions</Text>,
-      dataIndex: "actions",
+      title: <Text strong style={{ color: 'var(--text-primary)' }}>الإجراءات</Text>,
+      key: "actions",
       render: (text, record) => {
+        const isAppointmentPast = isPast(record.date);
+        
         return (
-          <Button onClick={handlePrint} type="primary">
-            Print Transaction Log
-          </Button>
+          <Space>
+            <Tooltip title="عرض التفاصيل">
+              <Button 
+                icon={<EyeOutlined />} 
+                size="small"
+                onClick={() => handleViewAppointment(record)}
+              />
+            </Tooltip>
+            
+            {!isAppointmentPast && record.status !== APPOINTMENT_STATUS.CANCELLED && (
+              <Tooltip title="تعديل الموعد">
+                <Button 
+                  icon={<EditOutlined />} 
+                  size="small"
+                  onClick={() => handleEditAppointment(record)}
+                />
+              </Tooltip>
+            )}
+
+            {record.status === APPOINTMENT_STATUS.PENDING && !isAppointmentPast && (
+              <Tooltip title="تأكيد الموعد">
+                <Button 
+                  icon={<CheckCircleOutlined />} 
+                  size="small"
+                  type="primary"
+                  className="clinic-btn-primary"
+                  onClick={() => handleConfirmAppointment(record)}
+                />
+              </Tooltip>
+            )}
+
+            {!isAppointmentPast && record.status !== APPOINTMENT_STATUS.CANCELLED && (
+              <Tooltip title="إلغاء الموعد">
+                <Button 
+                  icon={<CloseCircleOutlined />} 
+                  size="small"
+                  danger
+                  onClick={() => handleCancelAppointment(record)}
+                />
+              </Tooltip>
+            )}
+            
+            <Tooltip title="طباعة">
+              <Button 
+                icon={<PrinterOutlined />} 
+                size="small"
+                onClick={() => handlePrintAppointment(record)}
+              />
+            </Tooltip>
+          </Space>
         );
       },
     },
-  ];
+  ], [handleViewAppointment, handleEditAppointment, handleConfirmAppointment, handleCancelAppointment, handlePrintAppointment]);
 
   return (
-    <>
+    <div style={{ direction: 'rtl' }}>
       <Table
-        dataSource={props.appointments}
-        size="medium"
+        dataSource={appointments}
         columns={columns}
-        scroll={{ x: 300 }}
-        rowKey={(record) => record.id}
+        loading={loading}
+        rowKey={(record) => record.id || record.key}
+        locale={{
+          emptyText: (
+            <Empty
+              description={
+                <div className="empty-state">
+                  <CalendarOutlined className="empty-state-icon" />
+                  <div className="empty-state-title">لا توجد مواعيد</div>
+                  <div className="empty-state-description">
+                    لم يتم العثور على أي مواعيد مجدولة
+                  </div>
+                </div>
+              }
+            />
+          )
+        }}
         pagination={{
-          position: "both",
-          defaultCurrent: 1,
           pageSize: 10,
-  
+          showSizeChanger: true,
+          showQuickJumper: true,
+          showTotal: (total, range) => 
+            `${range[0]}-${range[1]} من أصل ${total} موعد`,
+          position: ['bottomCenter']
+        }}
+        scroll={{ x: 800 }}
+        size="middle"
+        className="clinic-table"
+        style={{
+          background: 'white',
+          borderRadius: '12px',
+          overflow: 'hidden'
         }}
       />
-    </>
+    </div>
   );
 }
 
-// const mapStateToProps = state => {
-//    return {
-
-//       appointment: state.Abointments.assignmentes,
-//       // loading: state.Abointment.loading
-//    };
-// };
-
-export default connect()(AppointmentsTable);
-// mapStateToProps,
-// { getABNTs,createABNT }
+export default AppointmentsTable;

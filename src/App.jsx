@@ -1,73 +1,74 @@
-import React from 'react';
-import 'antd/dist/antd.css';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import React, { Suspense } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 
-
-// PAGES 
-import Reception from './pages/Reception';
-import UserAccountSettings from './pages/UserAccountSettings';
-import Dashboard from './pages/Dashboard';
-import DentalRecords from './pages/DentalRecords';
-import Payments from './pages/Payments';
-import Appointments from './pages/Appointments';
-import SMSTextMessaging from './pages/SMSTextMessaging';
-import UserAccounts from './pages/UserAccounts';
-
-
-
+// Lazy load components for better performance
+const Reception = React.lazy(() => import('./pages/Reception'));
+const UserAccountSettings = React.lazy(() => import('./pages/UserAccountSettings'));
+const Dashboard = React.lazy(() => import('./pages/Dashboard'));
+const DentalRecords = React.lazy(() => import('./pages/DentalRecords'));
+const Payments = React.lazy(() => import('./pages/Payments'));
+const Appointments = React.lazy(() => import('./pages/Appointments'));
+const SMSTextMessaging = React.lazy(() => import('./pages/SMSTextMessaging'));
+const UserAccounts = React.lazy(() => import('./pages/UserAccounts'));
+const TreatmentPlanning = React.lazy(() => import('./pages/TreatmentPlanning'));
+const MedicalHistory = React.lazy(() => import('./pages/MedicalHistory'));
+const Reports = React.lazy(() => import('./pages/Reports'));
 
 import { Provider } from "react-redux";
 import store from "./redux/store";
 
 import CustomLayout from "./containers/Layout";
+import ErrorBoundary from "./components/common/ErrorBoundary";
+import LoadingSkeleton from "./components/common/LoadingSkeleton";
 
-function App() {
-
-
+function AppRoutes() {
+	const location = useLocation();
 
 	return (
-		<Provider store={store}>
-			<Router>
-				<CustomLayout>
-
-					<Route render={({ location }) => (
-						<TransitionGroup>
-							<CSSTransition
-								onEnter={() => {
-									window.scrollTo(0, 0);
-								}}
-								key={location.key}
-								timeout={500}
-								classNames="move"
-							>
-								<Switch location={location}>
-									<Route exact path="/" component={Dashboard} />
-									<Route exact path="/home" component={Reception} />
-
-									<Route exact path="/settings" component={UserAccountSettings} />
-
-									<Route exact path="/dentalrecords" component={DentalRecords} />
-
-									<Route exact path="/dentalrecords/:id" component={DentalRecords} />
-
-									<Route exact path="/transactionlog" component={Payments} />
-									<Route exact path="/appointments" component={Appointments} />
-									<Route exact path="/sms" component={SMSTextMessaging} />
-
-									<Route exact path="/useraccounts" component={UserAccounts} />
-									<Route exact path="/useraccounts/:id" component={UserAccounts} />
-
-								</Switch>
-							</CSSTransition>
-						</TransitionGroup>
-					)} />
-				</CustomLayout>
-			</Router>
-		</Provider>
-
+		<TransitionGroup>
+			<CSSTransition
+				onEnter={() => {
+					window.scrollTo(0, 0);
+				}}
+				key={location.key}
+				timeout={500}
+				classNames="move"
+			>
+				<Suspense fallback={<LoadingSkeleton type="dashboard" />}>
+					<Routes location={location}>
+						<Route path="/" element={<Dashboard />} />
+						<Route path="/home" element={<Reception />} />
+						<Route path="/settings" element={<UserAccountSettings />} />
+						<Route path="/dentalrecords" element={<DentalRecords />} />
+						<Route path="/dentalrecords/:id" element={<DentalRecords />} />
+						<Route path="/treatments" element={<TreatmentPlanning />} />
+						<Route path="/medical-history" element={<MedicalHistory />} />
+						<Route path="/reports" element={<Reports />} />
+						<Route path="/transactionlog" element={<Payments />} />
+						<Route path="/appointments" element={<Appointments />} />
+						<Route path="/sms" element={<SMSTextMessaging />} />
+						<Route path="/useraccounts" element={<UserAccounts />} />
+						<Route path="/useraccounts/:id" element={<UserAccounts />} />
+					</Routes>
+				</Suspense>
+			</CSSTransition>
+		</TransitionGroup>
 	);
+}
 
+function App() {
+	return (
+		<ErrorBoundary>
+			<Provider store={store}>
+				<Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+					<CustomLayout>
+						<AppRoutes />
+					</CustomLayout>
+				</Router>
+			</Provider>
+		</ErrorBoundary>
+	);
 }
 
 

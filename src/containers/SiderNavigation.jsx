@@ -1,69 +1,133 @@
 import React from 'react';
 import { Menu } from 'antd';
-import { Link, withRouter } from 'react-router-dom';
-import { DashboardFilled, IdcardFilled, DollarCircleFilled, CalendarFilled, MessageFilled, TeamOutlined, HomeOutlined } from '@ant-design/icons';
+import { Link, useLocation } from 'react-router-dom';
+import { 
+   DashboardFilled, 
+   IdcardFilled, 
+   DollarCircleFilled, 
+   CalendarFilled, 
+   MessageFilled, 
+   TeamOutlined, 
+   HomeOutlined,
+   MedicineBoxOutlined,
+   FileTextOutlined,
+   HeartOutlined,
+   UserOutlined,
+   SettingOutlined,
+   BarChartOutlined
+} from '@ant-design/icons';
 
 
-const SiderNavigation = withRouter((props) => {
+const SiderNavigation = () => {
+   const location = useLocation();
+   const selectedItem = `/${location.pathname.split('/')[1]}`;
 
-  
-   const selectedItem = `/${props.location.pathname.split('/')[1]}`;
-
+   const menuItems = [
+      {
+         key: '/',
+         icon: <BarChartOutlined />,
+         label: (
+            <Link to="/">
+               <span style={{ fontWeight: 500 }}>لوحة التحكم</span>
+            </Link>
+         ),
+      },
+      {
+         key: '/home',
+         icon: <HomeOutlined />,
+         label: (
+            <Link to="/home">
+               <span style={{ fontWeight: 500 }}>الاستقبال</span>
+            </Link>
+         ),
+      },
+      {
+         key: '/appointments',
+         icon: <CalendarFilled />,
+         label: (
+            <Link to="/appointments">
+               <span style={{ fontWeight: 500 }}>إدارة المواعيد</span>
+            </Link>
+         ),
+      },
+      {
+         key: '/dentalrecords',
+         icon: <MedicineBoxOutlined />,
+         label: (
+            <Link to="/dentalrecords">
+               <span style={{ fontWeight: 500 }}>السجلات الطبية</span>
+            </Link>
+         ),
+      },
+      {
+         key: '/patients',
+         icon: <UserOutlined />,
+         label: (
+            <Link to="/dentalrecords">
+               <span style={{ fontWeight: 500 }}>المرضى</span>
+            </Link>
+         ),
+      },
+      {
+         key: '/treatments',
+         icon: <HeartOutlined />,
+         label: (
+            <Link to="/treatments">
+               <span style={{ fontWeight: 500 }}>خطط العلاج</span>
+            </Link>
+         ),
+      },
+      {
+         key: '/transactionlog',
+         icon: <DollarCircleFilled />,
+         label: (
+            <Link to="/transactionlog">
+               <span style={{ fontWeight: 500 }}>المدفوعات والفواتير</span>
+            </Link>
+         ),
+      },
+      {
+         key: '/reports',
+         icon: <FileTextOutlined />,
+         label: (
+            <Link to="/reports">
+               <span style={{ fontWeight: 500 }}>التقارير</span>
+            </Link>
+         ),
+      },
+      {
+         key: '/sms',
+         icon: <MessageFilled />,
+         label: (
+            <Link to="/sms">
+               <span style={{ fontWeight: 500 }}>الرسائل والتذكيرات</span>
+            </Link>
+         ),
+      },
+      {
+         key: '/useraccounts',
+         icon: <TeamOutlined />,
+         label: (
+            <Link to="/useraccounts">
+               <span style={{ fontWeight: 500 }}>إدارة المستخدمين</span>
+            </Link>
+         ),
+      },
+   ];
 
    return (
-      // <Menu style={{ background: '#3f4d67', color: '#a9b7d0', }}  mode="inline" selectedKeys={[selectedItem]}>
-      <Menu theme='dark' mode="inline" selectedKeys={[selectedItem]}>
-
-
-         <Menu.Item key="/">
-            <DashboardFilled />
-            <span>بيانات العياده</span>
-            <Link to="/"></Link>
-         </Menu.Item>
-
-
-         <Menu.Item key="/home">
-            <HomeOutlined />
-            <span>الاستقبال</span>
-            <Link to="/home"></Link>
-         </Menu.Item>
-
-         <Menu.Item key="/dentalrecords">
-            <IdcardFilled />
-            <span>المرضي</span>
-            <Link to="/dentalrecords"></Link>
-         </Menu.Item>
-
-
-         <Menu.Item key="/transactionlog">
-            <DollarCircleFilled />
-            <span>سجل المعاملات</span>
-            <Link to="/transactionlog"></Link>
-         </Menu.Item>
-
-
-         <Menu.Item key="/appointments">
-            <CalendarFilled />
-            <span>الحجوزات</span>
-            <Link to="/appointments"></Link>
-         </Menu.Item>
-
-         <Menu.Item key="/sms">
-            <MessageFilled />
-            <span>الرسائل</span>
-            <Link to="/sms"></Link>
-         </Menu.Item>
-
-
-         <Menu.Item key="/useraccounts">
-            <TeamOutlined />
-            <span>المستخدمين</span>
-            <Link to="/useraccounts"></Link>
-         </Menu.Item>
-
-
-      </Menu>
+      <Menu 
+         theme='dark' 
+         mode="inline" 
+         selectedKeys={[selectedItem]}
+         items={menuItems}
+         style={{
+            background: 'linear-gradient(180deg, #0D7377 0%, #14A085 100%)',
+            border: 'none',
+            fontSize: '14px'
+         }}
+      />
    );
-});
+};
 
 export default SiderNavigation;
