@@ -40,7 +40,7 @@
     "backend:dev": "cd backend && npm run dev",
     "dev": "concurrently \"npm run backend:dev\" \"npm start\"",
     "setup": "cd backend && npm install",
-    "preelectron-pack": "npm run build",
+    "preelectron-pack": "npm run build && ./optimize-backend.sh",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "dist-win": "electron-builder --win",
