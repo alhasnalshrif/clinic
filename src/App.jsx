@@ -14,6 +14,7 @@ const UserAccounts = React.lazy(() => import('./pages/UserAccounts'));
 const TreatmentPlanning = React.lazy(() => import('./pages/TreatmentPlanning'));
 const MedicalHistory = React.lazy(() => import('./pages/MedicalHistory'));
 const Reports = React.lazy(() => import('./pages/Reports'));
+const ServerConfigPage = React.lazy(() => import('./components/ServerConfig/ServerConfigPage'));
 
 import { Provider } from "react-redux";
 import store from "./redux/store";
@@ -50,6 +51,7 @@ function AppRoutes() {
 						<Route path="/sms" element={<SMSTextMessaging />} />
 						<Route path="/useraccounts" element={<UserAccounts />} />
 						<Route path="/useraccounts/:id" element={<UserAccounts />} />
+						<Route path="/server-config" element={<ServerConfigPage />} />
 					</Routes>
 				</Suspense>
 			</CSSTransition>

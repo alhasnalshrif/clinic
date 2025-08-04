@@ -43,6 +43,11 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Clinic API is running' });
 });
 
+// API Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'OK', message: 'Clinic API is running', timestamp: new Date().toISOString() });
+});
+
 // Serve static files from React build (if needed)
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../build')));
