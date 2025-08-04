@@ -14,7 +14,23 @@ import {
   DatePicker,
   Radio,
   Divider,
+  Tag,
+  Space,
+  Tooltip,
+  Empty
 } from "antd";
+import {
+  CalendarOutlined,
+  ClockCircleOutlined,
+  UserOutlined,
+  PhoneOutlined,
+  CheckCircleOutlined,
+  ExclamationCircleOutlined,
+  CloseCircleOutlined,
+  PrinterOutlined,
+  EditOutlined,
+  EyeOutlined
+} from '@ant-design/icons';
 import moment from "moment";
 import { connect } from "react-redux";
 
@@ -72,7 +88,70 @@ function AppointmentsTable(props) {
     });
   };
 
-  const handlePrint = () => {
+  const handleViewAppointment = (record) => {
+    Modal.info({
+      title: `تفاصيل الموعد - ${record.patient}`,
+      content: (
+        <div style={{ marginTop: 20 }}>
+          <Row gutter={[16, 16]}>
+            <Col span={12}>
+              <Text strong>اسم المريض: </Text>
+              <Text>{record.patient}</Text>
+            </Col>
+            <Col span={12}>
+              <Text strong>التاريخ: </Text>
+              <Text>{moment(record.date).format('DD/MM/YYYY')}</Text>
+            </Col>
+            <Col span={12}>
+              <Text strong>الوقت: </Text>
+              <Text>{moment(record.date).format('h:mm A')}</Text>
+            </Col>
+            <Col span={12}>
+              <Text strong>الحالة: </Text>
+              <Text>{record.status === 'confirmed' ? 'مؤكد' : record.status === 'pending' ? 'في الانتظار' : 'ملغي'}</Text>
+            </Col>
+            <Col span={24}>
+              <Text strong>سبب الزيارة: </Text>
+              <Text>{record.reason || 'فحص عام'}</Text>
+            </Col>
+          </Row>
+        </div>
+      ),
+      width: 600,
+    });
+  };
+
+  const handleEditAppointment = (record) => {
+    console.log('تعديل الموعد:', record);
+    message.info('سيتم إضافة نافذة تعديل الموعد قريباً');
+  };
+
+  const handleConfirmAppointment = (record) => {
+    Modal.confirm({
+      title: 'تأكيد الموعد',
+      content: `هل أنت متأكد من تأكيد موعد ${record.patient}؟`,
+      onOk: () => {
+        message.success('تم تأكيد الموعد بنجاح');
+        // Add API call here
+      }
+    });
+  };
+
+  const handleCancelAppointment = (record) => {
+    Modal.confirm({
+      title: 'إلغاء الموعد',
+      content: `هل أنت متأكد من إلغاء موعد ${record.patient}؟`,
+      onOk: () => {
+        message.success('تم إلغاء الموعد بنجاح');
+        // Add API call here
+      }
+    });
+  };
+
+  const handlePrintAppointment = (record) => {
+    console.log('طباعة الموعد:', record);
+    message.info('سيتم طباعة تفاصيل الموعد');
+  };
     const body = [];
     let total = 0;
     // state.paymentTransactions.forEach(({ date_paid, amount_paid, payment_type, from, received_by }) => {
@@ -181,171 +260,208 @@ function AppointmentsTable(props) {
 
   const columns = [
     {
-      title: <Text strong>Patient Name</Text>,
-      dataIndex: "name",
-      render: (text, record) => {
-        return record.patient;
-      },
+      title: <Text strong style={{ color: 'var(--text-primary)' }}>اسم المريض</Text>,
+      dataIndex: "patient",
+      key: "patient",
+      render: (text, record) => (
+        <Space direction="vertical" size={0}>
+          <Text strong style={{ color: 'var(--text-primary)' }}>
+            <UserOutlined style={{ marginLeft: 8, color: 'var(--primary-color)' }} />
+            {record.patient || 'غير محدد'}
+          </Text>
+          {record.phone && (
+            <Text type="secondary" style={{ fontSize: '12px' }}>
+              <PhoneOutlined style={{ marginLeft: 4 }} />
+              {record.phone}
+            </Text>
+          )}
+        </Space>
+      ),
     },
     {
-      title: <Text strong>Date and Time</Text>,
+      title: <Text strong style={{ color: 'var(--text-primary)' }}>التاريخ والوقت</Text>,
       dataIndex: "date",
+      key: "date",
       render: (text, record) => {
-        const date = moment(record.date).format("MMMM DD, YYYY");
+        const date = moment(record.date).format("DD/MM/YYYY");
         const time = moment(record.date).format("h:mm A");
+        const isToday = moment(record.date).isSame(moment(), 'day');
+        const isPast = moment(record.date).isBefore(moment());
+        
         return (
-          <>
-            <Text>{date}</Text>
-            <Divider type="vertical" />
-            <Text>{time}</Text>
-          </>
+          <Space direction="vertical" size={0}>
+            <Text style={{ 
+              color: isToday ? 'var(--primary-color)' : isPast ? 'var(--text-secondary)' : 'var(--text-primary)',
+              fontWeight: isToday ? 'bold' : 'normal'
+            }}>
+              <CalendarOutlined style={{ marginLeft: 8 }} />
+              {date}
+            </Text>
+            <Text type="secondary" style={{ fontSize: '12px' }}>
+              <ClockCircleOutlined style={{ marginLeft: 4 }} />
+              {time}
+            </Text>
+          </Space>
         );
       },
+      sorter: (a, b) => moment(a.date).unix() - moment(b.date).unix(),
     },
     {
-      title: <Text strong>Reason</Text>,
+      title: <Text strong style={{ color: 'var(--text-primary)' }}>سبب الزيارة</Text>,
       dataIndex: "reason",
-      render: (text, record) => {
-        return record.reason;
-      },
+      key: "reason",
+      render: (text, record) => (
+        <Text style={{ color: 'var(--text-primary)' }}>
+          {record.reason || 'فحص عام'}
+        </Text>
+      ),
     },
     {
-      title: <Text strong>Status</Text>,
+      title: <Text strong style={{ color: 'var(--text-primary)' }}>الحالة</Text>,
       dataIndex: "status",
+      key: "status",
       filters: [
-        {
-          text: "Pending",
-          value: "pending",
-        },
-        {
-          text: "Confirmed",
-          value: "confirmed",
-        },
+        { text: "مؤكد", value: "confirmed" },
+        { text: "في الانتظار", value: "pending" },
+        { text: "ملغي", value: "cancelled" },
       ],
-
       filterMultiple: false,
-      onFilter: (value, record) => {
-        return record.status.indexOf(value) === 0;
-      },
-
+      onFilter: (value, record) => record.status === value,
       render: (text, record) => {
-        return record.status === "confirmed" ? (
-          <Badge
-            status="success"
-            text={<Text style={{ color: "#73d13d" }}>Confirmed</Text>}
-          />
-        ) : record.status === "pending" ? (
-          <Badge
-            status="processing"
-            text={<Text style={{ color: "#108ee9" }}>Pending</Text>}
-          />
-        ) : (
-          <Badge
-            status="error"
-            text={<Text style={{ color: "#ff7875" }}>Cancelled</Text>}
-          />
-        );
-      },
-    },
-    {
-      title: <Text strong>Actions</Text>,
-      dataIndex: "actions",
-      render: (text, record) => {
-        const isAppointmentPast =
-          moment(record.date).format("X") < moment(Date.now()).format("X");
-        const menuItems =
-          record.status === "pending" ? [
-            {
-              key: 'confirm',
-              label: 'Confirm Appointment',
-            },
-            {
-              key: 'decline',
-              label: (
-                <span>
-                  {/* {record.contact_number ? 
-                       <DeclineCancelAppointmentModal onDeclineCancel={handleDeclineCancelAppointment}
-                          appointment={{ id: record.id, date: record.date, name: record.name, contact_number: record.contact_number }} type="decline" />
-                          : <a
-                             onClick={() => handleNoContactNumber({ id: record.id, date: record.date, name: record.name, contact_number: record.contact_number, type: 'decline' })}
-                             target="_blank" rel="noopener noreferrer">
-                             Decline Appointment
-                                                  </a>} */}
-                </span>
-              ),
-            },
-          ] : [
-            {
-              key: 'confirm',
-              label: 'Confirm Appointment',
-              disabled: true,
-            },
-            {
-              key: 'cancel',
-              label: (
-                <span>
-                  {/* {record.contact_number ? <DeclineCancelAppointmentModal
-                                      onDeclineCancel={handleDeclineCancelAppointment}
-                                      appointment={{ id: record.id, date: record.date, name: record.name, contact_number: record.contact_number }} type="cancel" />
-                                      : <a
-                                         onClick={() => handleNoContactNumber({ id: record.id, date: record.date, name: record.name, contact_number: record.contact_number, type: 'cancel' })}
-                                         target="_blank" rel="noopener noreferrer">
-                                         Cancel Appointment
-                                                              </a>} */}
-                </span>
-              ),
-              disabled: isAppointmentPast,
-            },
-          ];
+        const statusConfig = {
+          confirmed: {
+            color: 'success',
+            icon: <CheckCircleOutlined />,
+            text: 'مؤكد',
+            className: 'status-confirmed'
+          },
+          pending: {
+            color: 'processing',
+            icon: <ClockCircleOutlined />,
+            text: 'في الانتظار',
+            className: 'status-pending'
+          },
+          cancelled: {
+            color: 'error',
+            icon: <CloseCircleOutlined />,
+            text: 'ملغي',
+            className: 'status-cancelled'
+          }
+        };
 
-        const disabledDropdown =
-          record.status === "cancelled" ||
-          record.status === "declined" ||
-          (record.status === "pending" && isAppointmentPast) ||
-          (record.status === "confirmed" && isAppointmentPast)
-            ? true
-            : false;
-
+        const config = statusConfig[record.status] || statusConfig.pending;
+        
         return (
-          <Dropdown
-            disabled={disabledDropdown}
-            menu={{ items: menuItems }}
-            trigger={["click"]}
+          <Tag 
+            className={`status-badge ${config.className}`}
+            icon={config.icon}
           >
-            <Button>Actions</Button>
-          </Dropdown>
+            {config.text}
+          </Tag>
         );
       },
     },
     {
-      title: <Text strong>Actions</Text>,
-      dataIndex: "actions",
+      title: <Text strong style={{ color: 'var(--text-primary)' }}>الإجراءات</Text>,
+      key: "actions",
       render: (text, record) => {
+        const isAppointmentPast = moment(record.date).isBefore(moment());
+        
         return (
-          <Button onClick={handlePrint} type="primary">
-            Print Transaction Log
-          </Button>
+          <Space>
+            <Tooltip title="عرض التفاصيل">
+              <Button 
+                icon={<EyeOutlined />} 
+                size="small"
+                onClick={() => handleViewAppointment(record)}
+              />
+            </Tooltip>
+            
+            {!isAppointmentPast && record.status !== 'cancelled' && (
+              <Tooltip title="تعديل الموعد">
+                <Button 
+                  icon={<EditOutlined />} 
+                  size="small"
+                  onClick={() => handleEditAppointment(record)}
+                />
+              </Tooltip>
+            )}
+
+            {record.status === 'pending' && !isAppointmentPast && (
+              <Tooltip title="تأكيد الموعد">
+                <Button 
+                  icon={<CheckCircleOutlined />} 
+                  size="small"
+                  type="primary"
+                  className="clinic-btn-primary"
+                  onClick={() => handleConfirmAppointment(record)}
+                />
+              </Tooltip>
+            )}
+
+            {!isAppointmentPast && record.status !== 'cancelled' && (
+              <Tooltip title="إلغاء الموعد">
+                <Button 
+                  icon={<CloseCircleOutlined />} 
+                  size="small"
+                  danger
+                  onClick={() => handleCancelAppointment(record)}
+                />
+              </Tooltip>
+            )}
+            
+            <Tooltip title="طباعة">
+              <Button 
+                icon={<PrinterOutlined />} 
+                size="small"
+                onClick={() => handlePrintAppointment(record)}
+              />
+            </Tooltip>
+          </Space>
         );
       },
     },
   ];
 
   return (
-    <>
+    <div style={{ direction: 'rtl' }}>
       <Table
         dataSource={props.appointments}
-        size="medium"
         columns={columns}
-        scroll={{ x: 300 }}
         rowKey={(record) => record.id}
+        locale={{
+          emptyText: (
+            <Empty
+              description={
+                <div className="empty-state">
+                  <CalendarOutlined className="empty-state-icon" />
+                  <div className="empty-state-title">لا توجد مواعيد</div>
+                  <div className="empty-state-description">
+                    لم يتم العثور على أي مواعيد مجدولة
+                  </div>
+                </div>
+              }
+            />
+          )
+        }}
         pagination={{
-          position: "both",
-          defaultCurrent: 1,
           pageSize: 10,
-  
+          showSizeChanger: true,
+          showQuickJumper: true,
+          showTotal: (total, range) => 
+            `${range[0]}-${range[1]} من أصل ${total} موعد`,
+          position: ['bottomCenter']
+        }}
+        scroll={{ x: 800 }}
+        size="middle"
+        className="clinic-table"
+        style={{
+          background: 'white',
+          borderRadius: '12px',
+          overflow: 'hidden'
         }}
       />
-    </>
+    </div>
   );
 }
 

@@ -1,7 +1,21 @@
 import React from 'react';
 import { Menu } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
-import { DashboardFilled, IdcardFilled, DollarCircleFilled, CalendarFilled, MessageFilled, TeamOutlined, HomeOutlined } from '@ant-design/icons';
+import { 
+   DashboardFilled, 
+   IdcardFilled, 
+   DollarCircleFilled, 
+   CalendarFilled, 
+   MessageFilled, 
+   TeamOutlined, 
+   HomeOutlined,
+   MedicineBoxOutlined,
+   FileTextOutlined,
+   HeartOutlined,
+   UserOutlined,
+   SettingOutlined,
+   BarChartOutlined
+} from '@ant-design/icons';
 
 
 const SiderNavigation = () => {
@@ -11,10 +25,10 @@ const SiderNavigation = () => {
    const menuItems = [
       {
          key: '/',
-         icon: <DashboardFilled />,
+         icon: <BarChartOutlined />,
          label: (
             <Link to="/">
-               <span>بيانات العياده</span>
+               <span style={{ fontWeight: 500 }}>لوحة التحكم</span>
             </Link>
          ),
       },
@@ -23,25 +37,7 @@ const SiderNavigation = () => {
          icon: <HomeOutlined />,
          label: (
             <Link to="/home">
-               <span>الاستقبال</span>
-            </Link>
-         ),
-      },
-      {
-         key: '/dentalrecords',
-         icon: <IdcardFilled />,
-         label: (
-            <Link to="/dentalrecords">
-               <span>المرضي</span>
-            </Link>
-         ),
-      },
-      {
-         key: '/transactionlog',
-         icon: <DollarCircleFilled />,
-         label: (
-            <Link to="/transactionlog">
-               <span>سجل المعاملات</span>
+               <span style={{ fontWeight: 500 }}>الاستقبال</span>
             </Link>
          ),
       },
@@ -50,7 +46,52 @@ const SiderNavigation = () => {
          icon: <CalendarFilled />,
          label: (
             <Link to="/appointments">
-               <span>الحجوزات</span>
+               <span style={{ fontWeight: 500 }}>إدارة المواعيد</span>
+            </Link>
+         ),
+      },
+      {
+         key: '/dentalrecords',
+         icon: <MedicineBoxOutlined />,
+         label: (
+            <Link to="/dentalrecords">
+               <span style={{ fontWeight: 500 }}>السجلات الطبية</span>
+            </Link>
+         ),
+      },
+      {
+         key: '/patients',
+         icon: <UserOutlined />,
+         label: (
+            <Link to="/dentalrecords">
+               <span style={{ fontWeight: 500 }}>المرضى</span>
+            </Link>
+         ),
+      },
+      {
+         key: '/treatments',
+         icon: <HeartOutlined />,
+         label: (
+            <Link to="/treatments">
+               <span style={{ fontWeight: 500 }}>خطط العلاج</span>
+            </Link>
+         ),
+      },
+      {
+         key: '/transactionlog',
+         icon: <DollarCircleFilled />,
+         label: (
+            <Link to="/transactionlog">
+               <span style={{ fontWeight: 500 }}>المدفوعات والفواتير</span>
+            </Link>
+         ),
+      },
+      {
+         key: '/reports',
+         icon: <FileTextOutlined />,
+         label: (
+            <Link to="/reports">
+               <span style={{ fontWeight: 500 }}>التقارير</span>
             </Link>
          ),
       },
@@ -59,7 +100,7 @@ const SiderNavigation = () => {
          icon: <MessageFilled />,
          label: (
             <Link to="/sms">
-               <span>الرسائل</span>
+               <span style={{ fontWeight: 500 }}>الرسائل والتذكيرات</span>
             </Link>
          ),
       },
@@ -68,7 +109,7 @@ const SiderNavigation = () => {
          icon: <TeamOutlined />,
          label: (
             <Link to="/useraccounts">
-               <span>المستخدمين</span>
+               <span style={{ fontWeight: 500 }}>إدارة المستخدمين</span>
             </Link>
          ),
       },
@@ -80,6 +121,11 @@ const SiderNavigation = () => {
          mode="inline" 
          selectedKeys={[selectedItem]}
          items={menuItems}
+         style={{
+            background: 'linear-gradient(180deg, #0D7377 0%, #14A085 100%)',
+            border: 'none',
+            fontSize: '14px'
+         }}
       />
    );
 };

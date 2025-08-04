@@ -12,6 +12,9 @@ import Payments from './pages/Payments';
 import Appointments from './pages/Appointments';
 import SMSTextMessaging from './pages/SMSTextMessaging';
 import UserAccounts from './pages/UserAccounts';
+import TreatmentPlanning from './pages/TreatmentPlanning';
+import MedicalHistory from './pages/MedicalHistory';
+import Reports from './pages/Reports';
 
 
 
@@ -40,6 +43,9 @@ function AppRoutes() {
 					<Route path="/settings" element={<UserAccountSettings />} />
 					<Route path="/dentalrecords" element={<DentalRecords />} />
 					<Route path="/dentalrecords/:id" element={<DentalRecords />} />
+					<Route path="/treatments" element={<TreatmentPlanning />} />
+					<Route path="/medical-history" element={<MedicalHistory />} />
+					<Route path="/reports" element={<Reports />} />
 					<Route path="/transactionlog" element={<Payments />} />
 					<Route path="/appointments" element={<Appointments />} />
 					<Route path="/sms" element={<SMSTextMessaging />} />
