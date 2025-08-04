@@ -14,8 +14,10 @@ import {
    HeartOutlined,
    UserOutlined,
    SettingOutlined,
-   BarChartOutlined
+   BarChartOutlined,
+   ServerOutlined
 } from '@ant-design/icons';
+import { APP_CONFIG } from '../config/app';
 
 
 const SiderNavigation = () => {
@@ -113,6 +115,16 @@ const SiderNavigation = () => {
             </Link>
          ),
       },
+      // Add server config menu item only for desktop app
+      ...(APP_CONFIG.IS_ELECTRON ? [{
+         key: '/server-config',
+         icon: <ServerOutlined />,
+         label: (
+            <Link to="/server-config">
+               <span style={{ fontWeight: 500 }}>إعدادات الخادم</span>
+            </Link>
+         ),
+      }] : []),
    ];
 
    return (

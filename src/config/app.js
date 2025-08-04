@@ -1,14 +1,35 @@
 // Application configuration and settings
 
+// Check if running in Electron environment
+const isElectron = window.electronAPI?.isElectron || false;
+
+// Get server URL from Electron or use default
+let serverUrl = 'http://localhost:8000';
+
+if (isElectron && window.electronAPI) {
+  // Will be set asynchronously
+  window.electronAPI.getServerUrl().then(url => {
+    serverUrl = url;
+    // Update API configuration
+    APP_CONFIG.API.BASE_URL = url;
+  });
+} else {
+  serverUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+}
+
 export const APP_CONFIG = {
   // Application Information
   APP_NAME: 'نظام إدارة العيادة السنية',
   APP_VERSION: '2.0.0',
   APP_DESCRIPTION: 'نظام شامل لإدارة العيادات السنية',
   
+  // Environment Information
+  IS_ELECTRON: isElectron,
+  IS_DESKTOP_APP: isElectron,
+  
   // API Configuration
   API: {
-    BASE_URL: process.env.REACT_APP_API_URL || 'http://localhost:8000',
+    BASE_URL: serverUrl,
     TIMEOUT: 10000,
     RETRY_ATTEMPTS: 3,
     RETRY_DELAY: 1000,
@@ -49,6 +70,7 @@ export const APP_CONFIG = {
     DARK_MODE: true,
     PRINT_SUPPORT: true,
     EXPORT_SUPPORT: true,
+    SERVER_CONFIG: isElectron, // Enable server configuration in desktop app
   },
   
   // Security Configuration
@@ -138,6 +160,30 @@ export const APP_CONFIG = {
   },
 };
 
+// Function to update server URL (for desktop app)
+export const updateServerUrl = async (newUrl) => {
+  if (isElectron && window.electronAPI) {
+    await window.electronAPI.setServerUrl(newUrl);
+    APP_CONFIG.API.BASE_URL = newUrl;
+    return true;
+  }
+  return false;
+};
+
+// Function to test server connection
+export const testServerConnection = async (url) => {
+  if (isElectron && window.electronAPI) {
+    return await window.electronAPI.testServerConnection(url);
+  }
+  
+  try {
+    const response = await fetch(url + '/api/health');
+    return response.ok;
+  } catch (error) {
+    return false;
+  }
+};
+
 // Environment-specific overrides
 if (process.env.NODE_ENV === 'production') {
   APP_CONFIG.DEVELOPMENT.DEBUG = false;
@@ -162,6 +208,7 @@ export const FEATURE_FLAGS = {
   VOICE_COMMANDS: false,
   BIOMETRIC_AUTH: false,
   TELEMEDICINE: false,
+  SERVER_CONFIGURATION: isElectron, // Desktop app specific feature
 };
 
 // Application constants that don't change
@@ -179,6 +226,7 @@ export const APP_CONSTANTS = {
     USERS: '/useraccounts',
     SETTINGS: '/settings',
     RECEPTION: '/home',
+    SERVER_CONFIG: '/server-config', // New route for server configuration
   },
   
   STORAGE_KEYS: {
@@ -187,6 +235,7 @@ export const APP_CONSTANTS = {
     THEME: 'clinic_theme',
     LANGUAGE: 'clinic_language',
     PREFERENCES: 'clinic_preferences',
+    SERVER_URL: 'clinic_server_url', // For web version
   },
   
   HTTP_STATUS: {
