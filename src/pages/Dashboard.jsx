@@ -7,9 +7,6 @@ import axios from 'axios';
 const { Title, Text } = Typography;
 const { Content } = Layout;
 
-
-const { TabPane } = Tabs;
-
 function Dashboard(props) {
 
    const [state, setState] = useState({
@@ -51,13 +48,14 @@ function Dashboard(props) {
 
 
    const getAppointmentsTable = async () => {
-
-      const res = await axios.get(
-         `${process.env.REACT_APP_API_URL}/appointments/`,
-
-      );
-      setAppointment(res.data);
-
+      try {
+         const res = await axios.get(
+            `${process.env.REACT_APP_API_URL}/appointments/`,
+         );
+         setAppointment(res.data);
+      } catch (error) {
+         console.error('Error fetching appointments:', error);
+      }
    }
 
    // componentDidMount() {
@@ -88,26 +86,26 @@ function Dashboard(props) {
 
          <Row gutter={24} style={{ marginBottom: 24 }}>
             <Col span={6}>
-               <Card bordered={false}>
+               <Card variant="borderless">
                   <Text type="secondary">Today's Total Gross Income</Text>
 
                   <Title style={{ fontWeight: 'normal', margin: 0 }} level={2}> {state.today_total_gross_income.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Title>
                </Card>
             </Col>
             <Col span={6}>
-               <Card bordered={false}>
+               <Card variant="borderless">
                   <Text type="secondary">Today's Total Receivable</Text>
                   <Title style={{ fontWeight: 'normal', margin: 0 }} level={2}> {state.today_total_receivable.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Title>
                </Card>
             </Col>
             <Col span={6}>
-               <Card bordered={false}>
+               <Card variant="borderless">
                   <Text type="secondary">Total Gross Income</Text>
                   <Title style={{ fontWeight: 'normal', margin: 0 }} level={2}>{state.all_total_gross_income.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Title>
                </Card>
             </Col>
             <Col span={6}>
-               <Card bordered={false}>
+               <Card variant="borderless">
                   <Text type="secondary">Total Receivable</Text>
                   <Title style={{ fontWeight: 'normal', margin: 0 }} level={2}> {state.all_total_receivable.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Title>
                </Card>
@@ -121,17 +119,21 @@ function Dashboard(props) {
 
             <Col span={24}>
 
-               <Tabs defaultActiveKey="1" >
-                  <TabPane tab={<Text style={{ fontSize: 18 }}> الحجوزات</Text>} key="1">
-                     <AppointmentsTable appointments={appointment} />
-                  </TabPane>
-                  
-                  <TabPane tab={<Text style={{ fontSize: 18 }}> الزيارات</Text>} key="2">
-                     {/* <VisitChart /> */}
-                  </TabPane>
-
-
-               </Tabs>
+               <Tabs 
+                  defaultActiveKey="1"
+                  items={[
+                     {
+                        key: "1",
+                        label: <Text style={{ fontSize: 18 }}> الحجوزات</Text>,
+                        children: <AppointmentsTable appointments={appointment} />
+                     },
+                     {
+                        key: "2", 
+                        label: <Text style={{ fontSize: 18 }}> الزيارات</Text>,
+                        children: null // <VisitChart />
+                     }
+                  ]}
+               />
             </Col>
 
          </Row>

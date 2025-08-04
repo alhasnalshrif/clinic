@@ -54,7 +54,7 @@ function AppRoutes() {
 function App() {
 	return (
 		<Provider store={store}>
-			<Router>
+			<Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
 				<CustomLayout>
 					<AppRoutes />
 				</CustomLayout>
