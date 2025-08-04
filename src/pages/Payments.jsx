@@ -182,9 +182,9 @@ function Payments(props) {
       },
       {
          title: <Text strong>Amount Paid</Text>,
-         dataIndex: 'amount_paid',
+         dataIndex: 'amountPaid',
          render: (text, record) => {
-            return ' $ ' + record.amount_paid.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return ' $ ' + (record.amountPaid || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
          }
       },
       // {

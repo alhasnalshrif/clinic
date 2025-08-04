@@ -114,6 +114,27 @@ class AuthController {
       res.status(500).json({ error: 'Internal server error' });
     }
   }
+
+  async getAllUsers(req, res) {
+    try {
+      const allUsers = await db.select({
+        id: users.id,
+        username: users.username,
+        email: users.email,
+        firstName: users.firstName,
+        lastName: users.lastName,
+        group: users.group,
+        isActive: users.isActive,
+        dateJoined: users.dateJoined,
+        lastLogin: users.lastLogin,
+      }).from(users);
+
+      res.json({ users: allUsers });
+    } catch (error) {
+      console.error('Get users error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
 }
 
 module.exports = new AuthController();

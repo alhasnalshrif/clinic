@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Button, Row, Col, message, Typography, Popconfirm, Input } from 'antd';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -15,7 +15,9 @@ function UserAccountsTable(props) {
       users: []
    });
 
-
+   useEffect(() => {
+      getUsers();
+   }, []);
 
    // componentDidMount() {
    //    getUsers();
@@ -27,7 +29,7 @@ function UserAccountsTable(props) {
 
       if (searchValue) {
          const hide = message.loading('Searching...', 0);
-         axios.get('users/', {
+         axios.get(`${process.env.REACT_APP_API_URL}/users/`, {
             params: { search: searchValue }
          })
             .then((response) => {
@@ -44,7 +46,7 @@ function UserAccountsTable(props) {
       }
 
       else {
-         axios.get('users/')
+         axios.get(`${process.env.REACT_APP_API_URL}/users/`)
             .then((response) => {
                setState({ users: response.data.users, loading: false });
                setTimeout(() => {
