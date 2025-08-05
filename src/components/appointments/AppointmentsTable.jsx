@@ -34,9 +34,10 @@ function AppointmentsTable({ appointments = [], onRefresh }) {
   const [loading, setLoading] = useState(false);
 
   const handleConfirmAppointment = useCallback(async (record) => {
+    const patientName = typeof record.patient === 'object' ? record.patient?.name : record.patient;
     Modal.confirm({
       title: 'تأكيد الموعد',
-      content: `هل أنت متأكد من تأكيد موعد ${record.patient}؟`,
+      content: `هل أنت متأكد من تأكيد موعد ${patientName}؟`,
       onOk: async () => {
         try {
           setLoading(true);
@@ -54,9 +55,10 @@ function AppointmentsTable({ appointments = [], onRefresh }) {
   }, [onRefresh]);
 
   const handleCancelAppointment = useCallback(async (record) => {
+    const patientName = typeof record.patient === 'object' ? record.patient?.name : record.patient;
     Modal.confirm({
       title: 'إلغاء الموعد',
-      content: `هل أنت متأكد من إلغاء موعد ${record.patient}؟`,
+      content: `هل أنت متأكد من إلغاء موعد ${patientName}؟`,
       onOk: async () => {
         try {
           setLoading(true);
@@ -74,14 +76,15 @@ function AppointmentsTable({ appointments = [], onRefresh }) {
   }, [onRefresh]);
 
   const handleViewAppointment = useCallback((record) => {
+    const patientName = typeof record.patient === 'object' ? record.patient?.name : record.patient;
     Modal.info({
-      title: `تفاصيل الموعد - ${record.patient}`,
+      title: `تفاصيل الموعد - ${patientName}`,
       content: (
         <div style={{ marginTop: 20 }}>
           <Row gutter={[16, 16]}>
             <Col span={12}>
               <Text strong>اسم المريض: </Text>
-              <Text>{record.patient}</Text>
+              <Text>{patientName}</Text>
             </Col>
             <Col span={12}>
               <Text strong>التاريخ: </Text>
@@ -120,20 +123,26 @@ function AppointmentsTable({ appointments = [], onRefresh }) {
       title: <Text strong style={{ color: 'var(--text-primary)' }}>اسم المريض</Text>,
       dataIndex: "patient",
       key: "patient",
-      render: (text, record) => (
-        <Space direction="vertical" size={0}>
-          <Text strong style={{ color: 'var(--text-primary)' }}>
-            <UserOutlined style={{ marginLeft: 8, color: 'var(--primary-color)' }} />
-            {record.patient || 'غير محدد'}
-          </Text>
-          {record.phone && (
-            <Text type="secondary" style={{ fontSize: '12px' }}>
-              <PhoneOutlined style={{ marginLeft: 4 }} />
-              {record.phone}
+      render: (text, record) => {
+        // Handle both object and string patient data
+        const patientName = typeof record.patient === 'object' ? record.patient?.name : record.patient;
+        const patientPhone = typeof record.patient === 'object' ? record.patient?.phone : record.phone;
+        
+        return (
+          <Space direction="vertical" size={0}>
+            <Text strong style={{ color: 'var(--text-primary)' }}>
+              <UserOutlined style={{ marginLeft: 8, color: 'var(--primary-color)' }} />
+              {patientName || 'غير محدد'}
             </Text>
-          )}
-        </Space>
-      ),
+            {patientPhone && (
+              <Text type="secondary" style={{ fontSize: '12px' }}>
+                <PhoneOutlined style={{ marginLeft: 4 }} />
+                {patientPhone}
+              </Text>
+            )}
+          </Space>
+        );
+      },
     },
     {
       title: <Text strong style={{ color: 'var(--text-primary)' }}>التاريخ والوقت</Text>,
@@ -263,7 +272,7 @@ function AppointmentsTable({ appointments = [], onRefresh }) {
   return (
     <div style={{ direction: 'rtl' }}>
       <Table
-        dataSource={appointments}
+        dataSource={appointments || []}
         columns={columns}
         loading={loading}
         rowKey={(record) => record.id || record.key}

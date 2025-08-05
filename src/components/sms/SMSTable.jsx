@@ -484,7 +484,7 @@ const onUnselectAll = async () => {
             loading={state.loading}
             rowSelection={rowSelection}
             columns={columns}
-            dataSource={state.recipients}
+            dataSource={state.recipients || []}
             rowKey={(record) => record.id}
             pagination={
                {

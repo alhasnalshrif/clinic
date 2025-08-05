@@ -369,7 +369,7 @@ const TreatmentPlanning = () => {
          <Card className="clinic-card" style={{ padding: '24px' }}>
             <Table
                columns={columns}
-               dataSource={treatmentPlans}
+               dataSource={treatmentPlans || []}
                rowKey="id"
                loading={loading}
                locale={{

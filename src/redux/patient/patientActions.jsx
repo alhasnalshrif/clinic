@@ -12,19 +12,9 @@ import {
 // GET PATIENT
 
 export const getPATN = () => async (dispatch) => {
-  // if (localStorage.getItem("access")) {
-  //   const config = {
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `JWT ${localStorage.getItem("access")}`,
-  //       Accept: "application/json",
-  //     },
-  //   };
-
     try {
       const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}/patient/`,
-        // config
+        `${process.env.REACT_APP_API_URL}/patients/`
       );
 
       dispatch({
@@ -33,15 +23,11 @@ export const getPATN = () => async (dispatch) => {
       });
 
     } catch (err) {
+      console.error('Error fetching patients:', err);
       dispatch({
         type: GET_PATIENTS_LIST_FAIL,
       });
     }
-  // } else {
-  //   dispatch({
-  //     type: GET_PATIENTS_LIST_FAIL,
-  //   });
-  // }
 };
 
 

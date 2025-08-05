@@ -51,19 +51,25 @@ export const apiService = {
   // Appointments APIs
   getAppointments: () => api.get('/appointments/'),
   createAppointment: (data) => api.post('/appointments/', data),
-  updateAppointment: (id, data) => api.put(`/appointments/${id}`, data),
-  deleteAppointment: (id) => api.delete(`/appointments/${id}`),
+  updateAppointment: (id, data) => api.put(`/appointments/${id}/`, data),
+  deleteAppointment: (id) => api.delete(`/appointments/${id}/`),
   
   // Patients APIs
-  getPatients: () => api.get('/patients/'),
-  getPatient: (id) => api.get(`/patients/${id}`),
-  createPatient: (data) => api.post('/patients/', data),
-  updatePatient: (id, data) => api.put(`/patients/${id}`, data),
+  getPatients: () => api.get('/patient/'),
+  getPatient: (id) => api.get(`/patient/${id}/`),
+  createPatient: (data) => api.post('/patient/', data),
+  updatePatient: (id, data) => api.put(`/patient/${id}/`, data),
+  // These endpoints don't exist yet, will need backend implementation
+  getPatientAppointments: (patientId) => api.get(`/appointments/`).then(res => ({
+    data: { appointments: res.data.filter(apt => apt.patientId === patientId) }
+  })),
+  updatePatientContact: (patientId, data) => api.patch(`/patient/${patientId}/`, data),
+  cancelAppointment: (appointmentId) => api.delete(`/appointments/${appointmentId}/`),
   
   // Treatments APIs
   getTreatments: () => api.get('/treatments/'),
   createTreatment: (data) => api.post('/treatments/', data),
-  updateTreatment: (id, data) => api.put(`/treatments/${id}`, data),
+  updateTreatment: (id, data) => api.put(`/treatments/${id}/`, data),
   
   // Medical History APIs
   getMedicalHistory: (patientId) => api.get(`/medical-history/${patientId}`),
@@ -73,15 +79,22 @@ export const apiService = {
   // Reports APIs
   getReports: (params) => api.get('/reports/', { params }),
   
+  // Payments APIs
+  getPayments: () => api.get('/payment/'),
+  createPayment: (data) => api.post('/payment/', data),
+  updatePayment: (id, data) => api.put(`/payment/${id}`, data),
+  deletePayment: (id) => api.delete(`/payment/${id}`),
+  
   // User APIs
   getUsers: () => api.get('/users/'),
-  createUser: (data) => api.post('/users/', data),
-  updateUser: (id, data) => api.put(`/users/${id}`, data),
+  createUser: (data) => api.post('/register/', data),
+  updateUser: (id, data) => api.put(`/users/${id}/`, data),
   
   // Auth APIs
-  login: (credentials) => api.post('/auth/login', credentials),
-  logout: () => api.post('/auth/logout'),
-  refreshToken: () => api.post('/auth/refresh'),
+  login: (credentials) => api.post('/api-token-auth/', credentials),
+  logout: () => api.post('/auth/logout/'),
+  refreshToken: () => api.post('/auth/refresh/'),
+  getCurrentUser: () => api.get('/api/auth/user/'),
 };
 
 export default api;

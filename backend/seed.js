@@ -15,7 +15,7 @@ async function seedDatabase() {
       email: 'admin@clinic.com',
       firstName: 'Admin',
       lastName: 'User',
-      group: 'ADMIN',
+      group: 'admin',
       isStaff: true,
       isSuperuser: true,
     }).returning();
@@ -28,7 +28,7 @@ async function seedDatabase() {
       email: 'manager@clinic.com',
       firstName: 'Manager',
       lastName: 'User',
-      group: 'MANAGER',
+      group: 'manager',
     }).returning();
 
     // Create auth tokens

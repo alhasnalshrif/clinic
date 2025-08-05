@@ -1,0 +1,63 @@
+/* Global CSS for Hospital Management System */
+
+/* Reset some browser defaults */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Typography adjustments */
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+}
+
+/* Table adjustments */
+.ant-table-wrapper .ant-table-thead > tr > th {
+  background-color: #f7f7f7;
+}
+
+.ant-table-row:hover {
+  cursor: pointer;
+}
+
+/* Card adjustments */
+.ant-card {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: box-shadow 0.3s;
+}
+
+.ant-card:hover {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Form adjustments */
+.ant-form-item-label {
+  font-weight: 500;
+}
+
+/* Button adjustments */
+.ant-btn {
+  display: inline-flex;
+  align-items: center;
+}

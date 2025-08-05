@@ -39,20 +39,6 @@ function Dashboard(props) {
       appointmentCompletion: 0
    });
 
-   useEffect(() => {
-      const loadDashboardData = async () => {
-         await Promise.all([
-            getAppointmentsTable(),
-            getDashboardStats()
-         ]);
-      };
-      loadDashboardData();
-   }, [getAppointmentsTable, getDashboardStats]);
-
-   useEffect(() => {
-      calculateAdditionalStats();
-   }, [calculateAdditionalStats]);
-
    const getDashboardStats = useCallback(async () => {
       try {
          const res = await apiService.getDashboardStats();
@@ -72,10 +58,6 @@ function Dashboard(props) {
       }
    }, []);
 
-
-
-
-
    const getAppointmentsTable = useCallback(async () => {
       try {
          const res = await apiService.getAppointments();
@@ -85,6 +67,16 @@ function Dashboard(props) {
          setAppointment([]);
       }
    }, []);
+
+   useEffect(() => {
+      const loadDashboardData = async () => {
+         await Promise.all([
+            getAppointmentsTable(),
+            getDashboardStats()
+         ]);
+      };
+      loadDashboardData();
+   }, [getAppointmentsTable, getDashboardStats]);
 
    const calculateAdditionalStats = useCallback(async () => {
       try {
@@ -113,6 +105,10 @@ function Dashboard(props) {
          console.error('Error calculating stats:', error);
       }
    }, [appointment]);
+
+   useEffect(() => {
+      calculateAdditionalStats();
+   }, [calculateAdditionalStats]);
 
    const formatCurrency = useCallback((amount) => {
       if (isNaN(amount) || amount === null || amount === undefined) return '0';

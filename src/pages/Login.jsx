@@ -10,14 +10,10 @@ const { Title } = Typography;
 
 const Login = (props, { isAuthenticated }) => {
 
-
-
-
    const [formValues, setFormValues] = useState({
       username: "",
       password: "",
    });
-
    const { username, password } = formValues;
 
    const onChange = (e) => {
@@ -39,7 +35,7 @@ const Login = (props, { isAuthenticated }) => {
                <Card bordered={true} style={{ boxShadow: '0px 3px 10px -4px #8c8c8c' }}>
                   <Title style={{ textAlign: 'center', marginTop: 18, marginBottom: 0 }} level={3}>
                      تسجيل الدخول
-                     </Title>
+                  </Title>
                   <Divider style={{ margin: '6px 0 12px 0' }} />
 
                   <Form style={{ textAlign: "center" }}
@@ -79,7 +75,7 @@ const Login = (props, { isAuthenticated }) => {
                      <Form.Item style={{ marginTop: 11 }}>
                         <Button block type="primary" htmlType="submit" className="login-form-button">
                            <LoginOutlined />
-                              تسجيل الدخول
+                           تسجيل الدخول
                         </Button>
                      </Form.Item>
                   </Form>

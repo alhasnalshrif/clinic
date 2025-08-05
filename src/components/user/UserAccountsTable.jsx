@@ -167,7 +167,7 @@ function UserAccountsTable(props) {
             style={{ marginTop: 8 }}
             size="medium"
             columns={columns}
-            dataSource={state.users}
+            dataSource={state.users || []}
             scroll={{ x: 300 }}
             loading={state.loading}
             rowKey={(record) => record.id}

@@ -28,7 +28,7 @@ export default function Patient(state = initialState, action) {
     case GET_PATIENTS_LIST_FAIL:
       return {
         ...state,
-        patients: "null",
+        patients: [],
       };
     case GET_PATIENT_DETAIL_SUCCESS:
       return {
@@ -38,7 +38,7 @@ export default function Patient(state = initialState, action) {
     case GET_PATIENT_DETAIL_FAIL:
       return {
         ...state,
-        patientsDetail: "null",
+        patientsDetail: {},
       };
     case CREATE_PATIENT_SUCCESS:
       return {

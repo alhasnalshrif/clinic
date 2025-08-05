@@ -22,15 +22,6 @@ function Appointments() {
    const [error, setError] = useState(null);
    const [searchValue, setSearchValue] = useState('');
 
-
-   useEffect(() => {
-      getAppointmentsTable();
-   }, [getAppointmentsTable]);
-
-
-
-
-
    const getAppointmentsTable = useCallback(async () => {
       try {
          setLoading(true);
@@ -49,6 +40,10 @@ function Appointments() {
       }
    }, []);
 
+   useEffect(() => {
+      getAppointmentsTable();
+   }, [getAppointmentsTable]);
+
 
 
    const debouncedSearch = useMemo(
@@ -56,9 +51,10 @@ function Appointments() {
          if (!value) {
             setFilteredAppointments(appointment);
          } else {
-            const filtered = appointment.filter(({ patient }) => 
-               patient?.toLowerCase().includes(value.toLowerCase())
-            );
+            const filtered = appointment.filter((apt) => {
+               const patientName = typeof apt.patient === 'object' ? apt.patient?.name : apt.patient;
+               return patientName?.toLowerCase().includes(value.toLowerCase());
+            });
             setFilteredAppointments(filtered);
          }
       }, 300),

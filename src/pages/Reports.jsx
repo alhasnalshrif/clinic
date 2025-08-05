@@ -217,7 +217,7 @@ const Reports = () => {
          <Col span={8}>
             <Card className="clinic-card" title="أعلى العلاجات إيراداً">
                <List
-                  dataSource={reportData.financial?.topTreatments}
+                  dataSource={reportData.financial?.topTreatments || []}
                   renderItem={(item, index) => (
                      <List.Item>
                         <List.Item.Meta
@@ -330,7 +330,7 @@ const Reports = () => {
             <Card className="clinic-card" title="أهم المرضى">
                <List
                   grid={{ gutter: 16, column: 4 }}
-                  dataSource={reportData.patients?.topPatients}
+                  dataSource={reportData.patients?.topPatients || []}
                   renderItem={(item) => (
                      <List.Item>
                         <Card size="small">

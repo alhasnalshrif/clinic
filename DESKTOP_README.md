@@ -5,6 +5,7 @@ This document explains how to build and distribute the Clinic Management System 
 ## 🖥️ Desktop App Features
 
 ### Core Features
+
 - **Complete Offline Capability**: Runs independently with built-in server
 - **Configurable Server URL**: Connect to local or remote servers
 - **Professional Installer**: Windows MSI/EXE with setup customization
@@ -13,6 +14,7 @@ This document explains how to build and distribute the Clinic Management System 
 - **Cross-Platform**: Support for Windows, macOS, and Linux
 
 ### Desktop-Specific Enhancements
+
 - **Server Configuration UI**: Dedicated settings page for server management
 - **Connection Testing**: Built-in server connectivity validation
 - **Installation Customization**: Configure server URL during installation
@@ -22,12 +24,14 @@ This document explains how to build and distribute the Clinic Management System 
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 ```bash
 Node.js >= 16.0.0
 npm >= 8.0.0
 ```
 
 ### Build Desktop Application
+
 ```bash
 # Install all dependencies
 npm install
@@ -44,6 +48,7 @@ npm run dist
 ```
 
 ### Available Build Commands
+
 ```bash
 # Development
 npm run electron-dev      # Run in development mode
@@ -82,19 +87,24 @@ clinic/
 ## ⚙️ Configuration Options
 
 ### Installer Configuration
+
 The Windows installer (`installer.nsh`) allows users to:
+
 - Set custom server URL during installation
 - Choose installation directory
 - Create desktop shortcuts
 - Configure start menu entries
 
 ### Runtime Configuration
+
 Users can change server settings through:
+
 - **Desktop App UI**: Settings → Server Configuration
 - **Configuration File**: `%APPDATA%/Clinic Management System/clinic-config.json`
 - **Command Line**: Via Electron IPC
 
 ### Supported Server URLs
+
 ```javascript
 // Local server (default)
 "http://localhost:8000"
@@ -109,6 +119,7 @@ Users can change server settings through:
 ## 🔧 Development
 
 ### Electron Configuration
+
 ```javascript
 // public/electron.js
 - Main process handles backend server startup
@@ -123,6 +134,7 @@ Users can change server settings through:
 ```
 
 ### Backend Integration
+
 ```javascript
 // Automatically starts Node.js server
 // Configurable connection endpoints
@@ -131,6 +143,7 @@ Users can change server settings through:
 ```
 
 ### Frontend Enhancements
+
 ```javascript
 // Dynamic server URL configuration
 // Desktop-specific UI components
@@ -141,6 +154,7 @@ Users can change server settings through:
 ## 📦 Packaging Details
 
 ### Windows Packaging
+
 ```json
 {
   "target": ["nsis", "msi"],
@@ -152,7 +166,9 @@ Users can change server settings through:
 ```
 
 ### Output Files
+
 After building, you'll find:
+
 ```
 dist/
 ├── clinic-management-setup.exe    # NSIS installer
@@ -162,7 +178,9 @@ dist/
 ```
 
 ### File Inclusions
+
 The packaged application includes:
+
 - React build output
 - Complete Node.js backend
 - SQLite database
@@ -173,12 +191,14 @@ The packaged application includes:
 ## 🔒 Security Features
 
 ### Secure Architecture
+
 - **Context Isolation**: Renderer process isolation
 - **Preload Script**: Controlled IPC exposure
 - **Content Security Policy**: XSS protection
 - **Secure Defaults**: No node integration in renderer
 
 ### Configuration Security
+
 - **Encrypted Storage**: Secure configuration storage
 - **Validation**: URL format validation
 - **Sandboxing**: Limited system access
@@ -187,23 +207,28 @@ The packaged application includes:
 ## 🧪 Testing
 
 ### Manual Testing
+
 1. **Development Mode**:
+
    ```bash
    npm run electron-dev
    ```
 
 2. **Production Build**:
+
    ```bash
    npm run build && npm run pack
    ```
 
 3. **Installer Testing**:
+
    ```bash
    npm run dist-win
    # Test the installer on Windows
    ```
 
 ### Automated Testing
+
 ```bash
 # Test React components
 npm test
@@ -218,13 +243,16 @@ npm run test:electron
 ## 🔄 Updates and Maintenance
 
 ### Auto-Update Setup (Future)
+
 The application is configured for auto-updates:
+
 - Update server configuration
 - Differential updates
 - Silent background updates
 - Rollback capabilities
 
 ### Version Management
+
 ```json
 {
   "version": "2.0.0",
@@ -238,6 +266,7 @@ The application is configured for auto-updates:
 ### Common Issues
 
 1. **Build Failures**:
+
    ```bash
    # Clean install
    rm -rf node_modules backend/node_modules
@@ -255,6 +284,7 @@ The application is configured for auto-updates:
    - Verify file paths in package.json
 
 ### Debug Mode
+
 ```bash
 # Enable debug logging
 export DEBUG=electron-builder
@@ -264,12 +294,14 @@ npm run dist
 ## 🚀 Deployment
 
 ### Distribution
+
 1. **Direct Distribution**: Share installer files
 2. **Network Installation**: Deploy to file servers
 3. **Web Download**: Host on websites
 4. **Auto-Update Server**: Setup update infrastructure
 
 ### Installation Process
+
 1. User downloads installer
 2. Runs setup with server configuration
 3. Application installs with shortcuts
@@ -279,12 +311,14 @@ npm run dist
 ## 📞 Support
 
 ### User Support
+
 - **Installation Guide**: Step-by-step setup
 - **Configuration Help**: Server URL assistance
 - **Troubleshooting**: Common issue resolution
 - **Updates**: Version management
 
 ### Developer Support
+
 - **Build Issues**: Compilation problems
 - **Packaging**: Distribution challenges
 - **Configuration**: Setup customization

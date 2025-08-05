@@ -358,7 +358,7 @@ function TreatmentsTable(props) {
 
          <Table
             loading={state.loading}
-            dataSource={state.treatments}
+            dataSource={state.treatments || []}
             size="medium"
             // width="100%"
             columns={columns}

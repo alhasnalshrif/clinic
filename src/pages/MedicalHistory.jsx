@@ -365,7 +365,7 @@ const MedicalHistory = () => {
          <Card className="clinic-card" style={{ padding: '24px' }}>
             <Table
                columns={columns}
-               dataSource={patients}
+               dataSource={patients || []}
                rowKey="id"
                loading={loading}
                locale={{

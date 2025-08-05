@@ -1,7 +1,9 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import { Provider } from 'react-redux';
 import './index.css';
 import App from './App.jsx';
+import store from './redux/store';
 import * as serviceWorker from './serviceWorker';
 import { ConfigProvider } from 'antd';
 
@@ -9,9 +11,11 @@ const container = document.getElementById('root');
 const root = createRoot(container);
 
 root.render(
-  <ConfigProvider direction="rtl">
-    <App />
-  </ConfigProvider>
+  <Provider store={store}>
+    <ConfigProvider direction="rtl">
+      <App />
+    </ConfigProvider>
+  </Provider>
 );
 
 // If you want your app to work offline and load faster, you can change

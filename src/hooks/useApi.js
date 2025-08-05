@@ -137,7 +137,7 @@ export const useForm = (onSubmit, validationRules = {}) => {
     }
   }, [errors]);
 
-  const setTouched = useCallback((name) => {
+  const setFieldTouched = useCallback((name) => {
     setTouched(prev => ({ ...prev, [name]: true }));
   }, []);
 
@@ -203,7 +203,7 @@ export const useForm = (onSubmit, validationRules = {}) => {
     touched,
     isSubmitting,
     setValue,
-    setTouched,
+    setTouched: setFieldTouched,
     handleSubmit,
     reset,
     validate

@@ -163,7 +163,7 @@ function InstallmentPaymentsHistoryModal(props) {
             >
                <Table
                   bordered
-                  dataSource={state.paymentTransactions}
+                  dataSource={state.paymentTransactions || []}
                   size="small"
                   columns={columns}
                   scroll={{ x: 300 }}

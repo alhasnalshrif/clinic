@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Table, message, Row, Col, Radio, Input, DatePicker, Tag, Typography, Button, Layout } from 'antd';
 import moment from 'moment';
-import axios from 'axios';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
 import { getBILLS } from "../redux";
 import { connect } from "react-redux";
+import { apiService } from '../services/api';
 
 const { RangePicker } = DatePicker;
 const { Search } = Input;
@@ -25,7 +25,7 @@ function Payments(props) {
 
 
 
-   const [payment, setPayment] = useState();
+   const [payment, setPayment] = useState([]);
 
 
    useEffect(() => {
@@ -36,16 +36,17 @@ function Payments(props) {
 
 
    const getPaymentsTable = async () => {
+      try {
+         await props.getBILLS();
+         setPayment(props.payment || []);
 
-      await props.getBILLS();
-      setPayment(props.payment);
-
-      const res = await axios.get(
-         `${process.env.REACT_APP_API_URL}/payment/`,
-
-      );
-      setPayment(res.data);
-
+         const res = await apiService.getPayments();
+         setPayment(res.data || []);
+      } catch (error) {
+         console.error('Error fetching payments:', error);
+         message.error('فشل في تحميل بيانات المدفوعات');
+         setPayment([]); // Ensure we always set an empty array on error
+      }
    }
 
 
@@ -53,12 +54,18 @@ function Payments(props) {
    console.log(props.payment, "c");
 
    const handleSearch = (value) => {
+      if (!value) {
+         // If search is empty, reload all payments
+         getPaymentsTable();
+         return;
+      }
 
-
-      setPayment(props.appointments.filter(({ patient }) => {
-         return patient.includes(value);
-      }));
-
+      // Filter payments by patient name or other relevant fields
+      const filteredPayments = (props.payment || []).filter((payment) => {
+         return payment.from && payment.from.toLowerCase().includes(value.toLowerCase());
+      });
+      
+      setPayment(filteredPayments);
    }
 
 
@@ -246,7 +253,7 @@ function Payments(props) {
             </Col>
          </Row>
          <Table
-            dataSource={payment}
+            dataSource={payment || []}
             size="medium"
             columns={columns}
             scroll={{ x: 500 }}

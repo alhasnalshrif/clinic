@@ -14,7 +14,7 @@ import {
   Tag
 } from 'antd';
 import {
-  ServerOutlined,
+  // ServerOutlined,
   CheckCircleOutlined,
   ExclamationCircleOutlined,
   SaveOutlined,
@@ -125,7 +125,7 @@ const ServerConfigPage = () => {
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
           <div>
             <Title level={2}>
-              <ServerOutlined style={{ marginRight: '8px' }} />
+              {/* <ServerOutlined style={{ marginRight: '8px' }} /> */}
               Server Configuration
             </Title>
             <Paragraph type="secondary">
@@ -175,7 +175,7 @@ const ServerConfigPage = () => {
             >
               <Input
                 placeholder="http://localhost:8000"
-                prefix={<ServerOutlined />}
+                // prefix={<ServerOutlined />}
                 size="large"
               />
             </Form.Item>
