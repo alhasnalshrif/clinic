@@ -281,6 +281,6 @@ npm test              # Run test suite
 
 This dental clinic management system is proprietary software designed for medical practice management. All rights reserved.
 
-**Built with ❤️ for dental professionals**
+**Built with Alhasn Alshrif**
 
 *Last Updated: 2024*
