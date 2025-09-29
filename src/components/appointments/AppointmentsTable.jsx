@@ -1,11 +1,9 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback } from "react";
 import {
   Modal,
   message,
   Button,
   Table,
-  Row,
-  Col,
   Typography,
   Tag,
   Space,
@@ -20,28 +18,25 @@ import {
   CheckCircleOutlined,
   CloseCircleOutlined,
   PrinterOutlined,
-  EditOutlined,
   EyeOutlined
 } from '@ant-design/icons';
 import moment from "moment";
 import { apiService } from '../../services/api';
-import { formatDate, formatTime, isToday, isPast, getStatusConfig } from '../../utils/helpers';
-import { APPOINTMENT_STATUS } from '../../utils/constants';
 
 const { Text } = Typography;
 
-function AppointmentsTable({ appointments = [], onRefresh }) {
+function AppointmentsTable({ data = [], onRefresh }) {
   const [loading, setLoading] = useState(false);
 
   const handleConfirmAppointment = useCallback(async (record) => {
-    const patientName = typeof record.patient === 'object' ? record.patient?.name : record.patient;
+    const patientName = record.patient?.name || 'المريض';
     Modal.confirm({
       title: 'تأكيد الموعد',
       content: `هل أنت متأكد من تأكيد موعد ${patientName}؟`,
       onOk: async () => {
         try {
           setLoading(true);
-          await apiService.updateAppointment(record.id, { status: APPOINTMENT_STATUS.CONFIRMED });
+          await apiService.updateAppointment(record.id, { status: 'confirmed' });
           message.success('تم تأكيد الموعد بنجاح');
           onRefresh?.();
         } catch (error) {
@@ -50,235 +45,161 @@ function AppointmentsTable({ appointments = [], onRefresh }) {
         } finally {
           setLoading(false);
         }
-      }
+      },
     });
   }, [onRefresh]);
 
   const handleCancelAppointment = useCallback(async (record) => {
-    const patientName = typeof record.patient === 'object' ? record.patient?.name : record.patient;
+    const patientName = record.patient?.name || 'المريض';
     Modal.confirm({
       title: 'إلغاء الموعد',
       content: `هل أنت متأكد من إلغاء موعد ${patientName}؟`,
       onOk: async () => {
         try {
           setLoading(true);
-          await apiService.updateAppointment(record.id, { status: APPOINTMENT_STATUS.CANCELLED });
+          await apiService.cancelAppointment(record.id);
           message.success('تم إلغاء الموعد بنجاح');
           onRefresh?.();
         } catch (error) {
-          console.error('Error cancelling appointment:', error);
+          console.error('Error canceling appointment:', error);
           message.error('فشل في إلغاء الموعد');
         } finally {
           setLoading(false);
         }
-      }
+      },
     });
   }, [onRefresh]);
 
-  const handleViewAppointment = useCallback((record) => {
-    const patientName = typeof record.patient === 'object' ? record.patient?.name : record.patient;
-    Modal.info({
-      title: `تفاصيل الموعد - ${patientName}`,
-      content: (
-        <div style={{ marginTop: 20 }}>
-          <Row gutter={[16, 16]}>
-            <Col span={12}>
-              <Text strong>اسم المريض: </Text>
-              <Text>{patientName}</Text>
-            </Col>
-            <Col span={12}>
-              <Text strong>التاريخ: </Text>
-              <Text>{formatDate(record.date)}</Text>
-            </Col>
-            <Col span={12}>
-              <Text strong>الوقت: </Text>
-              <Text>{formatTime(record.date)}</Text>
-            </Col>
-            <Col span={12}>
-              <Text strong>الحالة: </Text>
-              <Text>{getStatusConfig(record.status).text}</Text>
-            </Col>
-            <Col span={24}>
-              <Text strong>سبب الزيارة: </Text>
-              <Text>{record.reason || 'فحص عام'}</Text>
-            </Col>
-          </Row>
-        </div>
-      ),
-      width: 600,
-    });
-  }, []);
+  const getStatusTag = (status) => {
+    const statusConfig = {
+      'pending': { color: 'orange', text: 'في الانتظار' },
+      'confirmed': { color: 'green', text: 'مؤكد' },
+      'completed': { color: 'blue', text: 'مكتمل' },
+      'cancelled': { color: 'red', text: 'ملغى' },
+      'في الانتظار': { color: 'orange', text: 'في الانتظار' },
+    };
+    
+    const config = statusConfig[status] || { color: 'default', text: status || 'غير محدد' };
+    return <Tag color={config.color}>{config.text}</Tag>;
+  };
 
-  const handleEditAppointment = useCallback((record) => {
-    console.log('تعديل الموعد:', record);
-    message.info('سيتم إضافة نافذة تعديل الموعد قريباً');
-  }, []);
-
-  const handlePrintAppointment = useCallback((record) => {
-    console.log('طباعة الموعد:', record);
-    message.info('سيتم طباعة تفاصيل الموعد');
-  }, []);
-  const columns = useMemo(() => [
+  const columns = [
     {
-      title: <Text strong style={{ color: 'var(--text-primary)' }}>اسم المريض</Text>,
-      dataIndex: "patient",
-      key: "patient",
-      render: (text, record) => {
-        // Handle both object and string patient data
-        const patientName = typeof record.patient === 'object' ? record.patient?.name : record.patient;
-        const patientPhone = typeof record.patient === 'object' ? record.patient?.phone : record.phone;
-        
-        return (
-          <Space direction="vertical" size={0}>
-            <Text strong style={{ color: 'var(--text-primary)' }}>
-              <UserOutlined style={{ marginLeft: 8, color: 'var(--primary-color)' }} />
-              {patientName || 'غير محدد'}
-            </Text>
-            {patientPhone && (
-              <Text type="secondary" style={{ fontSize: '12px' }}>
-                <PhoneOutlined style={{ marginLeft: 4 }} />
-                {patientPhone}
-              </Text>
-            )}
+      title: <Text strong>اسم المريض</Text>,
+      dataIndex: 'patient',
+      key: 'patient',
+      render: (patient, record) => (
+        <Space direction="vertical" size="small">
+          <Space size="small">
+            <UserOutlined style={{ color: 'var(--primary-color)' }} />
+            <Text strong>{patient?.name || 'غير محدد'}</Text>
           </Space>
-        );
-      },
-    },
-    {
-      title: <Text strong style={{ color: 'var(--text-primary)' }}>التاريخ والوقت</Text>,
-      dataIndex: "date",
-      key: "date",
-      render: (text, record) => {
-        const date = formatDate(record.date);
-        const time = formatTime(record.date);
-        const isAppointmentToday = isToday(record.date);
-        const isAppointmentPast = isPast(record.date);
-        
-        return (
-          <Space direction="vertical" size={0}>
-            <Text style={{ 
-              color: isAppointmentToday ? 'var(--primary-color)' : isAppointmentPast ? 'var(--text-secondary)' : 'var(--text-primary)',
-              fontWeight: isAppointmentToday ? 'bold' : 'normal'
-            }}>
-              <CalendarOutlined style={{ marginLeft: 8 }} />
-              {date}
-            </Text>
-            <Text type="secondary" style={{ fontSize: '12px' }}>
-              <ClockCircleOutlined style={{ marginLeft: 4 }} />
-              {time}
-            </Text>
-          </Space>
-        );
-      },
-      sorter: (a, b) => moment(a.date).unix() - moment(b.date).unix(),
-    },
-    {
-      title: <Text strong style={{ color: 'var(--text-primary)' }}>سبب الزيارة</Text>,
-      dataIndex: "reason",
-      key: "reason",
-      render: (text, record) => (
-        <Text style={{ color: 'var(--text-primary)' }}>
-          {record.reason || 'فحص عام'}
-        </Text>
+          {patient?.phone && (
+            <Space size="small">
+              <PhoneOutlined style={{ color: 'var(--text-secondary)' }} />
+              <Text type="secondary">{patient.phone}</Text>
+            </Space>
+          )}
+        </Space>
       ),
     },
     {
-      title: <Text strong style={{ color: 'var(--text-primary)' }}>الحالة</Text>,
-      dataIndex: "status",
-      key: "status",
+      title: <Text strong>التاريخ والوقت</Text>,
+      key: 'datetime',
+      sorter: (a, b) => new Date(a.date) - new Date(b.date),
+      render: (_, record) => (
+        <Space direction="vertical" size="small">
+          <Space size="small">
+            <CalendarOutlined style={{ color: 'var(--info-color)' }} />
+            <Text>{moment(record.date).format('DD/MM/YYYY')}</Text>
+          </Space>
+          <Space size="small">
+            <ClockCircleOutlined style={{ color: 'var(--secondary-color)' }} />
+            <Text>{record.time || '12:00 AM'}</Text>
+          </Space>
+        </Space>
+      ),
+    },
+    {
+      title: <Text strong>سبب الزيارة</Text>,
+      dataIndex: 'reason',
+      key: 'reason',
+      render: (reason) => <Text>{reason || 'فحص عام'}</Text>,
+    },
+    {
+      title: <Text strong>الحالة</Text>,
+      dataIndex: 'status',
+      key: 'status',
       filters: [
-        { text: "مؤكد", value: APPOINTMENT_STATUS.CONFIRMED },
-        { text: "في الانتظار", value: APPOINTMENT_STATUS.PENDING },
-        { text: "ملغي", value: APPOINTMENT_STATUS.CANCELLED },
-        { text: "مكتمل", value: APPOINTMENT_STATUS.COMPLETED },
+        { text: 'في الانتظار', value: 'pending' },
+        { text: 'مؤكد', value: 'confirmed' },
+        { text: 'مكتمل', value: 'completed' },
+        { text: 'ملغى', value: 'cancelled' },
       ],
-      filterMultiple: false,
       onFilter: (value, record) => record.status === value,
-      render: (text, record) => {
-        const config = getStatusConfig(record.status);
-        
-        return (
-          <Tag 
-            className={`status-badge ${config.className}`}
-            color={config.color}
-          >
-            {config.text}
-          </Tag>
-        );
-      },
+      render: (status) => getStatusTag(status),
     },
     {
-      title: <Text strong style={{ color: 'var(--text-primary)' }}>الإجراءات</Text>,
-      key: "actions",
-      render: (text, record) => {
-        const isAppointmentPast = isPast(record.date);
-        
-        return (
-          <Space>
-            <Tooltip title="عرض التفاصيل">
-              <Button 
-                icon={<EyeOutlined />} 
+      title: <Text strong>الإجراءات</Text>,
+      key: 'actions',
+      render: (_, record) => (
+        <Space size="small">
+          <Tooltip title="عرض التفاصيل">
+            <Button
+              type="text"
+              icon={<EyeOutlined />}
+              size="small"
+              onClick={() => console.log('View details:', record)}
+            />
+          </Tooltip>
+          <Tooltip title="طباعة">
+            <Button
+              type="text"
+              icon={<PrinterOutlined />}
+              size="small"
+              onClick={() => console.log('Print appointment:', record)}
+            />
+          </Tooltip>
+          {record.status !== 'completed' && record.status !== 'cancelled' && (
+            <Tooltip title="تأكيد الموعد">
+              <Button
+                type="text"
+                icon={<CheckCircleOutlined />}
                 size="small"
-                onClick={() => handleViewAppointment(record)}
+                style={{ color: 'var(--success-color)' }}
+                onClick={() => handleConfirmAppointment(record)}
+                loading={loading}
               />
             </Tooltip>
-            
-            {!isAppointmentPast && record.status !== APPOINTMENT_STATUS.CANCELLED && (
-              <Tooltip title="تعديل الموعد">
-                <Button 
-                  icon={<EditOutlined />} 
-                  size="small"
-                  onClick={() => handleEditAppointment(record)}
-                />
-              </Tooltip>
-            )}
-
-            {record.status === APPOINTMENT_STATUS.PENDING && !isAppointmentPast && (
-              <Tooltip title="تأكيد الموعد">
-                <Button 
-                  icon={<CheckCircleOutlined />} 
-                  size="small"
-                  type="primary"
-                  className="clinic-btn-primary"
-                  onClick={() => handleConfirmAppointment(record)}
-                />
-              </Tooltip>
-            )}
-
-            {!isAppointmentPast && record.status !== APPOINTMENT_STATUS.CANCELLED && (
-              <Tooltip title="إلغاء الموعد">
-                <Button 
-                  icon={<CloseCircleOutlined />} 
-                  size="small"
-                  danger
-                  onClick={() => handleCancelAppointment(record)}
-                />
-              </Tooltip>
-            )}
-            
-            <Tooltip title="طباعة">
-              <Button 
-                icon={<PrinterOutlined />} 
+          )}
+          {record.status !== 'completed' && record.status !== 'cancelled' && (
+            <Tooltip title="إلغاء الموعد">
+              <Button
+                type="text"
+                icon={<CloseCircleOutlined />}
                 size="small"
-                onClick={() => handlePrintAppointment(record)}
+                style={{ color: 'var(--error-color)' }}
+                onClick={() => handleCancelAppointment(record)}
+                loading={loading}
               />
             </Tooltip>
-          </Space>
-        );
-      },
+          )}
+        </Space>
+      ),
     },
-  ], [handleViewAppointment, handleEditAppointment, handleConfirmAppointment, handleCancelAppointment, handlePrintAppointment]);
+  ];
 
   return (
-    <div style={{ direction: 'rtl' }}>
+    <div className="clinic-table-container">
       <Table
-        dataSource={appointments || []}
         columns={columns}
+        dataSource={data}
+        rowKey="id"
         loading={loading}
-        rowKey={(record) => record.id || record.key}
         locale={{
           emptyText: (
             <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
               description={
                 <div className="empty-state">
                   <CalendarOutlined className="empty-state-icon" />
@@ -296,17 +217,10 @@ function AppointmentsTable({ appointments = [], onRefresh }) {
           showSizeChanger: true,
           showQuickJumper: true,
           showTotal: (total, range) => 
-            `${range[0]}-${range[1]} من أصل ${total} موعد`,
-          position: ['bottomCenter']
+            `${range[0]}-${range[1]} من أصل ${total} موعد`
         }}
         scroll={{ x: 800 }}
-        size="middle"
-        className="clinic-table"
-        style={{
-          background: 'white',
-          borderRadius: '12px',
-          overflow: 'hidden'
-        }}
+        size="small"
       />
     </div>
   );

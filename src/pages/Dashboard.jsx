@@ -14,7 +14,8 @@ import {
   Spin,
   Badge,
   Tooltip,
-  Divider
+  Divider,
+  message
 } from 'antd';
 import { 
   DollarOutlined, 
@@ -39,76 +40,87 @@ import { apiService } from '../services/api';
 const { Title, Text, Paragraph } = Typography;
 
 function Dashboard() {
-  const [state, setState] = useState({
+  const [dashboardData, setDashboardData] = useState({
     today_total_gross_income: 0,
     today_total_receivable: 0,
-    all_total_gross_income: 150,
-    all_total_receivable: 150,
-    loading: false,
-    error: null
+    all_total_gross_income: 0,
+    all_total_receivable: 0,
   });
 
-  const [appointment, setAppointment] = useState([
-    {
-      id: 1,
-      patient: { name: 'John Doe', phone: '+1234567890' },
-      appointment_date: '15/01/2024',
-      appointment_time: '12:00 AM',
-      reason: 'Regular checkup',
-      status: 'في الانتظار'
-    },
-    {
-      id: 2,
-      patient: { name: 'Jane Smith', phone: '+0987654321' },
-      appointment_date: '16/01/2024',
-      appointment_time: '12:00 AM',
-      reason: 'Tooth cleaning',
-      status: 'في الانتظار'
-    }
-  ]);
+  const [appointments, setAppointments] = useState([]);
+  const [patients, setPatients] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [dashboardStats, setDashboardStats] = useState({
-    totalPatients: 156,
+    totalPatients: 0,
     todayAppointments: 0,
     completedToday: 0,
-    pendingTreatments: 23,
-    monthlyGrowth: 12,
+    pendingTreatments: 0,
+    monthlyGrowth: 0,
     appointmentCompletion: 0,
     todayRevenue: 0,
-    weeklyGrowth: 8,
-    urgentCases: 3,
-    todayTreatments: 5
+    weeklyGrowth: 0,
+    urgentCases: 0,
+    todayTreatments: 0
   });
 
-  const getDashboardStats = useCallback(async () => {
+  // Fetch all dashboard data from backend
+  const fetchDashboardData = useCallback(async () => {
     try {
-      setState(prevState => ({ ...prevState, loading: true }));
-      // Mock API call - in real app this would fetch from backend
-      setTimeout(() => {
-        setState(prevState => ({
-          ...prevState,
-          loading: false,
-          error: null
-        }));
-      }, 1000);
-    } catch (error) {
-      setState(prevState => ({
-        ...prevState,
-        loading: false,
-        error: 'Failed to load dashboard data'
+      setLoading(true);
+      setError(null);
+
+      // Fetch all data in parallel
+      const [dashboardRes, appointmentsRes, patientsRes] = await Promise.all([
+        apiService.getDashboardStats(),
+        apiService.getAppointments(),
+        apiService.getPatients(),
+      ]);
+
+      // Set dashboard financial data
+      setDashboardData(dashboardRes.data);
+      
+      // Set appointments data
+      const appointmentsList = appointmentsRes.data || [];
+      setAppointments(appointmentsList);
+      
+      // Set patients data
+      const patientsList = patientsRes.data || [];
+      setPatients(patientsList);
+
+      // Calculate additional stats from real data
+      const today = new Date().toISOString().split('T')[0];
+      const todayAppointments = appointmentsList.filter(apt => apt.date === today);
+      const completedToday = todayAppointments.filter(apt => apt.status === 'completed').length;
+      
+      setDashboardStats(prev => ({
+        ...prev,
+        totalPatients: patientsList.length,
+        todayAppointments: todayAppointments.length,
+        completedToday,
+        appointmentCompletion: todayAppointments.length > 0 ? 
+          Math.round((completedToday / todayAppointments.length) * 100) : 0,
       }));
+
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+      setError('فشل في تحميل البيانات. يرجى المحاولة مرة أخرى.');
+      message.error('فشل في تحميل بيانات لوحة التحكم');
+    } finally {
+      setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    getDashboardStats();
-  }, [getDashboardStats]);
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
-  // Enhanced metrics with better styling
+  // Enhanced metrics with real backend data
   const metricCards = useMemo(() => [
     {
       title: 'إجمالي الدخل اليوم',
-      value: state.today_total_gross_income,
+      value: dashboardData.today_total_gross_income,
       prefix: <DollarOutlined style={{ color: 'var(--success-color)' }} />,
       suffix: 'ريال',
       change: dashboardStats.monthlyGrowth,
@@ -118,7 +130,7 @@ function Dashboard() {
     },
     {
       title: 'المستحقات اليوم',
-      value: state.today_total_receivable,
+      value: dashboardData.today_total_receivable,
       prefix: <ClockCircleOutlined style={{ color: 'var(--warning-color)' }} />,
       suffix: 'ريال',
       color: 'var(--warning-color)',
@@ -126,7 +138,7 @@ function Dashboard() {
     },
     {
       title: 'إجمالي الدخل',
-      value: state.all_total_gross_income,
+      value: dashboardData.all_total_gross_income,
       prefix: <TrophyOutlined style={{ color: 'var(--primary-color)' }} />,
       suffix: 'ريال',
       color: 'var(--primary-color)',
@@ -134,13 +146,13 @@ function Dashboard() {
     },
     {
       title: 'إجمالي المستحقات',
-      value: state.all_total_receivable,
+      value: dashboardData.all_total_receivable,
       prefix: <DollarOutlined style={{ color: 'var(--error-color)' }} />,
       suffix: 'ريال',
       color: 'var(--error-color)',
       bgColor: 'var(--error-color)10'
     }
-  ], [state, dashboardStats]);
+  ], [dashboardData, dashboardStats]);
 
   const statsCards = useMemo(() => [
     {
@@ -179,17 +191,41 @@ function Dashboard() {
   ], [dashboardStats]);
 
   const handleNewAppointment = () => {
-    console.log('Navigate to new appointment');
+    window.location.href = '/home';
   };
 
   const handleViewReports = () => {
-    console.log('Navigate to reports');
+    window.location.href = '/reports';
   };
 
-  if (state.loading) {
+  const handleRefresh = () => {
+    fetchDashboardData();
+  };
+
+  if (loading) {
     return (
       <div style={{ padding: 'var(--spacing-6)' }}>
         <LoadingSkeleton />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ padding: 'var(--spacing-6)' }}>
+        <Alert
+          message="خطأ في تحميل البيانات"
+          description={error}
+          type="error"
+          showIcon
+          action={
+            <Space>
+              <Button size="small" onClick={handleRefresh}>
+                إعادة المحاولة
+              </Button>
+            </Space>
+          }
+        />
       </div>
     );
   }
@@ -209,6 +245,22 @@ function Dashboard() {
           </Col>
           <Col>
             <Space size="middle">
+              <Tooltip title="تحديث البيانات">
+                <Button 
+                  type="default" 
+                  onClick={handleRefresh}
+                  loading={loading}
+                  size="large"
+                  style={{ 
+                    background: 'rgba(255, 255, 255, 0.2)', 
+                    borderColor: 'rgba(255, 255, 255, 0.3)',
+                    color: 'white',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                >
+                  تحديث
+                </Button>
+              </Tooltip>
               <Tooltip title="إنشاء حجز جديد">
                 <Button 
                   type="default" 
@@ -381,19 +433,33 @@ function Dashboard() {
               <Col span={12}>
                 <div style={{ padding: 'var(--spacing-3)', background: 'var(--success-color)10', borderRadius: 'var(--radius-lg)', border: '1px solid var(--success-color)20' }}>
                   <Text style={{ fontSize: 'var(--text-xs)', color: 'var(--success-color)' }}>المرضى الجدد</Text>
-                  <Progress percent={75} showInfo={false} strokeColor="var(--success-color)" />
+                  <Progress 
+                    percent={Math.min(Math.round((dashboardStats.totalPatients / 100) * 100), 100)} 
+                    showInfo={false} 
+                    strokeColor="var(--success-color)" 
+                  />
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px' }}>
-                    <Text style={{ fontSize: 'var(--text-xs)' }}>75 من 100</Text>
-                    <Text style={{ fontSize: 'var(--text-xs)', color: 'var(--success-color)' }}>+5 هذا الأسبوع</Text>
+                    <Text style={{ fontSize: 'var(--text-xs)' }}>
+                      {dashboardStats.totalPatients} من 100
+                    </Text>
+                    <Text style={{ fontSize: 'var(--text-xs)', color: 'var(--success-color)' }}>
+                      هذا الشهر
+                    </Text>
                   </div>
                 </div>
               </Col>
               <Col span={12}>
                 <div style={{ padding: 'var(--spacing-3)', background: 'var(--primary-color)10', borderRadius: 'var(--radius-lg)', border: '1px solid var(--primary-color)20' }}>
                   <Text style={{ fontSize: 'var(--text-xs)', color: 'var(--primary-color)' }}>الإيرادات الشهرية</Text>
-                  <Progress percent={60} showInfo={false} strokeColor="var(--primary-color)" />
+                  <Progress 
+                    percent={Math.min(Math.round((dashboardData.all_total_gross_income / 100000) * 100), 100)} 
+                    showInfo={false} 
+                    strokeColor="var(--primary-color)" 
+                  />
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px' }}>
-                    <Text style={{ fontSize: 'var(--text-xs)' }}>60,000 من 100,000</Text>
+                    <Text style={{ fontSize: 'var(--text-xs)' }}>
+                      {dashboardData.all_total_gross_income.toLocaleString()} من 100,000
+                    </Text>
                     <Text style={{ fontSize: 'var(--text-xs)', color: 'var(--primary-color)' }}>ريال</Text>
                   </div>
                 </div>
@@ -414,23 +480,31 @@ function Dashboard() {
                 <span style={{ fontSize: 16, fontWeight: 500 }}>
                   <CalendarOutlined style={{ marginLeft: 8 }} />
                   الحجوزات
-                  <Badge count={appointment.length} size="small" style={{ marginRight: 8 }} />
+                  <Badge count={appointments.length} size="small" style={{ marginRight: 8 }} />
                 </span>
               ),
               children: (
                 <div>
-                  {appointment.length > 0 ? (
-                    <AppointmentsTable data={appointment} />
+                  {appointments.length > 0 ? (
+                    <AppointmentsTable data={appointments} onRefresh={fetchDashboardData} />
                   ) : (
                     <Empty
                       image={Empty.PRESENTED_IMAGE_SIMPLE}
                       description={
                         <div className="empty-state">
                           <CalendarOutlined className="empty-state-icon" />
-                          <div className="empty-state-title">لا توجد حجوزات اليوم</div>
+                          <div className="empty-state-title">لا توجد حجوزات</div>
                           <div className="empty-state-description">
-                            سيتم عرض المواعيد المجدولة هنا
+                            لم يتم العثور على أي مواعيد مجدولة
                           </div>
+                          <Button 
+                            type="primary" 
+                            icon={<PlusOutlined />} 
+                            onClick={handleNewAppointment}
+                            style={{ marginTop: 'var(--spacing-4)' }}
+                          >
+                            إنشاء موعد جديد
+                          </Button>
                         </div>
                       }
                     />
