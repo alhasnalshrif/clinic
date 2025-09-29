@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
-import { Layout, Menu, Button, Dropdown, Avatar, Space } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Layout, Menu, Button, Dropdown, Avatar, Space, Badge, Typography, Divider } from 'antd';
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     UserOutlined,
     LogoutOutlined,
     SettingOutlined,
-    DashboardOulined,
-    TeamOutlined,
-    CalendarOutlined,
+    BellOutlined,
+    BarChartOutlined,
+    HomeOutlined,
+    CalendarFilled,
     MedicineBoxOutlined,
+    HeartOutlined,
+    DollarCircleFilled,
     FileTextOutlined,
-    BankOutlined, BarChartOutlined, HomeOutlined, CalendarFilled, HeartOutlined, DollarCircleFilled, MessageFilled
+    MessageFilled,
+    TeamOutlined
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -19,12 +23,29 @@ import { Link } from 'react-router-dom';
 import { APP_CONFIG } from '../config/app';
 
 const { Header, Sider, Content } = Layout;
+const { Text } = Typography;
 
 const MainLayout = () => {
     const [collapsed, setCollapsed] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
     const { user, logout } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
+
+    // Handle responsive behavior
+    useEffect(() => {
+        const handleResize = () => {
+            const mobile = window.innerWidth < 768;
+            setIsMobile(mobile);
+            if (mobile) {
+                setCollapsed(true);
+            }
+        };
+
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const handleLogout = () => {
         logout();
@@ -34,14 +55,22 @@ const MainLayout = () => {
     const userMenuItems = [
         {
             key: 'profile',
-            label: 'الملف الشخصي',
-            icon: <UserOutlined />,
+            label: (
+                <div className="user-menu-item">
+                    <UserOutlined />
+                    <span>الملف الشخصي</span>
+                </div>
+            ),
             onClick: () => navigate('/profile')
         },
         {
             key: 'settings',
-            label: 'الإعدادات',
-            icon: <SettingOutlined />,
+            label: (
+                <div className="user-menu-item">
+                    <SettingOutlined />
+                    <span>الإعدادات</span>
+                </div>
+            ),
             onClick: () => navigate('/settings')
         },
         {
@@ -49,8 +78,12 @@ const MainLayout = () => {
         },
         {
             key: 'logout',
-            label: 'تسجيل الخروج',
-            icon: <LogoutOutlined />,
+            label: (
+                <div className="user-menu-item">
+                    <LogoutOutlined />
+                    <span style={{ color: 'var(--error-color)' }}>تسجيل الخروج</span>
+                </div>
+            ),
             onClick: handleLogout
         }
     ];
@@ -60,7 +93,7 @@ const MainLayout = () => {
             key: '/',
             icon: <BarChartOutlined />,
             label: (
-                <Link to="/">
+                <Link to="/" style={{ textDecoration: 'none' }}>
                     <span style={{ fontWeight: 500 }}>لوحة التحكم</span>
                 </Link>
             ),
@@ -69,7 +102,7 @@ const MainLayout = () => {
             key: '/home',
             icon: <HomeOutlined />,
             label: (
-                <Link to="/home">
+                <Link to="/home" style={{ textDecoration: 'none' }}>
                     <span style={{ fontWeight: 500 }}>الاستقبال</span>
                 </Link>
             ),
@@ -78,7 +111,7 @@ const MainLayout = () => {
             key: '/appointments',
             icon: <CalendarFilled />,
             label: (
-                <Link to="/appointments">
+                <Link to="/appointments" style={{ textDecoration: 'none' }}>
                     <span style={{ fontWeight: 500 }}>إدارة المواعيد</span>
                 </Link>
             ),
@@ -87,7 +120,7 @@ const MainLayout = () => {
             key: '/medical-history',
             icon: <MedicineBoxOutlined />,
             label: (
-                <Link to="/medical-history">
+                <Link to="/medical-history" style={{ textDecoration: 'none' }}>
                     <span style={{ fontWeight: 500 }}>السجلات الطبية</span>
                 </Link>
             ),
@@ -96,7 +129,7 @@ const MainLayout = () => {
             key: '/patients',
             icon: <UserOutlined />,
             label: (
-                <Link to="/dentalrecords">
+                <Link to="/dentalrecords" style={{ textDecoration: 'none' }}>
                     <span style={{ fontWeight: 500 }}>المرضى</span>
                 </Link>
             ),
@@ -105,7 +138,7 @@ const MainLayout = () => {
             key: '/treatments',
             icon: <HeartOutlined />,
             label: (
-                <Link to="/treatments">
+                <Link to="/treatments" style={{ textDecoration: 'none' }}>
                     <span style={{ fontWeight: 500 }}>خطط العلاج</span>
                 </Link>
             ),
@@ -114,7 +147,7 @@ const MainLayout = () => {
             key: '/transactionlog',
             icon: <DollarCircleFilled />,
             label: (
-                <Link to="/transactionlog">
+                <Link to="/transactionlog" style={{ textDecoration: 'none' }}>
                     <span style={{ fontWeight: 500 }}>المدفوعات والفواتير</span>
                 </Link>
             ),
@@ -123,7 +156,7 @@ const MainLayout = () => {
             key: '/reports',
             icon: <FileTextOutlined />,
             label: (
-                <Link to="/reports">
+                <Link to="/reports" style={{ textDecoration: 'none' }}>
                     <span style={{ fontWeight: 500 }}>التقارير</span>
                 </Link>
             ),
@@ -132,7 +165,7 @@ const MainLayout = () => {
             key: '/sms',
             icon: <MessageFilled />,
             label: (
-                <Link to="/sms">
+                <Link to="/sms" style={{ textDecoration: 'none' }}>
                     <span style={{ fontWeight: 500 }}>الرسائل والتذكيرات</span>
                 </Link>
             ),
@@ -141,7 +174,7 @@ const MainLayout = () => {
             key: '/useraccounts',
             icon: <TeamOutlined />,
             label: (
-                <Link to="/useraccounts">
+                <Link to="/useraccounts" style={{ textDecoration: 'none' }}>
                     <span style={{ fontWeight: 500 }}>إدارة المستخدمين</span>
                 </Link>
             ),
@@ -149,9 +182,9 @@ const MainLayout = () => {
         // Add server config menu item only for desktop app
         ...(APP_CONFIG?.IS_ELECTRON ? [{
             key: '/server-config',
-            //   icon: <ServerOutlined />,
+            icon: <SettingOutlined />,
             label: (
-                <Link to="/server-config">
+                <Link to="/server-config" style={{ textDecoration: 'none' }}>
                     <span style={{ fontWeight: 500 }}>إعدادات الخادم</span>
                 </Link>
             ),
@@ -172,7 +205,7 @@ const MainLayout = () => {
                 return [item.key];
             }
         }
-        return ['/dashboard'];
+        return ['/'];
     };
 
     const getOpenKeys = () => {
@@ -197,63 +230,223 @@ const MainLayout = () => {
                 trigger={null}
                 collapsible
                 collapsed={collapsed}
-                style={{
-                    background: '#fff',
-                    boxShadow: '2px 0 8px rgba(0,0,0,0.1)'
+                breakpoint="lg"
+                onBreakpoint={(broken) => {
+                    if (broken !== isMobile) {
+                        setIsMobile(broken);
+                        if (broken) setCollapsed(true);
+                    }
                 }}
+                style={{
+                    background: 'var(--bg-primary)',
+                    borderRight: '1px solid var(--border-light)',
+                    boxShadow: 'var(--shadow-md)',
+                    zIndex: isMobile ? 1001 : 1,
+                    position: isMobile ? 'fixed' : 'relative',
+                    height: isMobile ? '100vh' : 'auto',
+                }}
+                width={280}
+                collapsedWidth={isMobile ? 0 : 80}
             >
+                {/* Logo Section */}
                 <div style={{
-                    height: 64,
+                    height: 80,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    borderBottom: '1px solid #f0f0f0'
+                    borderBottom: '1px solid var(--border-light)',
+                    background: 'var(--bg-primary)',
+                    position: 'relative'
                 }}>
-                    <h3 style={{ margin: 0, color: '#1890ff' }}>
-                        {collapsed ? 'عيادة' : 'نظام إدارة العيادة'}
-                    </h3>
+                    {!collapsed ? (
+                        <div style={{ textAlign: 'center', padding: 'var(--spacing-4)' }}>
+                            <Text 
+                                style={{ 
+                                    fontSize: 'var(--text-lg)', 
+                                    fontWeight: 700,
+                                    color: 'var(--primary-color)',
+                                    display: 'block'
+                                }}
+                            >
+                                نظام إدارة العيادة
+                            </Text>
+                            <Text 
+                                style={{ 
+                                    fontSize: 'var(--text-sm)', 
+                                    color: 'var(--text-secondary)',
+                                    display: 'block'
+                                }}
+                            >
+                                Dental Management System
+                            </Text>
+                        </div>
+                    ) : (
+                        <div style={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: 'var(--radius-lg)',
+                            background: 'var(--primary-color)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'var(--white)',
+                            fontSize: 'var(--text-lg)',
+                            fontWeight: 'bold'
+                        }}>
+                            DMS
+                        </div>
+                    )}
                 </div>
-                <Menu
-                    mode="inline"
-                    selectedKeys={getSelectedKeys()}
-                    defaultOpenKeys={getOpenKeys()}
-                    items={menuItems}
-                    style={{ borderRight: 0 }}
-                />
+
+                {/* Navigation Menu */}
+                <div style={{ 
+                    height: 'calc(100vh - 80px)', 
+                    overflowY: 'auto',
+                    padding: 'var(--spacing-2) 0'
+                }}>
+                    <Menu
+                        mode="inline"
+                        selectedKeys={getSelectedKeys()}
+                        defaultOpenKeys={getOpenKeys()}
+                        items={menuItems}
+                        style={{ 
+                            borderRight: 0, 
+                            background: 'transparent',
+                            fontSize: 'var(--text-sm)'
+                        }}
+                        inlineIndent={16}
+                    />
+                </div>
+
+                {/* Mobile Overlay */}
+                {isMobile && !collapsed && (
+                    <div 
+                        style={{
+                            position: 'fixed',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            background: 'rgba(0, 0, 0, 0.3)',
+                            zIndex: 999
+                        }}
+                        onClick={() => setCollapsed(true)}
+                    />
+                )}
             </Sider>
-            <Layout>
+            
+            <Layout style={{ marginLeft: isMobile ? 0 : (collapsed ? 0 : 0) }}>
                 <Header style={{
-                    padding: '0 16px',
-                    background: '#fff',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                    padding: '0 var(--spacing-4)',
+                    background: 'var(--bg-primary)',
+                    borderBottom: '1px solid var(--border-light)',
+                    boxShadow: 'var(--shadow-sm)',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'space-between'
+                    justifyContent: 'space-between',
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 100,
+                    height: 64
                 }}>
-                    <Button
-                        type="text"
-                        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                        onClick={() => setCollapsed(!collapsed)}
-                        style={{ fontSize: '16px', width: 64, height: 64 }}
-                    />
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <Button
+                            type="text"
+                            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                            onClick={() => setCollapsed(!collapsed)}
+                            style={{ 
+                                fontSize: '16px', 
+                                width: 48, 
+                                height: 48,
+                                color: 'var(--text-primary)',
+                                borderRadius: 'var(--radius-md)'
+                            }}
+                        />
+                        
+                        {/* Breadcrumb or Page Title could go here */}
+                    </div>
 
-                    <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
-                        <Space style={{ cursor: 'pointer' }}>
-                            <Avatar icon={<UserOutlined />} />
-                            <span>{user?.name || 'المستخدم'}</span>
-                        </Space>
-                    </Dropdown>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--spacing-4)' }}>
+                        {/* Notifications */}
+                        <Button
+                            type="text"
+                            icon={
+                                <Badge count={5} size="small">
+                                    <BellOutlined style={{ fontSize: '18px', color: 'var(--text-secondary)' }} />
+                                </Badge>
+                            }
+                            style={{ 
+                                border: 'none',
+                                width: 48, 
+                                height: 48,
+                                borderRadius: 'var(--radius-md)'
+                            }}
+                        />
+
+                        <Divider type="vertical" style={{ height: 32, margin: 0 }} />
+
+                        {/* User Menu */}
+                        <Dropdown 
+                            menu={{ items: userMenuItems }} 
+                            placement="bottomLeft"
+                            trigger={['click']}
+                        >
+                            <div style={{ 
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 'var(--spacing-3)',
+                                padding: 'var(--spacing-2) var(--spacing-3)',
+                                borderRadius: 'var(--radius-md)',
+                                transition: 'background var(--transition-fast)'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.background = 'var(--gray-50)'}
+                            onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                            >
+                                <Avatar 
+                                    icon={<UserOutlined />} 
+                                    style={{ 
+                                        background: 'var(--primary-color)',
+                                        border: '2px solid var(--primary-100)'
+                                    }}
+                                    size={36}
+                                />
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                                    <Text strong style={{ color: 'var(--text-primary)', fontSize: 'var(--text-sm)' }}>
+                                        {user?.name || 'المستخدم'}
+                                    </Text>
+                                    <Text style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-xs)' }}>
+                                        {user?.role || 'طبيب أسنان'}
+                                    </Text>
+                                </div>
+                            </div>
+                        </Dropdown>
+                    </div>
                 </Header>
+                
                 <Content style={{
-                    margin: '16px',
-                    padding: '24px',
-                    background: '#fff',
-                    borderRadius: '6px',
-                    minHeight: 280
+                    background: 'var(--bg-secondary)',
+                    minHeight: 'calc(100vh - 64px)',
+                    overflow: 'initial'
                 }}>
-                    <Outlet />
+                    <div style={{
+                        padding: 'var(--spacing-6)',
+                        maxWidth: '100%'
+                    }}>
+                        <Outlet />
+                    </div>
                 </Content>
             </Layout>
+            
+            {/* Custom styles for user menu */}
+            <style jsx>{`
+                .user-menu-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    padding: 4px 0;
+                }
+            `}</style>
         </Layout>
     );
 };
