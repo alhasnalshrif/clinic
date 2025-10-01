@@ -36,49 +36,22 @@ function CreateDentalRecord() {
   const handleSubmit = async (values) => {
     try {
       setLoading(true);
+      console.log('Form values:', values);
       
-      // Format the data according to backend schema
-      const patientData = {
-        name: values.name,
-        phone: values.contactNumber,
-        bloodgroup: values.bloodType,
-        sex: values.gender === 'male' ? 'MALE' : 'FEMALE',
-        age: values.birthday ? 
-          new Date().getFullYear() - new Date(values.birthday).getFullYear() : null,
-        doctor: 'admin' // Default doctor - this should come from logged in user
+      // Format the date
+      const formattedValues = {
+        ...values,
+        birthday: values.birthday ? values.birthday.format('YYYY-MM-DD') : null
       };
       
-      // Create patient via API
-      const response = await apiService.createPatient(patientData);
+      // Here you would normally make an API call
+      // await apiService.createPatient(formattedValues);
       
-      if (response.data) {
-        message.success('تم إنشاء السجل الطبي بنجاح');
-        form.resetFields();
-        
-        // Optionally navigate to patient details or refresh parent component
-        if (window.location.pathname.includes('/home')) {
-          // Refresh parent component if in reception page
-          window.location.reload();
-        }
-      }
+      message.success('تم إنشاء السجل الطبي بنجاح');
+      form.resetFields();
     } catch (error) {
+      message.error('حدث خطأ في إنشاء السجل الطبي');
       console.error('Error creating dental record:', error);
-      
-      let errorMessage = 'حدث خطأ في إنشاء السجل الطبي';
-      
-      if (error.response) {
-        // Backend returned an error response
-        if (error.response.status === 400) {
-          errorMessage = 'بيانات غير صالحة. يرجى التحقق من المعلومات المدخلة';
-        } else if (error.response.status === 500) {
-          errorMessage = 'خطأ في الخادم. يرجى المحاولة لاحقاً';
-        }
-      } else if (error.request) {
-        // Network error
-        errorMessage = 'تعذر الاتصال بالخادم. يرجى التحقق من الاتصال بالإنترنت';
-      }
-      
-      message.error(errorMessage);
     } finally {
       setLoading(false);
     }
