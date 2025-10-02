@@ -1,23 +1,63 @@
-import React, { useState, useEffect } from 'react';
-import { message } from 'antd';
+import React, { useState, useEffect, useRef } from 'react';
+import { message, Spin, Card, Row, Col, Statistic, Badge, Typography, Space, Tooltip } from 'antd';
+import { 
+   LoadingOutlined, 
+   CheckCircleOutlined, 
+   WarningOutlined, 
+   CloseCircleOutlined,
+   InfoCircleOutlined 
+} from '@ant-design/icons';
 import DMFTPopover from './DMFTPopover';
 import axios from 'axios';
+import './TeethChart.css';
 
+const { Title, Text } = Typography;
 
 const AdultTeethChart = (props) => {
-
-
    const [values, setValues] = useState('');
+   const [loading, setLoading] = useState(true);
+   const [stats, setStats] = useState({ healthy: 0, decayed: 0, missing: 0, filled: 0 });
+   const chartRef = useRef(null);
 
+   useEffect(() => {
+      // Add stroke attributes to all teeth polygons and paths after component mounts
+      if (chartRef.current) {
+         const teeth = chartRef.current.querySelectorAll('polygon, path[id^="Tooth"]');
+         teeth.forEach(tooth => {
+            const currentStroke = tooth.getAttribute('stroke');
+            if (!currentStroke) {
+               tooth.setAttribute('stroke', '#d9d9d9');
+               tooth.setAttribute('stroke-width', '2');
+            }
+         });
+      }
+   }, [values, loading]);
 
    const getChildTeethChart = async () => {
-      const res = await axios.get(
-         `${process.env.REACT_APP_API_URL}/adultteeth/${props.patientId}/`,
-        
-      );
-      setValues(res.data);
+      try {
+         setLoading(true);
+         const res = await axios.get(
+            `${process.env.REACT_APP_API_URL}/adultteeth/${props.patientId}/`,
+         );
+         setValues(res.data);
+         calculateStats(res.data);
+      } catch (err) {
+         message.error('فشل في تحميل مخطط الأسنان');
+      } finally {
+         setLoading(false);
+      }
    }
 
+   const calculateStats = (data) => {
+      let healthy = 0, decayed = 0, missing = 0, filled = 0;
+      Object.values(data).forEach(status => {
+         if (status === 'Decayed') decayed++;
+         else if (status === 'Missing') missing++;
+         else if (status === 'Filled') filled++;
+         else if (!status || status === 'None') healthy++;
+      });
+      setStats({ healthy, decayed, missing, filled });
+   }
 
    useEffect(() => {
       const fetchData = async () => {
@@ -27,38 +67,124 @@ const AdultTeethChart = (props) => {
       };
 
       fetchData();
-   }, [props.user]);
+   }, [props.user, props.patientId]);
 
    const statusColor = (value) => {
       switch (value) {
          case 'Decayed':
-            return '#ffc53d';
+            return '#ff9c6e'; // Softer orange
          case 'Missing':
-            return '#ff4d4f';
+            return '#ff7875'; // Softer red
          case 'Filled':
-            return '#40a9ff';
+            return '#69c0ff'; // Softer blue
          default:
-            return '#fff';
+            return '#ffffff'; // White for healthy
       }
    }
 
+   const getToothStroke = (value) => {
+      switch (value) {
+         case 'Decayed':
+            return '#ff7a45';
+         case 'Missing':
+            return '#f5222d';
+         case 'Filled':
+            return '#1890ff';
+         default:
+            return '#d9d9d9';
+      }
+   }
 
    const onToothStatusChange = (toothPosition, value) => {
       axios.patch(`${process.env.REACT_APP_API_URL}/adultteeth/${props.patientId}/`, { [toothPosition]: value })
          .then((response) => {
             if (response.status === 200) {
                getChildTeethChart();
+               message.success('تم تحديث حالة السن بنجاح');
                return;
             }
          })
          .catch((err) => {
             console.error(err);
-            message.error('Something went wrong! Please, try again.');
+            message.error('حدث خطأ، يرجى المحاولة مرة أخرى');
          });
    }
 
+   if (loading) {
+      return (
+         <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+            <Spin size="large" tip="جاري تحميل مخطط الأسنان..." />
+         </div>
+      );
+   }
+
    return (
-      <div style={{ width: '500px', margin: '0 auto' }} className="tooth-chart">
+      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+         {/* Statistics Cards */}
+         <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
+            <Col xs={12} sm={6}>
+               <Card size="small" className="clinic-card">
+                  <Statistic
+                     title={<Text style={{ fontSize: '12px' }}>سليمة</Text>}
+                     value={stats.healthy}
+                     prefix={<CheckCircleOutlined style={{ color: '#52c41a' }} />}
+                     valueStyle={{ color: '#52c41a', fontSize: '24px' }}
+                  />
+               </Card>
+            </Col>
+            <Col xs={12} sm={6}>
+               <Card size="small" className="clinic-card">
+                  <Statistic
+                     title={<Text style={{ fontSize: '12px' }}>محشوة</Text>}
+                     value={stats.filled}
+                     prefix={<InfoCircleOutlined style={{ color: '#1890ff' }} />}
+                     valueStyle={{ color: '#1890ff', fontSize: '24px' }}
+                  />
+               </Card>
+            </Col>
+            <Col xs={12} sm={6}>
+               <Card size="small" className="clinic-card">
+                  <Statistic
+                     title={<Text style={{ fontSize: '12px' }}>فاسدة</Text>}
+                     value={stats.decayed}
+                     prefix={<WarningOutlined style={{ color: '#faad14' }} />}
+                     valueStyle={{ color: '#faad14', fontSize: '24px' }}
+                  />
+               </Card>
+            </Col>
+            <Col xs={12} sm={6}>
+               <Card size="small" className="clinic-card">
+                  <Statistic
+                     title={<Text style={{ fontSize: '12px' }}>مفقودة</Text>}
+                     value={stats.missing}
+                     prefix={<CloseCircleOutlined style={{ color: '#f5222d' }} />}
+                     valueStyle={{ color: '#f5222d', fontSize: '24px' }}
+                  />
+               </Card>
+            </Col>
+         </Row>
+
+         {/* Legend */}
+         <Card size="small" style={{ marginBottom: '16px', background: '#fafafa' }}>
+            <Space wrap>
+              <Badge color="#ffffff" text="سليمة" />
+               <Badge color="#69c0ff" text="محشوة" />
+               <Badge color="#ff9c6e" text="فاسدة" />
+               <Badge color="#ff7875" text="مفقودة" />
+            </Space>
+            <Tooltip title="انقر على أي سن لتغيير حالته">
+              <InfoCircleOutlined style={{ marginLeft: '8px', color: '#1890ff' }} />
+            </Tooltip>
+         </Card>
+
+         {/* Teeth Chart */}
+         <Card className="clinic-card" bodyStyle={{ padding: '20px' }}>
+            <div style={{ 
+               width: '100%', 
+               maxWidth: '600px', 
+               margin: '0 auto',
+               filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.1))'
+            }} className="tooth-chart" ref={chartRef}>
          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 450 700" enableBackground="new 0 0 450 700" xmlSpace="preserve">
             <g id="toothLabels">
                <text id="lbl32" transform="matrix(1 0 0 1 110.9767 402.1409)" fontFamily="'Avenir-Heavy'" fontSize="21px">32</text>
