@@ -137,6 +137,33 @@ const authTokens = sqliteTable('authtoken_token', {
   created: text('created').default(new Date().toISOString()),
 });
 
+// Medical History table
+const medicalHistory = sqliteTable('medical_history', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  patientId: integer('patient_id').notNull().references(() => patients.id),
+  patientName: text('patient_name'),
+  date: text('date').notNull(),
+  type: text('type').notNull(),
+  description: text('description'),
+  severity: text('severity'),
+  status: text('status'),
+  doctor: text('doctor'),
+  createdAt: text('created_at').default(new Date().toISOString()),
+  updatedAt: text('updated_at').default(new Date().toISOString()),
+});
+
+// SMS Messages table
+const smsMessages = sqliteTable('sms_messages', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  patientId: integer('patient_id').references(() => patients.id),
+  phone: text('phone').notNull(),
+  message: text('message').notNull(),
+  status: text('status').default('pending'), // pending, sent, delivered, failed
+  sentAt: text('sent_at'),
+  deliveredAt: text('delivered_at'),
+  createdAt: text('created_at').default(new Date().toISOString()),
+});
+
 // Relations
 const usersRelations = relations(users, ({ many }) => ({
   patients: many(patients),
@@ -202,6 +229,20 @@ const authTokensRelations = relations(authTokens, ({ one }) => ({
   }),
 }));
 
+const medicalHistoryRelations = relations(medicalHistory, ({ one }) => ({
+  patient: one(patients, {
+    fields: [medicalHistory.patientId],
+    references: [patients.id],
+  }),
+}));
+
+const smsMessagesRelations = relations(smsMessages, ({ one }) => ({
+  patient: one(patients, {
+    fields: [smsMessages.patientId],
+    references: [patients.id],
+  }),
+}));
+
 module.exports = {
   users,
   patients,
@@ -211,6 +252,8 @@ module.exports = {
   treatments,
   bills,
   authTokens,
+  medicalHistory,
+  smsMessages,
   usersRelations,
   patientsRelations,
   appointmentsRelations,
@@ -219,4 +262,6 @@ module.exports = {
   adultTeethChartsRelations,
   childTeethChartsRelations,
   authTokensRelations,
+  medicalHistoryRelations,
+  smsMessagesRelations,
 };

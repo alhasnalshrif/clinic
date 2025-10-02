@@ -74,62 +74,6 @@ function Payments(props) {
    const [form] = Form.useForm();
    const [viewDetailsModal, setViewDetailsModal] = useState(false);
 
-   // Enhanced mock data for better demonstration
-   const [mockPaymentData] = useState([
-      {
-         id: 1,
-         patientName: 'أحمد محمد',
-         patientId: 'P001',
-         amount: 1500,
-         paymentMethod: 'cash',
-         status: 'completed',
-         date: '2024-01-15',
-         description: 'تنظيف وحشو تجميلي',
-         invoiceNumber: 'INV-001',
-         doctorName: 'د. سارة أحمد',
-         remainingBalance: 0
-      },
-      {
-         id: 2,
-         patientName: 'فاطمة علي',
-         patientId: 'P002',
-         amount: 2500,
-         paymentMethod: 'card',
-         status: 'completed',
-         date: '2024-01-14',
-         description: 'علاج جذور وتاج',
-         invoiceNumber: 'INV-002',
-         doctorName: 'د. محمد حسن',
-         remainingBalance: 500
-      },
-      {
-         id: 3,
-         patientName: 'سالم أحمد',
-         patientId: 'P003',
-         amount: 800,
-         paymentMethod: 'transfer',
-         status: 'pending',
-         date: '2024-01-13',
-         description: 'تقويم - دفعة أولى',
-         invoiceNumber: 'INV-003',
-         doctorName: 'د. عائشة السالم',
-         remainingBalance: 3200
-      },
-      {
-         id: 4,
-         patientName: 'نورا خالد',
-         patientId: 'P004',
-         amount: 1200,
-         paymentMethod: 'cash',
-         status: 'refunded',
-         date: '2024-01-12',
-         description: 'زراعة سن - ملغاة',
-         invoiceNumber: 'INV-004',
-         doctorName: 'د. أحمد الزهراني',
-         remainingBalance: 0
-      }
-   ]);
-
    useEffect(() => {
       getPaymentsTable();
    }, []);
@@ -144,13 +88,8 @@ function Payments(props) {
          
          // If no data from Redux, try API
          if (paymentData.length === 0) {
-            try {
-               const res = await apiService.getPayments();
-               paymentData = res.data || [];
-            } catch (apiError) {
-               console.log('API not available, using mock data');
-               paymentData = mockPaymentData;
-            }
+            const res = await apiService.getPayments();
+            paymentData = res.data || [];
          }
          
          setPayment(paymentData);
@@ -158,10 +97,9 @@ function Payments(props) {
          message.success('تم تحميل بيانات المدفوعات بنجاح');
       } catch (error) {
          console.error('Error fetching payments:', error);
-         // Fallback to mock data
-         setPayment(mockPaymentData);
-         setFilteredPayments(mockPaymentData);
-         message.warning('تم تحميل البيانات التجريبية');
+         message.error('فشل في تحميل بيانات المدفوعات');
+         setPayment([]);
+         setFilteredPayments([]);
       } finally {
          setState(prev => ({ ...prev, loading: false }));
       }

@@ -79,6 +79,11 @@ export const apiService = {
   // Reports APIs
   getReports: (params) => api.get('/reports/', { params }),
   
+  // SMS APIs
+  getSMSStats: () => api.get('/sms/stats'),
+  getSMSMessages: () => api.get('/sms/'),
+  sendSMS: (data) => api.post('/sms/', data),
+  
   // Payments APIs
   getPayments: () => api.get('/payment/'),
   createPayment: (data) => api.post('/payment/', data),
