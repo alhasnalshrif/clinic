@@ -69,43 +69,6 @@ const MedicalHistory = () => {
    const [medicalRecords, setMedicalRecords] = useState([]);
    const [activeTab, setActiveTab] = useState('overview');
 
-   // Mock medical history data - in real app this would come from API
-   const [mockMedicalData] = useState([
-      {
-         id: 1,
-         patientId: 1,
-         patientName: 'John Doe',
-         date: '2024-01-15',
-         type: 'تاريخ مرضي',
-         description: 'ارتفاع ضغط الدم، حساسية من البنسلين',
-         severity: 'متوسط',
-         status: 'نشط',
-         doctor: 'د. سارة أحمد'
-      },
-      {
-         id: 2,
-         patientId: 2,
-         patientName: 'Jane Smith',
-         date: '2024-01-10',
-         type: 'عملية جراحية',
-         description: 'استئصال ضرس العقل',
-         severity: 'منخفض',
-         status: 'مكتمل',
-         doctor: 'د. محمد علي'
-      },
-      {
-         id: 3,
-         patientId: 1,
-         patientName: 'John Doe',
-         date: '2024-01-05',
-         type: 'حساسية',
-         description: 'حساسية شديدة من المكسرات',
-         severity: 'عالي',
-         status: 'نشط',
-         doctor: 'د. فاطمة خالد'
-      }
-   ]);
-
    const fetchPatients = useCallback(async () => {
       try {
          setLoading(true);
@@ -125,12 +88,21 @@ const MedicalHistory = () => {
       fetchPatients();
    }, [fetchPatients]);
 
-   const handlePatientSelect = (patientId) => {
+   const handlePatientSelect = async (patientId) => {
       const patient = patients.find(p => p.id === parseInt(patientId));
       setSelectedPatient(patient);
-      // Filter medical records for selected patient
-      const patientRecords = mockMedicalData.filter(record => record.patientId === parseInt(patientId));
-      setMedicalRecords(patientRecords);
+      // Fetch medical records for selected patient from API
+      try {
+         setLoading(true);
+         const response = await apiService.getMedicalHistory(patientId);
+         setMedicalRecords(response.data || []);
+      } catch (error) {
+         console.error('Error fetching medical history:', error);
+         message.error('فشل في تحميل السجل الطبي');
+         setMedicalRecords([]);
+      } finally {
+         setLoading(false);
+      }
    };
 
    const handleAddMedicalRecord = () => {
@@ -155,16 +127,29 @@ const MedicalHistory = () => {
    const handleSubmit = async (values) => {
       try {
          setLoading(true);
-         console.log('Medical record data:', {
+         const medicalData = {
             ...values,
             patientId: selectedPatient.id,
             patientName: selectedPatient.name,
             date: values.date.format('YYYY-MM-DD')
-         });
-         message.success('تم حفظ السجل الطبي بنجاح');
+         };
+         
+         if (viewMode) {
+            // Update existing record
+            await apiService.updateMedicalHistory(values.id, medicalData);
+            message.success('تم تحديث السجل الطبي بنجاح');
+         } else {
+            // Create new record
+            await apiService.createMedicalHistory(medicalData);
+            message.success('تم حفظ السجل الطبي بنجاح');
+         }
+         
          setIsModalVisible(false);
          form.resetFields();
+         // Refresh medical records
+         handlePatientSelect(selectedPatient.id);
       } catch (error) {
+         console.error('Error saving medical record:', error);
          message.error('حدث خطأ في حفظ السجل الطبي');
       } finally {
          setLoading(false);
@@ -180,15 +165,15 @@ const MedicalHistory = () => {
    }, [patients, searchValue]);
 
    const medicalStats = useMemo(() => {
-      const total = mockMedicalData.length;
-      const active = mockMedicalData.filter(record => record.status === 'نشط').length;
-      const high = mockMedicalData.filter(record => record.severity === 'عالي').length;
-      const recent = mockMedicalData.filter(record => 
+      const total = medicalRecords.length;
+      const active = medicalRecords.filter(record => record.status === 'نشط').length;
+      const high = medicalRecords.filter(record => record.severity === 'عالي').length;
+      const recent = medicalRecords.filter(record => 
          moment().diff(moment(record.date), 'days') <= 30
       ).length;
 
       return { total, active, high, recent };
-   }, [mockMedicalData]);
+   }, [medicalRecords]);
 
    const getSeverityColor = (severity) => {
       const colors = {

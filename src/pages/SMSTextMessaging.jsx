@@ -8,6 +8,7 @@ import {
    PlusOutlined 
 } from '@ant-design/icons';
 import SMSTable from '../components/sms/SMSTable';
+import { apiService } from '../services/api';
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -20,14 +21,30 @@ function SMSTextMessaging(props) {
       pending: 0
    });
 
-   // Mock stats - replace with real API call
+   // Fetch SMS stats from API
    useEffect(() => {
-      setStats({
-         totalMessages: 245,
-         sentToday: 12,
-         delivered: 238,
-         pending: 7
-      });
+      const fetchSMSStats = async () => {
+         try {
+            const response = await apiService.getSMSStats();
+            setStats(response.data || {
+               totalMessages: 0,
+               sentToday: 0,
+               delivered: 0,
+               pending: 0
+            });
+         } catch (error) {
+            console.error('Error fetching SMS stats:', error);
+            // Set empty stats on error
+            setStats({
+               totalMessages: 0,
+               sentToday: 0,
+               delivered: 0,
+               pending: 0
+            });
+         }
+      };
+      
+      fetchSMSStats();
    }, []);
 
    return (

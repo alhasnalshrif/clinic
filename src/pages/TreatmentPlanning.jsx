@@ -67,88 +67,26 @@ const TreatmentPlanning = () => {
    const [priorityFilter, setPriorityFilter] = useState('all');
    const [viewDetailsModal, setViewDetailsModal] = useState(false);
 
-   // Enhanced mock data
+   // Fetch treatment plans from API
    useEffect(() => {
-      const mockPlans = [
-         {
-            id: 1,
-            patientName: 'أحمد محمد',
-            patientId: 'P001',
-            patientPhone: '+966501234567',
-            treatmentType: 'تنظيف وتقويم',
-            description: 'تنظيف شامل للأسنان مع تركيب تقويم',
-            estimatedCost: 2500,
-            actualCost: 1200,
-            estimatedDuration: '6 أشهر',
-            status: 'in_progress',
-            createdDate: '2024-01-15',
-            startDate: '2024-02-01',
-            endDate: '2024-08-01',
-            dentist: 'د. سارة أحمد',
-            priority: 'medium',
-            teeth: ['11', '12', '21', '22'],
-            progress: 65,
-            sessions: [
-               { date: '2024-02-01', procedure: 'فحص أولي', status: 'completed', cost: 300 },
-               { date: '2024-02-15', procedure: 'تنظيف', status: 'completed', cost: 400 },
-               { date: '2024-03-01', procedure: 'تركيب التقويم', status: 'completed', cost: 500 },
-               { date: '2024-03-15', procedure: 'متابعة أولى', status: 'scheduled', cost: 200 },
-               { date: '2024-04-01', procedure: 'متابعة ثانية', status: 'pending', cost: 200 }
-            ]
-         },
-         {
-            id: 2,
-            patientName: 'فاطمة علي',
-            patientId: 'P002',
-            patientPhone: '+966509876543',
-            treatmentType: 'حشو وعلاج جذور',
-            description: 'علاج جذور للضرس العلوي الأيمن وحشو تجميلي',
-            estimatedCost: 1800,
-            actualCost: 1800,
-            estimatedDuration: '3 أسابيع',
-            status: 'completed',
-            createdDate: '2024-01-10',
-            startDate: '2024-01-20',
-            endDate: '2024-02-10',
-            dentist: 'د. محمد حسن',
-            priority: 'high',
-            teeth: ['16'],
-            progress: 100,
-            sessions: [
-               { date: '2024-01-20', procedure: 'فحص وتشخيص', status: 'completed', cost: 300 },
-               { date: '2024-01-27', procedure: 'علاج الجذور - جلسة 1', status: 'completed', cost: 700 },
-               { date: '2024-02-03', procedure: 'علاج الجذور - جلسة 2', status: 'completed', cost: 500 },
-               { date: '2024-02-10', procedure: 'حشو نهائي', status: 'completed', cost: 300 }
-            ]
-         },
-         {
-            id: 3,
-            patientName: 'محمد سالم',
-            patientId: 'P003',
-            patientPhone: '+966512345678',
-            treatmentType: 'زراعة أسنان',
-            description: 'زراعة ضرس واحد مع تركيب تاج',
-            estimatedCost: 4500,
-            actualCost: 0,
-            estimatedDuration: '4 أشهر',
-            status: 'planned',
-            createdDate: '2024-01-25',
-            startDate: '2024-03-01',
-            endDate: '2024-07-01',
-            dentist: 'د. عبدالله الزهراني',
-            priority: 'low',
-            teeth: ['36'],
-            progress: 0,
-            sessions: [
-               { date: '2024-03-01', procedure: 'فحص شامل وأشعة', status: 'scheduled', cost: 500 },
-               { date: '2024-03-15', procedure: 'وضع الزرعة', status: 'pending', cost: 2000 },
-               { date: '2024-06-01', procedure: 'تركيب التاج', status: 'pending', cost: 2000 }
-            ]
-         }
-      ];
-      setTreatmentPlans(mockPlans);
-      setFilteredPlans(mockPlans);
+      fetchTreatmentPlans();
    }, []);
+
+   const fetchTreatmentPlans = async () => {
+      try {
+         setLoading(true);
+         const response = await apiService.getTreatments();
+         setTreatmentPlans(response.data || []);
+         setFilteredPlans(response.data || []);
+      } catch (error) {
+         console.error('Error fetching treatment plans:', error);
+         message.error('فشل في تحميل خطط العلاج');
+         setTreatmentPlans([]);
+         setFilteredPlans([]);
+      } finally {
+         setLoading(false);
+      }
+   };
 
    const treatmentTypes = [
       'تنظيف وتبييض',

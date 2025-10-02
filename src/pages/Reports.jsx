@@ -45,6 +45,8 @@ import {
    TeamOutlined
 } from '@ant-design/icons';
 import moment from 'moment';
+import { apiService } from '../services/api';
+import { message } from 'antd';
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -61,100 +63,30 @@ const Reports = () => {
    const [reportData, setReportData] = useState({});
    const [activeTab, setActiveTab] = useState('financial');
 
-   // Enhanced mock data for comprehensive reporting
-   const [mockData] = useState({
-      financial: {
-         totalRevenue: 125000,
-         monthlyRevenue: 35000,
-         dailyAverage: 1167,
-         pendingPayments: 8500,
-         completedPayments: 42,
-         refundedAmount: 2400,
-         paymentMethods: [
-            { method: 'نقدي', amount: 45000, percentage: 36 },
-            { method: 'بطاقة ائتمان', amount: 52000, percentage: 42 },
-            { method: 'حوالة بنكية', amount: 28000, percentage: 22 }
-         ],
-         monthlyTrend: [
-            { month: 'يناير', revenue: 28000, expenses: 15000 },
-            { month: 'فبراير', revenue: 32000, expenses: 16000 },
-            { month: 'مارس', revenue: 35000, expenses: 17500 },
-            { month: 'أبريل', revenue: 30000, expenses: 16500 }
-         ]
-      },
-      patients: {
-         totalPatients: 456,
-         newPatients: 34,
-         activePatients: 312,
-         returningPatients: 78,
-         patientsByAge: [
-            { range: '0-18', count: 89, percentage: 19.5 },
-            { range: '19-35', count: 156, percentage: 34.2 },
-            { range: '36-50', count: 134, percentage: 29.4 },
-            { range: '51+', count: 77, percentage: 16.9 }
-         ],
-         patientsByGender: [
-            { gender: 'ذكر', count: 234, percentage: 51.3 },
-            { gender: 'أنثى', count: 222, percentage: 48.7 }
-         ],
-         topPatients: [
-            { name: 'أحمد محمد', visits: 12, spent: 8500 },
-            { name: 'فاطمة علي', visits: 10, spent: 7200 },
-            { name: 'سالم أحمد', visits: 8, spent: 6800 },
-            { name: 'نورا خالد', visits: 9, spent: 6400 }
-         ]
-      },
-      treatments: {
-         totalTreatments: 234,
-         completedTreatments: 198,
-         inProgressTreatments: 28,
-         cancelledTreatments: 8,
-         treatmentTypes: [
-            { type: 'تنظيف وتبييض', count: 45, revenue: 22500 },
-            { type: 'حشو تجميلي', count: 38, revenue: 19000 },
-            { type: 'علاج جذور', count: 32, revenue: 25600 },
-            { type: 'تقويم أسنان', count: 28, revenue: 35000 },
-            { type: 'زراعة أسنان', count: 15, revenue: 67500 }
-         ],
-         successRate: 94.5,
-         avgTreatmentTime: 45, // minutes
-         mostPopularTreatment: 'تنظيف وتبييض'
-      },
-      appointments: {
-         totalAppointments: 567,
-         completedAppointments: 489,
-         cancelledAppointments: 45,
-         noShowAppointments: 33,
-         appointmentsByTime: [
-            { time: '08:00-10:00', count: 89 },
-            { time: '10:00-12:00', count: 156 },
-            { time: '12:00-14:00', count: 134 },
-            { time: '14:00-16:00', count: 98 },
-            { time: '16:00-18:00', count: 90 }
-         ],
-         appointmentsByDay: [
-            { day: 'الأحد', count: 95 },
-            { day: 'الاثنين', count: 110 },
-            { day: 'الثلاثاء', count: 98 },
-            { day: 'الأربعاء', count: 105 },
-            { day: 'الخميس', count: 89 }
-         ],
-         avgWaitTime: 15 // minutes
-      }
-   });
-
    useEffect(() => {
       generateReport();
    }, [dateRange, reportType]);
 
    const generateReport = useCallback(async () => {
       setLoading(true);
-      // Simulate API call
-      setTimeout(() => {
-         setReportData(mockData);
+      try {
+         // Fetch report data from backend API
+         const params = {
+            startDate: dateRange[0]?.format('YYYY-MM-DD'),
+            endDate: dateRange[1]?.format('YYYY-MM-DD'),
+            reportType: reportType
+         };
+         const response = await apiService.getReports(params);
+         setReportData(response.data || {});
+         message.success('تم تحميل التقرير بنجاح');
+      } catch (error) {
+         console.error('Error generating report:', error);
+         message.error('فشل في تحميل التقرير');
+         setReportData({});
+      } finally {
          setLoading(false);
-      }, 1000);
-   }, [mockData]);
+      }
+   }, [dateRange, reportType]);
 
    const handleExportPDF = () => {
       // Simulate PDF export
