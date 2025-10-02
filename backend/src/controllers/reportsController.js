@@ -17,16 +17,16 @@ class ReportsController {
         : null;
 
       // Fetch financial data
-      const financialData = await this.getFinancialReport(dateFilter);
+      const financialData = await getFinancialReport(dateFilter);
       
       // Fetch patient data
-      const patientData = await this.getPatientReport(dateFilter);
+      const patientData = await getPatientReport(dateFilter);
       
       // Fetch treatment data
-      const treatmentData = await this.getTreatmentReport(dateFilter);
+      const treatmentData = await getTreatmentReport(dateFilter);
       
       // Fetch appointment data
-      const appointmentData = await this.getAppointmentReport(dateFilter);
+      const appointmentData = await getAppointmentReport(dateFilter);
 
       const report = {
         financial: financialData,
@@ -41,8 +41,9 @@ class ReportsController {
       res.status(500).json({ error: 'Internal server error' });
     }
   }
+}
 
-  async getFinancialReport(dateFilter) {
+async function getFinancialReport(dateFilter) {
     try {
       // Get all payments with optional date filter
       const query = db
@@ -84,7 +85,7 @@ class ReportsController {
     }
   }
 
-  async getPatientReport(dateFilter) {
+async function getPatientReport(dateFilter) {
     try {
       // Get total patients
       const allPatients = await db.select().from(patients);
@@ -124,7 +125,7 @@ class ReportsController {
     }
   }
 
-  async getTreatmentReport(dateFilter) {
+async function getTreatmentReport(dateFilter) {
     try {
       // Get all treatments
       const allTreatments = await db.select().from(treatments);
@@ -152,7 +153,7 @@ class ReportsController {
     }
   }
 
-  async getAppointmentReport(dateFilter) {
+async function getAppointmentReport(dateFilter) {
     try {
       // Get all appointments
       const query = db.select().from(appointments);
@@ -190,6 +191,5 @@ class ReportsController {
       return {};
     }
   }
-}
 
 module.exports = new ReportsController();
