@@ -100,6 +100,29 @@ export const apiService = {
   logout: () => api.post('/auth/logout/'),
   refreshToken: () => api.post('/auth/refresh/'),
   getCurrentUser: () => api.get('/api/auth/user/'),
+  
+  // Treatment Plans APIs
+  getTreatmentPlans: () => api.get('/treatment-plans/'),
+  getPatientTreatmentPlans: (patientId) => api.get(`/treatment-plans/patient/${patientId}`),
+  getTreatmentPlan: (id) => api.get(`/treatment-plans/${id}`),
+  createTreatmentPlan: (data) => api.post('/treatment-plans/', data),
+  updateTreatmentPlan: (id, data) => api.put(`/treatment-plans/${id}`, data),
+  updateTreatmentPlanStatus: (id, data) => api.patch(`/treatment-plans/${id}/status`, data),
+  deleteTreatmentPlan: (id) => api.delete(`/treatment-plans/${id}`),
+  addTreatmentPhase: (planId, data) => api.post(`/treatment-plans/${planId}/phases`, data),
+  updateTreatmentPhase: (planId, phaseId, data) => api.put(`/treatment-plans/${planId}/phases/${phaseId}`, data),
+  deleteTreatmentPhase: (planId, phaseId) => api.delete(`/treatment-plans/${planId}/phases/${phaseId}`),
+  
+  // Payment Plans APIs
+  getPaymentPlans: () => api.get('/payment-plans/'),
+  getPatientPaymentPlans: (patientId) => api.get(`/payment-plans/patient/${patientId}`),
+  getPaymentPlan: (id) => api.get(`/payment-plans/${id}`),
+  createPaymentPlan: (data) => api.post('/payment-plans/', data),
+  updatePaymentPlan: (id, data) => api.put(`/payment-plans/${id}`, data),
+  cancelPaymentPlan: (id) => api.patch(`/payment-plans/${id}/cancel`),
+  deletePaymentPlan: (id) => api.delete(`/payment-plans/${id}`),
+  payInstallment: (planId, installmentId, data) => api.post(`/payment-plans/${planId}/installments/${installmentId}/pay`, data),
+  getOverdueInstallments: () => api.get('/payment-plans/overdue'),
 };
 
 export default api;
