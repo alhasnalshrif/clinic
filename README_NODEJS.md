@@ -66,12 +66,14 @@ npm start
 
 ## Default Users
 
-The system comes with two pre-configured users:
+The system comes with two pre-configured users after running the seed script:
 
 | Username | Password   | Role    | Token |
 |----------|------------|---------|-------|
 | admin    | admin123   | ADMIN   | Auto-generated |
 | manager  | manager123 | MANAGER | Auto-generated |
+
+**Note:** The seed script only creates admin users. No sample patients or appointments are included. Use the application to add real patient data.
 
 ## API Endpoints
 
@@ -154,7 +156,7 @@ The system comes with two pre-configured users:
 ✅ **Financial Tracking** with payment management
 ✅ **Bilingual Interface** (Arabic/English)
 ✅ **Responsive Design** with Ant Design
-✅ **Database Seeding** with sample data
+✅ **Clean Database** - No sample data, production-ready
 
 ## Development
 
@@ -211,7 +213,7 @@ Visit `http://localhost:8000/health` to verify the backend is running.
 
 **React Build Errors**: Use `--openssl-legacy-provider` flag for older React versions
 **Port Conflicts**: Ensure ports 3000 and 8000 are available
-**Database Issues**: Re-run `node seed.js` to reset database
+**Database Issues**: Re-run `node seed.js` to reset admin users (note: this will not create sample patients)
 
 ### Logs
 - Backend logs appear in the terminal running the Express server
