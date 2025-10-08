@@ -15,7 +15,9 @@ import {
     DollarCircleFilled,
     FileTextOutlined,
     MessageFilled,
-    TeamOutlined
+    TeamOutlined,
+    SolutionOutlined,
+    CreditCardOutlined
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -139,7 +141,25 @@ const MainLayout = () => {
             icon: <HeartOutlined />,
             label: (
                 <Link to="/treatments" style={{ textDecoration: 'none' }}>
+                    <span style={{ fontWeight: 500 }}>العلاجات</span>
+                </Link>
+            ),
+        },
+        {
+            key: '/treatment-plans',
+            icon: <SolutionOutlined />,
+            label: (
+                <Link to="/treatment-plans" style={{ textDecoration: 'none' }}>
                     <span style={{ fontWeight: 500 }}>خطط العلاج</span>
+                </Link>
+            ),
+        },
+        {
+            key: '/payment-plans',
+            icon: <CreditCardOutlined />,
+            label: (
+                <Link to="/payment-plans" style={{ textDecoration: 'none' }}>
+                    <span style={{ fontWeight: 500 }}>خطط الدفع</span>
                 </Link>
             ),
         },
