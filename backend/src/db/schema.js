@@ -164,6 +164,77 @@ const smsMessages = sqliteTable('sms_messages', {
   createdAt: text('created_at').default(new Date().toISOString()),
 });
 
+// Treatment Plans table
+const treatmentPlans = sqliteTable('treatment_plans', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  patientId: integer('patient_id').notNull().references(() => patients.id),
+  doctorId: integer('doctor_id').notNull().references(() => users.id),
+  title: text('title').notNull(),
+  description: text('description'),
+  status: text('status').default('planned'), // planned, in_progress, completed, cancelled
+  priority: text('priority').default('medium'), // low, medium, high, urgent
+  totalCost: integer('total_cost').default(0),
+  estimatedDuration: text('estimated_duration'), // in weeks/months
+  startDate: text('start_date'),
+  endDate: text('end_date'),
+  completionDate: text('completion_date'),
+  notes: text('notes'),
+  createdAt: text('created_at').default(new Date().toISOString()),
+  updatedAt: text('updated_at').default(new Date().toISOString()),
+});
+
+// Treatment Plan Phases table (multi-phase treatments)
+const treatmentPlanPhases = sqliteTable('treatment_plan_phases', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  treatmentPlanId: integer('treatment_plan_id').notNull().references(() => treatmentPlans.id),
+  phaseNumber: integer('phase_number').notNull(),
+  title: text('title').notNull(),
+  description: text('description'),
+  status: text('status').default('pending'), // pending, in_progress, completed
+  cost: integer('cost').default(0),
+  estimatedDuration: text('estimated_duration'),
+  startDate: text('start_date'),
+  completionDate: text('completion_date'),
+  notes: text('notes'),
+  createdAt: text('created_at').default(new Date().toISOString()),
+  updatedAt: text('updated_at').default(new Date().toISOString()),
+});
+
+// Payment Plans table
+const paymentPlans = sqliteTable('payment_plans', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  patientId: integer('patient_id').notNull().references(() => patients.id),
+  treatmentPlanId: integer('treatment_plan_id').references(() => treatmentPlans.id),
+  appointmentId: integer('appointment_id').references(() => appointments.id),
+  title: text('title').notNull(),
+  totalAmount: integer('total_amount').notNull(),
+  paidAmount: integer('paid_amount').default(0),
+  remainingAmount: integer('remaining_amount').notNull(),
+  numberOfInstallments: integer('number_of_installments').notNull(),
+  installmentAmount: integer('installment_amount').notNull(),
+  status: text('status').default('active'), // active, completed, cancelled, overdue
+  startDate: text('start_date').notNull(),
+  nextDueDate: text('next_due_date'),
+  notes: text('notes'),
+  createdAt: text('created_at').default(new Date().toISOString()),
+  updatedAt: text('updated_at').default(new Date().toISOString()),
+});
+
+// Payment Installments table
+const paymentInstallments = sqliteTable('payment_installments', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  paymentPlanId: integer('payment_plan_id').notNull().references(() => paymentPlans.id),
+  installmentNumber: integer('installment_number').notNull(),
+  amount: integer('amount').notNull(),
+  dueDate: text('due_date').notNull(),
+  paidDate: text('paid_date'),
+  paidAmount: integer('paid_amount').default(0),
+  status: text('status').default('pending'), // pending, paid, overdue, partial
+  notes: text('notes'),
+  createdAt: text('created_at').default(new Date().toISOString()),
+  updatedAt: text('updated_at').default(new Date().toISOString()),
+});
+
 // Relations
 const usersRelations = relations(users, ({ many }) => ({
   patients: many(patients),
@@ -243,6 +314,49 @@ const smsMessagesRelations = relations(smsMessages, ({ one }) => ({
   }),
 }));
 
+const treatmentPlansRelations = relations(treatmentPlans, ({ one, many }) => ({
+  patient: one(patients, {
+    fields: [treatmentPlans.patientId],
+    references: [patients.id],
+  }),
+  doctor: one(users, {
+    fields: [treatmentPlans.doctorId],
+    references: [users.id],
+  }),
+  phases: many(treatmentPlanPhases),
+  paymentPlan: one(paymentPlans),
+}));
+
+const treatmentPlanPhasesRelations = relations(treatmentPlanPhases, ({ one }) => ({
+  treatmentPlan: one(treatmentPlans, {
+    fields: [treatmentPlanPhases.treatmentPlanId],
+    references: [treatmentPlans.id],
+  }),
+}));
+
+const paymentPlansRelations = relations(paymentPlans, ({ one, many }) => ({
+  patient: one(patients, {
+    fields: [paymentPlans.patientId],
+    references: [patients.id],
+  }),
+  treatmentPlan: one(treatmentPlans, {
+    fields: [paymentPlans.treatmentPlanId],
+    references: [treatmentPlans.id],
+  }),
+  appointment: one(appointments, {
+    fields: [paymentPlans.appointmentId],
+    references: [appointments.id],
+  }),
+  installments: many(paymentInstallments),
+}));
+
+const paymentInstallmentsRelations = relations(paymentInstallments, ({ one }) => ({
+  paymentPlan: one(paymentPlans, {
+    fields: [paymentInstallments.paymentPlanId],
+    references: [paymentPlans.id],
+  }),
+}));
+
 module.exports = {
   users,
   patients,
@@ -254,6 +368,10 @@ module.exports = {
   authTokens,
   medicalHistory,
   smsMessages,
+  treatmentPlans,
+  treatmentPlanPhases,
+  paymentPlans,
+  paymentInstallments,
   usersRelations,
   patientsRelations,
   appointmentsRelations,
@@ -264,4 +382,8 @@ module.exports = {
   authTokensRelations,
   medicalHistoryRelations,
   smsMessagesRelations,
+  treatmentPlansRelations,
+  treatmentPlanPhasesRelations,
+  paymentPlansRelations,
+  paymentInstallmentsRelations,
 };

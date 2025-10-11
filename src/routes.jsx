@@ -25,6 +25,8 @@ import Reports from './pages/Reports';
 import ServerConfigPage from './components/ServerConfig/ServerConfigPage';
 import Unauthorized from './pages/Unauthorized';
 import AuthExample from './components/AuthExample';
+import TreatmentPlans from './pages/TreatmentPlans';
+import PaymentPlans from './pages/PaymentPlans';
 
 const AppRoutes = () => {
   return (
@@ -55,6 +57,12 @@ const AppRoutes = () => {
         
         {/* Treatments */}
         <Route path="/treatments" element={<TreatmentPlanning />} />
+        
+        {/* Treatment Plans */}
+        <Route path="/treatment-plans" element={<TreatmentPlans />} />
+        
+        {/* Payment Plans */}
+        <Route path="/payment-plans" element={<PaymentPlans />} />
         
         {/* Medical History */}
         <Route path="/medical-history" element={<MedicalHistory />} />

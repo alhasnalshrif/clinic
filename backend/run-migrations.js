@@ -9,7 +9,7 @@ const fs = require('fs');
 const path = require('path');
 
 const DB_PATH = path.join(__dirname, 'database.db');
-const MIGRATION_FILE = path.join(__dirname, 'drizzle', '0001_add_medical_history_sms.sql');
+const MIGRATION_DIR = path.join(__dirname, 'drizzle');
 
 console.log('🔄 Running database migrations...\n');
 
@@ -17,37 +17,44 @@ try {
   // Open database
   const db = new Database(DB_PATH);
   
-  // Read migration file
-  const migrationSQL = fs.readFileSync(MIGRATION_FILE, 'utf8');
+  // Get all migration files
+  const migrationFiles = fs.readdirSync(MIGRATION_DIR)
+    .filter(file => file.endsWith('.sql'))
+    .sort(); // Sort to ensure they run in order
   
-  // Split by semicolons and execute each statement
-  const statements = migrationSQL
-    .split(';')
-    .map(s => s.trim())
-    .filter(s => s.length > 0);
+  console.log(`📁 Found ${migrationFiles.length} migration file(s)\n`);
   
-  console.log(`📝 Found ${statements.length} migration statements\n`);
-  
-  // Execute each statement
-  statements.forEach((statement, index) => {
-    try {
-      db.exec(statement);
-      console.log(`✅ Statement ${index + 1} executed successfully`);
-    } catch (error) {
-      if (error.message.includes('already exists')) {
-        console.log(`⚠️  Statement ${index + 1} - Table already exists, skipping`);
-      } else {
-        throw error;
+  migrationFiles.forEach((file) => {
+    console.log(`\n📝 Running migration: ${file}`);
+    const migrationPath = path.join(MIGRATION_DIR, file);
+    const migrationSQL = fs.readFileSync(migrationPath, 'utf8');
+    
+    // Split by statement-breakpoint or semicolons
+    const statements = migrationSQL
+      .split(/-->.*\n|;/)
+      .map(s => s.trim())
+      .filter(s => s.length > 0 && !s.startsWith('--'));
+    
+    console.log(`   Found ${statements.length} statement(s)`);
+    
+    // Execute each statement
+    statements.forEach((statement, index) => {
+      try {
+        db.exec(statement);
+        console.log(`   ✅ Statement ${index + 1} executed successfully`);
+      } catch (error) {
+        if (error.message.includes('already exists')) {
+          console.log(`   ⚠️  Statement ${index + 1} - Already exists, skipping`);
+        } else {
+          throw error;
+        }
       }
-    }
+    });
   });
   
   db.close();
   
-  console.log('\n✅ Migrations completed successfully!');
-  console.log('\nNew tables added:');
-  console.log('  - medical_history');
-  console.log('  - sms_messages');
+  console.log('\n✅ All migrations completed successfully!');
   
 } catch (error) {
   console.error('\n❌ Migration failed:', error.message);

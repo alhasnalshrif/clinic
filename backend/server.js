@@ -15,6 +15,8 @@ const dashboardRoutes = require('./src/routes/dashboardRoutes');
 const medicalHistoryRoutes = require('./src/routes/medicalHistoryRoutes');
 const smsRoutes = require('./src/routes/smsRoutes');
 const reportsRoutes = require('./src/routes/reportsRoutes');
+const treatmentPlanRoutes = require('./src/routes/treatmentPlanRoutes');
+const paymentPlanRoutes = require('./src/routes/paymentPlanRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -39,6 +41,8 @@ app.use('/dashboard', dashboardRoutes);
 app.use('/medical-history', medicalHistoryRoutes);
 app.use('/sms', smsRoutes);
 app.use('/reports', reportsRoutes);
+app.use('/treatment-plans', treatmentPlanRoutes);
+app.use('/payment-plans', paymentPlanRoutes);
 
 // Additional routes for compatibility with Django patterns
 app.use('/treatmentsid', treatmentRoutes); // Alias for treatments
